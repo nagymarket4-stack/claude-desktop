@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guardería SaaS · Panel de Administración</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; font-src https://cdn.jsdelivr.net; img-src 'self' data:; connect-src https://*.supabase.co wss://*.supabase.co">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="saas-login">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-icon">🌱</div>
+      <div>
+        <div class="login-logo-text">Guardería SaaS</div>
+        <div class="login-logo-sub">Panel de administración</div>
+      </div>
+    </div>
+    <h1 class="login-title">Bienvenido</h1>
+    <p class="login-sub">Accede para gestionar tus clientes y suscripciones</p>
+    <form id="saas-login-form">
+      <div class="form-group">
+        <label class="form-label" for="saas-user">Usuario</label>
+        <input type="text" id="saas-user" class="form-input" placeholder="admin" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="saas-pass">Contraseña</label>
+        <input type="password" id="saas-pass" class="form-input" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div id="saas-login-err" class="login-err"></div>
+      <button type="submit" class="login-btn">Entrar</button>
+    </form>
+    <p class="login-hint">Demo: <code>admin</code> / <code>admin2024</code></p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="saas-app">
+
+  <!-- TOP BAR (móvil) -->
+  <header class="saas-topbar">
+    <button class="topbar-menu-btn" onclick="toggleSaasSidebar()" aria-label="Menú">
+      <i class="ti ti-menu-2" aria-hidden="true"></i>
+    </button>
+    <span id="saas-top-title">Dashboard</span>
+    <div class="topbar-av">A</div>
+  </header>
+
+  <!-- BACKDROP -->
+  <div id="saas-backdrop" class="hidden" onclick="closeSaasSidebar()"></div>
+
+  <div class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside id="saas-sidebar" class="-translate-x-full">
+      <div class="sidebar-brand">
+        <div class="brand-logo">
+          <div class="brand-icon">🌱</div>
+          <div>
+            <div class="brand-name">Guardería SaaS</div>
+            <div class="brand-tagline">Admin panel</div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-link" data-page="dashboard"   onclick="navegarSaas('dashboard')">
+          <i class="ti ti-chart-bar" aria-hidden="true"></i> Dashboard
+        </button>
+        <button class="nav-link" data-page="clientes"    onclick="navegarSaas('clientes')">
+          <i class="ti ti-building" aria-hidden="true"></i> Clientes
+        </button>
+        <button class="nav-link" data-page="planes"      onclick="navegarSaas('planes')">
+          <i class="ti ti-credit-card" aria-hidden="true"></i> Planes
+        </button>
+        <button class="nav-link" data-page="pipeline"    onclick="navegarSaas('pipeline')">
+          <i class="ti ti-funnel" aria-hidden="true"></i> Pipeline
+        </button>
+        <button class="nav-link" data-page="facturacion" onclick="navegarSaas('facturacion')">
+          <i class="ti ti-receipt" aria-hidden="true"></i> Facturación
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-mrr">
+          <div class="sidebar-mrr-label">MRR actual</div>
+          <div class="sidebar-mrr-val" id="sidebar-mrr-val">—</div>
+          <div class="sidebar-mrr-sub" id="sidebar-arr-val">ARR —</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main id="main-content"></main>
+
+  </div>
+</div>
+
+<script src="js/supabase.js"></script>
+<script src="js/data.js"></script>
+<script src="js/pages/dashboard.js"></script>
+<script src="js/pages/clientes.js"></script>
+<script src="js/pages/planes.js"></script>
+<script src="js/pages/pipeline.js"></script>
+<script src="js/pages/facturacion.js"></script>
+<script src="js/app.js"></script>
+<script>
+  function updateSidebarMRR() {
+    const el = document.getElementById('sidebar-mrr-val');
+    const el2 = document.getElementById('sidebar-arr-val');
+    if(el) el.textContent = fmtEuro(calcMRR());
+    if(el2) el2.textContent = 'ARR ' + fmtEuro(calcARR());
+  }
+  const _nav = navegarSaas;
+  window.navegarSaas = function(p) { _nav(p); updateSidebarMRR(); };
+</script>
+
+</body>
+</html>

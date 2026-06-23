@@ -1,6 +1,13 @@
-// ─── Integración con Supabase (sincronización en la nube + tiempo real) ───────
+// ─── Integración con Supabase (multi-cliente + tiempo real) ───────────────────
 const SB_URL = 'https://ylwxsawiixvtjttsogzu.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlsd3hzYXdpaXh2dGp0dHNvZ3p1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjMwMDEsImV4cCI6MjA5Nzc5OTAwMX0.mVckH5Yp_J1uZbUzX1XFihCxz8HHgqAYfJT_2UWvHgw';
+
+// Cada cliente (guardería) es un "tenant" identificado en la URL: ?cliente=slug
+// Por defecto 'demo' (la guardería de demostración Sol & Luna).
+const TENANT = (new URLSearchParams(location.search).get('cliente') || 'demo')
+  .toLowerCase().replace(/[^a-z0-9_-]/g, '');
+// Prefijo de las claves de app_data para aislar los datos de cada cliente
+const claveT = (k) => `${TENANT}__${k}`;
 
 let sb = null;
 try {
@@ -24,48 +31,45 @@ function reconstruirMensajes(rows) {
   state.mensajes = m;
 }
 
-// ── Carga inicial desde Supabase (siembra datos si está vacío) ────────────────
+// ── Carga inicial desde Supabase (auto-rellena las claves que falten) ─────────
 async function cargarDeSupabase() {
   if (!sb) throw new Error('cliente no disponible');
 
-  const { data: rows, error } = await sb.from('app_data').select('key,value');
+  const { data: rows, error } = await sb.from('app_data').select('key,value').like('key', TENANT + '__%');
   if (error) throw error;
 
-  if (!rows || rows.length === 0) {
-    await sembrarDatos();
-  } else {
-    rows.forEach(r => {
-      if (r.key === 'configuracion') Object.assign(CONFIGURACION, r.value);
-      else if (DATA_KEYS.includes(r.key)) state[r.key] = r.value;
-    });
-  }
+  const presentes = {};
+  (rows || []).forEach(r => {
+    const k = r.key.slice(TENANT.length + 2); // quitar 'tenant__'
+    presentes[k] = true;
+    if (k === 'configuracion') Object.assign(CONFIGURACION, r.value);
+    else if (DATA_KEYS.includes(k)) state[k] = r.value;
+  });
 
-  const { data: msgs } = await sb.from('mensajes').select('*').order('id');
+  // Sembrar los bloques que falten (cliente nuevo o incompleto)
+  const defaults = {
+    alumnos: ALUMNOS, profesores: PROFESORES, actividades: ACTIVIDADES,
+    bienestar: BIENESTAR_INIT, familias: FAMILIAS_INIT, usuarios: USUARIOS_INIT,
+  };
+  const faltan = [];
+  for (const [k, v] of Object.entries(defaults)) {
+    if (!presentes[k]) { state[k] = JSON.parse(JSON.stringify(v)); faltan.push({ key: claveT(k), value: state[k] }); }
+  }
+  if (!presentes['configuracion']) faltan.push({ key: claveT('configuracion'), value: CONFIGURACION });
+  if (faltan.length) await sb.from('app_data').upsert(faltan);
+
+  const { data: msgs } = await sb.from('mensajes').select('*').eq('tenant', TENANT).order('id');
   if (!msgs || msgs.length === 0) await sembrarMensajes();
   else reconstruirMensajes(msgs);
-}
-
-// ── Siembra inicial (primera vez que se usa el proyecto) ──────────────────────
-async function sembrarDatos() {
-  const filas = [
-    { key: 'alumnos',       value: ALUMNOS },
-    { key: 'profesores',    value: PROFESORES },
-    { key: 'actividades',   value: ACTIVIDADES },
-    { key: 'bienestar',     value: BIENESTAR_INIT },
-    { key: 'familias',      value: FAMILIAS_INIT },
-    { key: 'usuarios',      value: USUARIOS_INIT },
-    { key: 'configuracion', value: CONFIGURACION },
-  ];
-  await sb.from('app_data').upsert(filas);
 }
 
 async function sembrarMensajes() {
   const filas = [];
   Object.entries(MENSAJES_INIT).forEach(([aid, arr]) => {
-    arr.forEach(m => filas.push({ alumno_id: +aid, de: m.de, texto: m.texto, hora: m.hora, leido: m.leido }));
+    arr.forEach(m => filas.push({ tenant: TENANT, alumno_id: +aid, de: m.de, texto: m.texto, hora: m.hora, leido: m.leido }));
   });
   if (filas.length) await sb.from('mensajes').insert(filas);
-  const { data: msgs } = await sb.from('mensajes').select('*').order('id');
+  const { data: msgs } = await sb.from('mensajes').select('*').eq('tenant', TENANT).order('id');
   reconstruirMensajes(msgs || []);
 }
 
@@ -74,7 +78,7 @@ async function guardarDato(key) {
   if (!sb) return;
   const value = key === 'configuracion' ? CONFIGURACION : state[key];
   try {
-    await sb.from('app_data').upsert({ key, value, updated_at: new Date().toISOString() });
+    await sb.from('app_data').upsert({ key: claveT(key), value, updated_at: new Date().toISOString() });
   } catch (e) { console.warn('Error guardando', key, e); }
 }
 
@@ -82,7 +86,7 @@ async function guardarDato(key) {
 async function enviarMensajeRemoto(alumnoId, de, texto) {
   if (!sb) return false;
   const { error } = await sb.from('mensajes').insert({
-    alumno_id: alumnoId, de, texto, hora: horaActual(), leido: false,
+    tenant: TENANT, alumno_id: alumnoId, de, texto, hora: horaActual(), leido: false,
   });
   return !error;
 }
@@ -90,29 +94,33 @@ async function enviarMensajeRemoto(alumnoId, de, texto) {
 // desde: 'familia' marca como leídos los del centro · 'centro' marca los de las familias
 async function marcarLeidosRemoto(alumnoId, desde) {
   if (!sb) return;
-  let q = sb.from('mensajes').update({ leido: true }).eq('alumno_id', alumnoId).eq('leido', false);
+  let q = sb.from('mensajes').update({ leido: true }).eq('tenant', TENANT).eq('alumno_id', alumnoId).eq('leido', false);
   q = desde === 'familia' ? q.eq('de', 'centro') : q.neq('de', 'centro');
   try { await q; } catch (e) {}
 }
 
-// ── Suscripción en tiempo real ────────────────────────────────────────────────
+// ── Suscripción en tiempo real (solo de este cliente) ─────────────────────────
 function suscribirRealtime() {
   if (!sb) return;
 
-  sb.channel('rt-mensajes')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'mensajes' }, async () => {
-      const { data } = await sb.from('mensajes').select('*').order('id');
+  sb.channel('rt-mensajes-' + TENANT)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'mensajes', filter: `tenant=eq.${TENANT}` }, async () => {
+      const { data } = await sb.from('mensajes').select('*').eq('tenant', TENANT).order('id');
       reconstruirMensajes(data || []);
       if (sesionActual) refrescarPaginaActual();
     })
     .subscribe();
 
-  sb.channel('rt-appdata')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'app_data' }, async () => {
-      const { data } = await sb.from('app_data').select('key,value');
+  sb.channel('rt-appdata-' + TENANT)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'app_data' }, async (payload) => {
+      // Solo recargar si el cambio es de este cliente
+      const k = payload.new?.key || payload.old?.key || '';
+      if (!k.startsWith(TENANT + '__')) return;
+      const { data } = await sb.from('app_data').select('key,value').like('key', TENANT + '__%');
       (data || []).forEach(r => {
-        if (r.key === 'configuracion') Object.assign(CONFIGURACION, r.value);
-        else if (DATA_KEYS.includes(r.key)) state[r.key] = r.value;
+        const kk = r.key.slice(TENANT.length + 2);
+        if (kk === 'configuracion') Object.assign(CONFIGURACION, r.value);
+        else if (DATA_KEYS.includes(kk)) state[kk] = r.value;
       });
       aplicarConfiguracion();
       if (sesionActual) refrescarPaginaActual();

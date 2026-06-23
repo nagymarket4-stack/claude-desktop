@@ -7,11 +7,20 @@ const HUMOR_OPTS = [
   { key:'🤒', label:'Malito'     },
 ];
 
+// Cantidad ingerida en cada comida
 const COMIDA_OPTS = [
-  { key:'nada',   label:'No ha comido', icon:'🚫' },
-  { key:'poco',   label:'Poco',         icon:'🍽️' },
-  { key:'normal', label:'Normal',       icon:'✅'  },
-  { key:'todo',   label:'Todo',         icon:'⭐'  },
+  { key:'nada',   label:'Nada',   icon:'🚫' },
+  { key:'poco',   label:'Poco',   icon:'🍽️' },
+  { key:'normal', label:'Normal', icon:'✅'  },
+  { key:'todo',   label:'Todo',   icon:'⭐'  },
+];
+
+// Los 4 momentos de comida del día
+const COMIDAS_TIPOS = [
+  { key:'desayuno', label:'Desayuno', icon:'🥐', horaDefecto:'09:00' },
+  { key:'snack',    label:'Snack',    icon:'🍎', horaDefecto:'11:00' },
+  { key:'comida',   label:'Comida',   icon:'🍲', horaDefecto:'13:00' },
+  { key:'merienda', label:'Merienda', icon:'🍪', horaDefecto:'16:30' },
 ];
 
 function renderBienestar() {
@@ -55,7 +64,7 @@ function renderBienestar() {
 
     <!-- Modal editar bienestar -->
     <div id="modal-bienestar" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+      <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div class="flex items-center gap-3 mb-6">
           <div id="bw-avatar" class="w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg"></div>
           <div>
@@ -78,17 +87,30 @@ function renderBienestar() {
           </div>
         </div>
 
-        <!-- Comida -->
+        <!-- Comidas (4 momentos) -->
         <div class="mb-6">
-          <label class="text-sm font-semibold text-gray-700 block mb-3">🍽️ ¿Cuánto ha comido?</label>
-          <div class="grid grid-cols-4 gap-2">
-            ${COMIDA_OPTS.map(c => `
-              <button type="button" onclick="selComida('${c.key}',this)"
-                data-comida="${c.key}"
-                class="comida-opt flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-gray-100 hover:border-green-300 transition-colors">
-                <span class="text-xl">${c.icon}</span>
-                <span class="text-xs text-gray-600 leading-tight text-center">${esc(c.label)}</span>
-              </button>
+          <label class="text-sm font-semibold text-gray-700 block mb-3">🍽️ Comidas del día</label>
+          <div class="space-y-3">
+            ${COMIDAS_TIPOS.map(t => `
+              <div class="border border-gray-100 rounded-xl p-3" data-comida-grupo="${t.key}">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-sm font-medium text-gray-700 flex items-center gap-1.5">
+                    <span class="text-base">${t.icon}</span> ${esc(t.label)}
+                  </span>
+                  <input type="time" id="bw-hora-${t.key}" value="${t.horaDefecto}"
+                    class="text-xs border border-gray-200 rounded-lg px-2 py-1 text-gray-600 outline-none focus:border-green-400" />
+                </div>
+                <div class="grid grid-cols-4 gap-1.5">
+                  ${COMIDA_OPTS.map(c => `
+                    <button type="button" onclick="selComida('${t.key}','${c.key}',this)"
+                      data-comida-tipo="${t.key}" data-comida-val="${c.key}"
+                      class="comida-opt flex flex-col items-center gap-0.5 p-2 rounded-lg border-2 border-gray-100 hover:border-green-300 transition-colors">
+                      <span class="text-base">${c.icon}</span>
+                      <span class="text-[10px] text-gray-600 leading-tight">${esc(c.label)}</span>
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
             `).join('')}
           </div>
         </div>
@@ -125,7 +147,8 @@ function renderBienestar() {
 function tarjetaBienestar(a) {
   const bw = state.bienestar[a.id] || {};
   const registrado = bw.humor !== null && bw.humor !== undefined;
-  const comidaObj  = COMIDA_OPTS.find(c => c.key === bw.comida);
+  const comidas = bw.comidas || {};
+  const nComidas = COMIDAS_TIPOS.filter(t => comidas[t.key]?.cantidad).length;
 
   return `
     <div class="card p-5">
@@ -148,14 +171,24 @@ function tarjetaBienestar(a) {
             <p class="font-bold text-blue-700 text-sm">${esc(bw.sueno)}h</p>
           </div>
           <div class="bg-orange-50 rounded-xl p-2.5 text-center">
-            <p class="text-xs text-orange-500 mb-0.5">Comida</p>
-            <p class="text-lg">${comidaObj ? comidaObj.icon : '—'}</p>
+            <p class="text-xs text-orange-500 mb-0.5">Comidas</p>
+            <p class="font-bold text-orange-700 text-sm">${nComidas}/4</p>
           </div>
           <div class="bg-yellow-50 rounded-xl p-2.5 text-center">
             <p class="text-xs text-yellow-600 mb-0.5">Humor</p>
             <p class="text-xl">${esc(bw.humor)}</p>
           </div>
         </div>
+        ${nComidas > 0 ? `
+        <div class="flex flex-wrap gap-1.5 mb-4">
+          ${COMIDAS_TIPOS.filter(t => comidas[t.key]?.cantidad).map(t => {
+            const c = comidas[t.key];
+            const opt = COMIDA_OPTS.find(o => o.key === c.cantidad);
+            return `<span class="text-[11px] bg-gray-50 border border-gray-100 rounded-lg px-2 py-1 text-gray-600">
+              ${t.icon} ${esc(t.label)} ${c.hora ? `<span class="text-gray-400">${esc(c.hora)}</span>` : ''} ${opt ? opt.icon : ''}
+            </span>`;
+          }).join('')}
+        </div>` : ''}
       ` : `
         <div class="bg-gray-50 rounded-xl p-4 text-center mb-4">
           <p class="text-gray-300 text-3xl mb-1">📋</p>
@@ -177,6 +210,7 @@ function abrirBienestar(alumnoId) {
   _bwAlumnoId = alumnoId;
   const a  = state.alumnos.find(x => x.id === alumnoId);
   const bw = state.bienestar[alumnoId] || {};
+  const comidas = bw.comidas || {};
 
   // Rellenar modal
   const avatarEl = document.getElementById('bw-avatar');
@@ -189,20 +223,27 @@ function abrirBienestar(alumnoId) {
   document.getElementById('bw-sueno').value = sueno;
   document.getElementById('bw-sueno-val').textContent = sueno + 'h';
 
-  // Reset selecciones
+  // Reset comidas
   document.querySelectorAll('.comida-opt').forEach(b => {
     b.classList.remove('border-green-500','bg-green-50');
     b.classList.add('border-gray-100');
   });
+  // Restaurar cada comida (cantidad seleccionada + hora)
+  COMIDAS_TIPOS.forEach(t => {
+    const reg = comidas[t.key];
+    const horaInput = document.getElementById('bw-hora-' + t.key);
+    if (horaInput) horaInput.value = reg?.hora || t.horaDefecto;
+    if (reg?.cantidad) {
+      const btn = document.querySelector(`.comida-opt[data-comida-tipo="${t.key}"][data-comida-val="${reg.cantidad}"]`);
+      if (btn) { btn.classList.add('border-green-500','bg-green-50'); btn.classList.remove('border-gray-100'); }
+    }
+  });
+
+  // Reset humor
   document.querySelectorAll('.humor-opt').forEach(b => {
     b.classList.remove('border-green-500','bg-green-50','scale-110');
     b.classList.add('border-gray-100');
   });
-
-  if (bw.comida) {
-    const btn = document.querySelector(`.comida-opt[data-comida="${bw.comida}"]`);
-    if (btn) { btn.classList.add('border-green-500','bg-green-50'); btn.classList.remove('border-gray-100'); }
-  }
   if (bw.humor) {
     const btn = document.querySelector(`.humor-opt[data-humor="${CSS.escape(bw.humor)}"]`);
     if (btn) { btn.classList.add('border-green-500','bg-green-50'); btn.classList.remove('border-gray-100'); }
@@ -211,13 +252,21 @@ function abrirBienestar(alumnoId) {
   document.getElementById('modal-bienestar').classList.remove('hidden');
 }
 
-function selComida(key, btn) {
-  document.querySelectorAll('.comida-opt').forEach(b => {
+function selComida(tipo, val, btn) {
+  // Deseleccionar solo dentro del mismo grupo de comida
+  document.querySelectorAll(`.comida-opt[data-comida-tipo="${tipo}"]`).forEach(b => {
     b.classList.remove('border-green-500','bg-green-50');
     b.classList.add('border-gray-100');
   });
-  btn.classList.add('border-green-500','bg-green-50');
-  btn.classList.remove('border-gray-100');
+  // Toggle: si ya estaba esta, permitir deseleccionar
+  if (btn.dataset.sel === '1') {
+    btn.dataset.sel = '';
+  } else {
+    document.querySelectorAll(`.comida-opt[data-comida-tipo="${tipo}"]`).forEach(b => b.dataset.sel = '');
+    btn.classList.add('border-green-500','bg-green-50');
+    btn.classList.remove('border-gray-100');
+    btn.dataset.sel = '1';
+  }
 }
 
 function selHumor(key, btn) {
@@ -231,10 +280,21 @@ function selHumor(key, btn) {
 
 function guardarBienestar() {
   const sueno  = parseFloat(document.getElementById('bw-sueno').value);
-  const comida = document.querySelector('.comida-opt.border-green-500')?.dataset.comida || null;
-  const humor  = document.querySelector('.humor-opt.border-green-500')?.dataset.humor  || null;
+  const humor  = document.querySelector('.humor-opt.border-green-500')?.dataset.humor || null;
 
-  state.bienestar[_bwAlumnoId] = { sueno, comida, humor };
+  // Recoger las 4 comidas
+  const comidas = {};
+  COMIDAS_TIPOS.forEach(t => {
+    const sel = document.querySelector(`.comida-opt[data-comida-tipo="${t.key}"].border-green-500`);
+    if (sel) {
+      comidas[t.key] = {
+        cantidad: sel.dataset.comidaVal,
+        hora: document.getElementById('bw-hora-' + t.key).value || t.horaDefecto,
+      };
+    }
+  });
+
+  state.bienestar[_bwAlumnoId] = { sueno, comidas, humor };
   cerrarModal('modal-bienestar');
   renderBienestar();
   const a = state.alumnos.find(x => x.id === _bwAlumnoId);

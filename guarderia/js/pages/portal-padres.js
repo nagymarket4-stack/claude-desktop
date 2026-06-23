@@ -47,10 +47,22 @@ function renderPadreInicio() {
       </div>
     </div>
 
-    ${b.sueno != null || b.comida ? `
+    ${(() => {
+      const comidas = b.comidas || {};
+      const TIPOS = [
+        { key:'desayuno', label:'Desayuno', icon:'🥐' },
+        { key:'snack',    label:'Snack',    icon:'🍎' },
+        { key:'comida',   label:'Comida',   icon:'🍲' },
+        { key:'merienda', label:'Merienda', icon:'🍪' },
+      ];
+      const CANT = { nada:'Nada', poco:'Poco', normal:'Normal', todo:'Todo' };
+      const cantColor = c => c==='todo'?'text-green-600':c==='nada'?'text-red-500':'text-yellow-600';
+      const comidasRegistradas = TIPOS.filter(t => comidas[t.key]?.cantidad);
+      if (b.sueno == null && comidasRegistradas.length === 0) return '';
+      return `
     <div class="px-5 pb-4 pt-2 border-t border-gray-50">
       <p class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Bienestar de hoy</p>
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-3">
         ${b.sueno != null ? `
         <div class="flex items-center gap-3">
           <span class="text-base">😴</span>
@@ -61,17 +73,26 @@ function renderPadreInicio() {
             </div>
           </div>
         </div>` : ''}
-        ${b.comida ? `
-        <div class="flex items-center gap-3">
-          <span class="text-base">🍽️</span>
-          <div class="flex-1">
-            <div class="flex justify-between text-xs text-gray-500 mb-1"><span>Comida</span>
-              <span class="font-medium ${b.comida==='todo'?'text-green-600':b.comida==='nada'?'text-red-500':'text-yellow-600'}">${{nada:'Sin comer',poco:'Poco',normal:'Normal',todo:'Todo'}[b.comida]||b.comida}</span>
-            </div>
+        ${comidasRegistradas.length ? `
+        <div>
+          <div class="flex items-center gap-2 text-xs text-gray-500 mb-2"><span class="text-base">🍽️</span> Comidas</div>
+          <div class="flex flex-col gap-1.5">
+            ${comidasRegistradas.map(t => {
+              const c = comidas[t.key];
+              return `
+              <div class="flex items-center justify-between text-sm bg-gray-50 rounded-lg px-3 py-1.5">
+                <span class="text-gray-700">${t.icon} ${esc(t.label)}</span>
+                <span class="flex items-center gap-2">
+                  ${c.hora ? `<span class="text-xs text-gray-400">${esc(c.hora)}</span>` : ''}
+                  <span class="text-xs font-medium ${cantColor(c.cantidad)}">${CANT[c.cantidad]||esc(c.cantidad)}</span>
+                </span>
+              </div>`;
+            }).join('')}
           </div>
         </div>` : ''}
       </div>
-    </div>` : ''}
+    </div>`;
+    })()}
 
     ${ultimoMsg ? `
     <div class="mx-5 mb-5 p-3 bg-green-50 rounded-xl border border-green-100">

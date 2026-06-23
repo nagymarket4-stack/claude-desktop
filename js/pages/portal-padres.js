@@ -173,8 +173,10 @@ function renderPadreMensajes() {
   const hijo  = state.alumnos.find(a => a.id === state.chatAlumnoId);
   const msgs  = state.mensajes[state.chatAlumnoId] || [];
 
-  // Marcar como leídos los del centro
+  // Marcar como leídos los mensajes del centro
+  const habiaNoLeidos = msgs.some(m => m.de === 'centro' && !m.leido);
   msgs.forEach(m => { if (m.de === 'centro') m.leido = true; });
+  if (habiaNoLeidos && typeof marcarLeidosRemoto === 'function') marcarLeidosRemoto(state.chatAlumnoId, 'familia');
 
   el.innerHTML = `
 <div class="flex flex-col h-full">
@@ -231,17 +233,22 @@ function enviarMensajePadre() {
   if (!input) return;
   const texto = input.value.trim();
   if (!texto) return;
-  sincronizarDesdeStorage(); // traer mensajes recientes del centro antes de añadir
-  const msgs = state.mensajes[state.chatAlumnoId];
-  if (!msgs) return;
-  msgs.push({
-    id: Date.now(),
-    de: 'f1a', // identificador genérico de familia
-    texto,
-    hora: horaActual(),
-    leido: false,
-  });
-  persistir(); // propagar a otras pestañas
+  const alumnoId = state.chatAlumnoId;
   input.value = '';
+
+  if (typeof enviarMensajeRemoto === 'function' && supabaseActivo()) {
+    // Optimista: el realtime reconciliará con la fila real de la BD
+    (state.mensajes[alumnoId] = state.mensajes[alumnoId] || []).push({ id: 'tmp' + Date.now(), de: 'f1a', texto, hora: horaActual(), leido: true });
+    renderPadreMensajes();
+    enviarMensajeRemoto(alumnoId, 'f1a', texto);
+    return;
+  }
+
+  // Fallback local (sin Supabase)
+  sincronizarDesdeStorage();
+  const msgs = state.mensajes[alumnoId];
+  if (!msgs) return;
+  msgs.push({ id: Date.now(), de: 'f1a', texto, hora: horaActual(), leido: false });
+  persistir();
   renderPadreMensajes();
 }

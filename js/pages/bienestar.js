@@ -297,6 +297,7 @@ function guardarBienestar() {
   state.bienestar[_bwAlumnoId] = { sueno, comidas, humor };
   cerrarModal('modal-bienestar');
   renderBienestar();
+  if (typeof guardarDato === 'function') guardarDato('bienestar');
   const a = state.alumnos.find(x => x.id === _bwAlumnoId);
   showToast(`Bienestar de ${a.nombre} guardado`);
 }

@@ -91,6 +91,7 @@ function guardarConfigCentro() {
   CONFIGURACION.nombre    = document.getElementById('cfg-nombre').value.trim() || CONFIGURACION.nombre;
   CONFIGURACION.subtitulo = document.getElementById('cfg-subtitulo').value.trim();
   aplicarConfiguracion();
+  if (typeof guardarDato === 'function') guardarDato('configuracion');
   // Actualizar login screen si está visible
   const loginLogo = document.querySelector('#login-screen .text-3xl');
   if (loginLogo) loginLogo.textContent = CONFIGURACION.logo;
@@ -141,6 +142,7 @@ function toggleActivoUsuario(id) {
   if (!u) return;
   u.activo = !u.activo;
   document.getElementById('tabla-usuarios').innerHTML = renderTablaUsuarios();
+  if (typeof guardarDato === 'function') guardarDato('usuarios');
   showToast(`Usuario ${u.nombre} ${u.activo?'reactivado':'dado de baja'}`);
 }
 
@@ -248,6 +250,7 @@ async function guardarUsuario(id) {
     showToast(`Usuario ${nombre} creado`);
   }
 
+  if (typeof guardarDato === 'function') guardarDato('usuarios');
   cerrarModalUsuario();
   document.getElementById('tabla-usuarios').innerHTML = renderTablaUsuarios();
 }

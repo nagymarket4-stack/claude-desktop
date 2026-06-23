@@ -110,15 +110,27 @@ function alumnosFilas(lista) {
       <td class="px-6 py-4 text-gray-600 font-mono text-xs">${esc(a.hora_entrada) || '—'}</td>
       <td class="px-6 py-4 text-gray-600 font-mono text-xs">${esc(a.hora_salida) || '—'}</td>
       <td class="px-6 py-4 text-center">
-        ${a.estado === 'ausente' ?
-          `<button onclick="registrarEntradaAlumno(${a.id})" class="bg-green-100 text-green-700 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-green-200 transition-colors">Registrar entrada</button>` :
-          a.estado === 'entrada' ?
-          `<button onclick="registrarSalidaAlumno(${a.id})" class="bg-red-100 text-red-700 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-red-200 transition-colors">Registrar salida</button>` :
-          `<span class="text-gray-400 text-xs">Recogido</span>`
-        }
+        ${botonesEstadoAlumno(a)}
       </td>
     </tr>
   `).join('');
+}
+
+// Control segmentado de 3 estados: En el centro / Fuera / Ausente
+function botonesEstadoAlumno(a) {
+  const est = a.estado === 'salida' ? 'fuera' : a.estado; // normalizar dato antiguo
+  const opciones = [
+    { key:'entrada', label:'En centro', activo:'bg-green-600 text-white', inactivo:'text-green-700 hover:bg-green-50' },
+    { key:'fuera',   label:'Fuera',     activo:'bg-amber-500 text-white', inactivo:'text-amber-600 hover:bg-amber-50' },
+    { key:'ausente', label:'Ausente',   activo:'bg-gray-500 text-white',  inactivo:'text-gray-500 hover:bg-gray-100' },
+  ];
+  return `<div class="inline-flex rounded-lg border border-gray-200 overflow-hidden text-xs font-medium">
+    ${opciones.map((o,i) => `
+      <button onclick="cambiarEstadoAlumno(${a.id},'${o.key}')"
+        class="px-2.5 py-1.5 transition-colors ${est===o.key ? o.activo : o.inactivo} ${i>0?'border-l border-gray-200':''}">
+        ${o.label}
+      </button>`).join('')}
+  </div>`;
 }
 
 function alumnosCards(lista) {
@@ -132,18 +144,11 @@ function alumnosCards(lista) {
         </div>
         ${badge(a.estado)}
       </div>
-      <div class="flex items-center justify-between gap-2">
-        <div class="flex gap-4 text-xs text-gray-500">
-          <span>Entrada: <span class="font-mono text-gray-700">${esc(a.hora_entrada) || '—'}</span></span>
-          <span>Salida: <span class="font-mono text-gray-700">${esc(a.hora_salida) || '—'}</span></span>
-        </div>
-        ${a.estado === 'ausente' ?
-          `<button onclick="registrarEntradaAlumno(${a.id})" class="bg-green-100 text-green-700 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-green-200 transition-colors flex-shrink-0">Entrada</button>` :
-          a.estado === 'entrada' ?
-          `<button onclick="registrarSalidaAlumno(${a.id})" class="bg-red-100 text-red-700 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-red-200 transition-colors flex-shrink-0">Salida</button>` :
-          `<span class="text-gray-400 text-xs flex-shrink-0">Recogido</span>`
-        }
+      <div class="flex gap-4 text-xs text-gray-500 mb-3">
+        <span>Entrada: <span class="font-mono text-gray-700">${esc(a.hora_entrada) || '—'}</span></span>
+        <span>Salida: <span class="font-mono text-gray-700">${esc(a.hora_salida) || '—'}</span></span>
       </div>
+      <div class="flex">${botonesEstadoAlumno(a)}</div>
     </div>
   `).join('');
 }
@@ -161,23 +166,26 @@ function sincronizarAlumnos() {
   if (typeof persistir === 'function') persistir();
 }
 
-function registrarEntradaAlumno(id) {
+function cambiarEstadoAlumno(id, estado) {
   const a = state.alumnos.find(x => x.id === id);
-  a.estado = 'entrada';
-  a.hora_entrada = horaActual();
-  a.hora_salida = null;
+  if (!a || a.estado === estado) return;
+  a.estado = estado;
+  const hora = horaActual();
+  let msg;
+  if (estado === 'entrada') {
+    a.hora_entrada = hora;                       // registra la (re)entrada
+    msg = `${a.nombre} ha entrado al centro (${hora})`;
+  } else if (estado === 'fuera') {
+    a.hora_salida = hora;                        // registra la salida (temporal o definitiva)
+    msg = `${a.nombre} ha salido del centro (${hora})`;
+  } else if (estado === 'ausente') {
+    a.hora_entrada = null;
+    a.hora_salida = null;
+    msg = `${a.nombre} marcado como ausente`;
+  }
   refrescarListasAlumnos(state.alumnos);
   sincronizarAlumnos();
-  showToast(`Entrada de ${a.nombre} registrada a las ${a.hora_entrada}`);
-}
-
-function registrarSalidaAlumno(id) {
-  const a = state.alumnos.find(x => x.id === id);
-  a.estado = 'salida';
-  a.hora_salida = horaActual();
-  refrescarListasAlumnos(state.alumnos);
-  sincronizarAlumnos();
-  showToast(`Salida de ${a.nombre} registrada a las ${a.hora_salida}`);
+  showToast(msg);
 }
 
 function filtrarGrupo(grupo) {

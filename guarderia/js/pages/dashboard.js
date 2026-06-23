@@ -1,6 +1,6 @@
 function renderDashboard() {
   const presentes   = state.alumnos.filter(a => a.estado === 'entrada').length;
-  const recogidos   = state.alumnos.filter(a => a.estado === 'salida').length;
+  const fuera       = state.alumnos.filter(a => a.estado === 'fuera' || a.estado === 'salida').length;
   const ausentes    = state.alumnos.filter(a => a.estado === 'ausente').length;
   const profActivos = state.profesores.filter(p => p.estado === 'fichado').length;
   const actHoy      = state.actividades.filter(a => a.fecha.startsWith('Hoy')).length;
@@ -14,7 +14,7 @@ function renderDashboard() {
 
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         ${statCard('👦','Alumnos presentes', presentes, 'bg-green-50','text-green-700','text-green-600')}
-        ${statCard('🚪','Recogidos', recogidos, 'bg-red-50','text-red-700','text-red-500')}
+        ${statCard('🚪','Fuera del centro', fuera, 'bg-amber-50','text-amber-700','text-amber-600')}
         ${statCard('😴','Ausentes', ausentes, 'bg-yellow-50','text-yellow-700','text-yellow-600')}
         ${statCard('👩‍🏫','Profesores activos', profActivos, 'bg-blue-50','text-blue-700','text-blue-600')}
       </div>

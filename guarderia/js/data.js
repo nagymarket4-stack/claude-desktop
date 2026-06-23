@@ -155,6 +155,7 @@ let state = {
   mensajes:   JSON.parse(JSON.stringify(MENSAJES_INIT)),
   usuarios:   JSON.parse(JSON.stringify(USUARIOS_INIT)),
   fichajes:   [],   // registro de entradas/salidas de profesores (solo superadmin)
+  bano:       {},   // registro de baño/pañales por alumno: { alumnoId: [ {id,tipo,obs,hora,fecha} ] }
   currentPage:       'dashboard',
   familiaAlumnoId:   1,
   chatAlumnoId:      1,

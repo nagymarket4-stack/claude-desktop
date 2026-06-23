@@ -7,7 +7,7 @@ function esc(str) {
 // ─── Navigation ──────────────────────────────────────────────────────────────
 const PAGE_TITLES = {
   dashboard:'Dashboard', alumnos:'Alumnos', profesores:'Profesores',
-  actividades:'Actividades', bienestar:'Bienestar', mensajes:'Mensajes',
+  actividades:'Actividades', bienestar:'Bienestar', bano:'Baño y pañales', mensajes:'Mensajes',
   familias:'Portal Familias', configuracion:'Configuración', fichajes:'Registro de fichajes',
   'padre-inicio':'Inicio', 'padre-actividades':'Actividades', 'padre-mensajes':'Mensajes',
 };
@@ -18,6 +18,7 @@ const RENDERERS = {
   profesores:          () => renderProfesores(),
   actividades:         () => renderActividades(),
   bienestar:           () => renderBienestar(),
+  bano:                () => renderBano(),
   mensajes:            () => renderMensajes(),
   familias:            () => renderFamilias(),
   configuracion:       () => renderConfiguracion(),
@@ -78,6 +79,9 @@ function renderSidebarStaff() {
     </button>
     <button onclick="navigate('bienestar')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="bienestar">
       <span class="text-xl w-7 text-center">💛</span> Bienestar
+    </button>
+    <button onclick="navigate('bano')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="bano">
+      <span class="text-xl w-7 text-center">🚽</span> Baño y pañales
     </button>
     <button onclick="navigate('mensajes')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="mensajes">
       <span class="text-xl w-7 text-center">💬</span> Mensajes

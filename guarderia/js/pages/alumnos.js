@@ -48,6 +48,11 @@ function renderAlumnos() {
       </div>
     </div>
 
+    <!-- Modal ficha del alumno -->
+    <div id="modal-ficha" class="hidden fixed inset-0 bg-black/40 z-50 flex items-end md:items-center justify-center p-4">
+      <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md max-h-[85vh] overflow-y-auto" id="modal-ficha-body"></div>
+    </div>
+
     <!-- Modal historial de movimientos -->
     <div id="modal-historial" class="hidden fixed inset-0 bg-black/40 z-50 flex items-end md:items-center justify-center p-4">
       <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md max-h-[80vh] overflow-y-auto">
@@ -108,13 +113,13 @@ function alumnosFilas(lista) {
   return lista.map(a => `
     <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
       <td class="px-6 py-4">
-        <div class="flex items-center gap-3">
+        <button onclick="abrirFichaAlumno(${a.id})" class="flex items-center gap-3 text-left hover:opacity-80 transition-opacity">
           <div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm ${esc(a.color)}">${esc(a.avatar)}</div>
           <div>
-            <p class="font-medium text-gray-800">${esc(a.nombre)}</p>
+            <p class="font-medium text-gray-800 hover:text-green-700">${esc(a.nombre)}</p>
             <p class="text-xs text-gray-400">${esc(a.edad)} años · ${esc(a.tutor)}</p>
           </div>
-        </div>
+        </button>
       </td>
       <td class="px-6 py-4 text-gray-600">${esc(a.grupo)}</td>
       <td class="px-6 py-4">${badge(a.estado)}</td>
@@ -152,11 +157,13 @@ function alumnosCards(lista) {
   return lista.map(a => `
     <div class="card p-4">
       <div class="flex items-center gap-3 mb-3">
-        <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 ${esc(a.color)}">${esc(a.avatar)}</div>
-        <div class="flex-1 min-w-0">
-          <p class="font-medium text-gray-800 truncate">${esc(a.nombre)}</p>
-          <p class="text-xs text-gray-400 truncate">${esc(a.edad)} años · ${esc(a.grupo)} · ${esc(a.tutor)}</p>
-        </div>
+        <button onclick="abrirFichaAlumno(${a.id})" class="flex items-center gap-3 flex-1 min-w-0 text-left">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 ${esc(a.color)}">${esc(a.avatar)}</div>
+          <div class="flex-1 min-w-0">
+            <p class="font-medium text-gray-800 truncate">${esc(a.nombre)}</p>
+            <p class="text-xs text-gray-400 truncate">${esc(a.edad)} años · ${esc(a.grupo)} · ${esc(a.tutor)}</p>
+          </div>
+        </button>
         ${badge(a.estado)}
       </div>
       <div class="flex gap-4 text-xs text-gray-500 mb-3">
@@ -306,4 +313,53 @@ function guardarAlumno() {
   renderAlumnos();
   sincronizarAlumnos();
   showToast(`${nombre} añadido correctamente`);
+}
+
+// ─── Ficha del alumno (editable por cualquier usuario) ────────────────────────
+function abrirFichaAlumno(id) {
+  const a = state.alumnos.find(x => x.id === id);
+  if (!a) return;
+  const tipoBano = a.tipoBano === 'orinal' ? 'orinal' : 'panal';
+  document.getElementById('modal-ficha-body').innerHTML = `
+    <div class="flex items-center justify-between mb-5">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg ${esc(a.color)}">${esc(a.avatar)}</div>
+        <div>
+          <h3 class="font-bold text-gray-800 text-lg">${esc(a.nombre)}</h3>
+          <p class="text-sm text-gray-400">${esc(a.grupo)} · ${esc(a.edad)} años</p>
+        </div>
+      </div>
+      <button onclick="cerrarModal('modal-ficha')" class="text-gray-400 hover:text-gray-600 text-xl">✕</button>
+    </div>
+
+    <div class="space-y-3 mb-5">
+      <div class="flex justify-between text-sm"><span class="text-gray-400">Tutor / Familiar</span><span class="text-gray-700 font-medium">${esc(a.tutor) || '—'}</span></div>
+      <div class="flex justify-between text-sm"><span class="text-gray-400">Teléfono</span><span class="text-gray-700 font-medium">${esc(a.tel) || '—'}</span></div>
+      <div class="flex justify-between text-sm"><span class="text-gray-400">Estado actual</span>${badge(a.estado)}</div>
+    </div>
+
+    <div class="border-t border-gray-100 pt-5">
+      <label class="text-sm font-semibold text-gray-700 block mb-2">🚽 Higiene</label>
+      <p class="text-xs text-gray-400 mb-2">¿El niño usa pañal o ya usa el orinal/bater?</p>
+      <select id="ficha-tipobano" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-green-400 bg-white">
+        <option value="panal" ${tipoBano==='panal'?'selected':''}>👶 Usa pañal</option>
+        <option value="orinal" ${tipoBano==='orinal'?'selected':''}>🚽 Usa el orinal / bater</option>
+      </select>
+    </div>
+
+    <div class="flex gap-3 mt-6">
+      <button onclick="cerrarModal('modal-ficha')" class="flex-1 border border-gray-200 text-gray-600 px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50">Cerrar</button>
+      <button onclick="guardarFichaAlumno(${a.id})" class="flex-1 bg-green-600 text-white px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-green-700">Guardar</button>
+    </div>
+  `;
+  document.getElementById('modal-ficha').classList.remove('hidden');
+}
+
+function guardarFichaAlumno(id) {
+  const a = state.alumnos.find(x => x.id === id);
+  if (!a) return;
+  a.tipoBano = document.getElementById('ficha-tipobano').value;
+  cerrarModal('modal-ficha');
+  sincronizarAlumnos();
+  showToast(`Ficha de ${a.nombre} actualizada`);
 }

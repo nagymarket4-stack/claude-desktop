@@ -94,6 +94,29 @@ function renderPadreInicio() {
     </div>`;
     })()}
 
+    ${(() => {
+      const registros = ((state.bano && state.bano[hijo.id]) || []).slice().reverse();
+      const usaOrinal = hijo.tipoBano === 'orinal';
+      if (registros.length === 0) return '';
+      return `
+    <div class="px-5 pb-4 pt-2 border-t border-gray-50">
+      <div class="flex items-center justify-between mb-3">
+        <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">🚽 Baño ${usaOrinal ? '(orinal)' : '(pañal)'}</p>
+        <span class="text-xs text-gray-400">${registros.length} hoy</span>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        ${registros.map(r => `
+          <div class="bg-gray-50 rounded-lg px-3 py-2">
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-gray-700">${banoLabel(r.tipo)}</span>
+              <span class="font-mono text-xs text-gray-400">${esc(r.hora)}</span>
+            </div>
+            ${r.obs ? `<p class="text-xs text-gray-500 mt-1">${esc(r.obs)}</p>` : ''}
+          </div>`).join('')}
+      </div>
+    </div>`;
+    })()}
+
     ${ultimoMsg ? `
     <div class="mx-5 mb-5 p-3 bg-green-50 rounded-xl border border-green-100">
       <p class="text-xs text-green-600 font-medium mb-1">Último mensaje del centro</p>

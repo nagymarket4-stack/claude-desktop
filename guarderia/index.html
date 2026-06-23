@@ -41,9 +41,9 @@
 <!-- ══════════════════ LOGIN ══════════════════ -->
 <div id="login-screen" class="fixed inset-0 z-[200] bg-green-800 flex items-center justify-center p-4">
   <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-sm text-center">
-    <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5">🌱</div>
-    <h1 class="text-2xl font-bold text-gray-800 mb-1">Sol & Luna</h1>
-    <p class="text-gray-400 text-sm mb-7">Guardería Infantil · Acceso seguro</p>
+    <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 centro-logo">🌱</div>
+    <h1 class="text-2xl font-bold text-gray-800 mb-1 centro-nombre">Sol & Luna</h1>
+    <p class="text-gray-400 text-sm mb-7"><span class="centro-subtitulo">Guardería Infantil</span> · Acceso seguro</p>
 
     <div id="login-error" class="hidden mb-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-2.5"></div>
 
@@ -120,31 +120,8 @@
         <button onclick="closeSidebar()" class="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-green-700 text-green-300">✕</button>
       </div>
 
-      <!-- Nav -->
-      <nav class="flex-1 p-3 space-y-0.5 overflow-y-auto">
-        <button onclick="navigate('dashboard')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="dashboard">
-          <span class="text-xl w-7 text-center">🏠</span> Dashboard
-        </button>
-        <button onclick="navigate('alumnos')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="alumnos">
-          <span class="text-xl w-7 text-center">👦</span> Alumnos
-        </button>
-        <button onclick="navigate('profesores')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="profesores">
-          <span class="text-xl w-7 text-center">👩‍🏫</span> Profesores
-        </button>
-        <button onclick="navigate('actividades')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="actividades">
-          <span class="text-xl w-7 text-center">🎨</span> Actividades
-        </button>
-        <button onclick="navigate('bienestar')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="bienestar">
-          <span class="text-xl w-7 text-center">💛</span> Bienestar
-        </button>
-        <button onclick="navigate('mensajes')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="mensajes">
-          <span class="text-xl w-7 text-center">💬</span> Mensajes
-          <span id="badge-mensajes" class="ml-auto bg-green-400 text-green-900 text-xs font-bold rounded-full px-1.5 py-0.5 hidden">0</span>
-        </button>
-        <button onclick="navigate('familias')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="familias">
-          <span class="text-xl w-7 text-center">👨‍👩‍👧</span> Portal Familias
-        </button>
-      </nav>
+      <!-- Nav (se rellena dinámicamente según rol en app.js) -->
+      <nav id="sidebar-nav" class="flex-1 p-3 space-y-0.5 overflow-y-auto"></nav>
 
       <!-- Footer usuario -->
       <div class="p-4 border-t border-green-700">
@@ -164,39 +141,22 @@
 
     <!-- ── MAIN ── -->
     <main class="flex-1 overflow-auto" id="main-content">
-      <div id="page-dashboard"  class="page hidden"></div>
-      <div id="page-alumnos"    class="page hidden"></div>
-      <div id="page-profesores" class="page hidden"></div>
-      <div id="page-actividades"class="page hidden"></div>
-      <div id="page-bienestar"  class="page hidden"></div>
-      <div id="page-mensajes"   class="page hidden h-full"></div>
-      <div id="page-familias"   class="page hidden"></div>
+      <div id="page-dashboard"          class="page hidden"></div>
+      <div id="page-alumnos"            class="page hidden"></div>
+      <div id="page-profesores"         class="page hidden"></div>
+      <div id="page-actividades"        class="page hidden"></div>
+      <div id="page-bienestar"          class="page hidden"></div>
+      <div id="page-mensajes"           class="page hidden h-full"></div>
+      <div id="page-familias"           class="page hidden"></div>
+      <div id="page-configuracion"      class="page hidden"></div>
+      <div id="page-padre-inicio"       class="page hidden"></div>
+      <div id="page-padre-actividades"  class="page hidden"></div>
+      <div id="page-padre-mensajes"     class="page hidden h-full flex flex-col"></div>
     </main>
   </div>
 
-  <!-- ── BOTTOM NAV (solo móvil) ── -->
+  <!-- ── BOTTOM NAV (solo móvil, relleno dinámicamente según rol) ── -->
   <nav id="bottom-nav" class="lg:hidden flex items-center bg-white border-t border-gray-100 safe-bottom flex-shrink-0">
-    <button onclick="navigate('dashboard')" data-bnav="dashboard"
-      class="bnav-btn flex-1 flex flex-col items-center gap-0.5 py-2.5 text-gray-400 transition-colors">
-      <span class="text-xl">🏠</span><span class="text-[10px] font-medium">Inicio</span>
-    </button>
-    <button onclick="navigate('alumnos')" data-bnav="alumnos"
-      class="bnav-btn flex-1 flex flex-col items-center gap-0.5 py-2.5 text-gray-400 transition-colors">
-      <span class="text-xl">👦</span><span class="text-[10px] font-medium">Alumnos</span>
-    </button>
-    <button onclick="navigate('bienestar')" data-bnav="bienestar"
-      class="bnav-btn flex-1 flex flex-col items-center gap-0.5 py-2.5 text-gray-400 transition-colors">
-      <span class="text-xl">💛</span><span class="text-[10px] font-medium">Bienestar</span>
-    </button>
-    <button onclick="navigate('mensajes')" data-bnav="mensajes"
-      class="bnav-btn flex-1 flex flex-col items-center gap-0.5 py-2.5 text-gray-400 transition-colors relative">
-      <span class="text-xl">💬</span><span class="text-[10px] font-medium">Mensajes</span>
-      <span id="bnav-badge" class="hidden absolute top-1.5 right-3.5 bg-green-500 rounded-full w-2 h-2"></span>
-    </button>
-    <button onclick="toggleSidebar()" data-bnav="more"
-      class="bnav-btn flex-1 flex flex-col items-center gap-0.5 py-2.5 text-gray-400 transition-colors">
-      <span class="text-xl">☰</span><span class="text-[10px] font-medium">Más</span>
-    </button>
   </nav>
 </div>
 
@@ -217,5 +177,7 @@
 <script src="js/pages/bienestar.js"></script>
 <script src="js/pages/mensajes.js"></script>
 <script src="js/pages/familias.js"></script>
+<script src="js/pages/portal-padres.js"></script>
+<script src="js/pages/configuracion.js"></script>
 </body>
 </html>

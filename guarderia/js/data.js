@@ -1,3 +1,31 @@
+// ─── Configuración del centro (editable por superadmin) ──────────────────────
+let CONFIGURACION = {
+  nombre:    'Sol & Luna',
+  subtitulo: 'Guardería Infantil',
+  logo:      '🌱',
+};
+
+// ─── Usuarios del sistema ─────────────────────────────────────────────────────
+// Roles: 'superadmin' | 'admin' | 'profesor' | 'padre'
+// alumnoIds: solo para rol 'padre', indica qué hijos puede ver
+// Contraseñas demo: superadmin→"super2024", admin→"admin", carmen→"carmen123", marta→"marta123"
+//                   padres→"padres123" (todos los padres demo usan la misma)
+// SHA-256 calculado en browser vía crypto.subtle
+const USUARIOS_INIT = [
+  { id:1,  usuario:'superadmin',  passHash:'4fa5c6a9cbc417f39a65f18659bb376dc48a457c3a75c2544e7baa289b7c7a3e', nombre:'Director General',   rol:'superadmin', activo:true, alumnoIds:[]  },
+  { id:2,  usuario:'admin',       passHash:'8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', nombre:'Ana Díaz',           rol:'admin',       activo:true, alumnoIds:[]  },
+  { id:3,  usuario:'carmen',      passHash:'b14a7b8059d9c055954c92674ce60032d1ced612ad66ad4d7f92fe7d0b9b21b4', nombre:'Carmen Rodríguez',   rol:'profesor',    activo:true, alumnoIds:[]  },
+  { id:4,  usuario:'marta',       passHash:'9c56cc51b374c3ba189210d5b6d4bf57790d351ef8d0cf08d1a9d8f36a072a38', nombre:'Marta Jiménez',      rol:'profesor',    activo:true, alumnoIds:[]  },
+  { id:5,  usuario:'mama_sofia',  passHash:'58d699cf0b96ebd759f8cdefb501489d1d291862114343861373763caa05138c', nombre:'María Martínez',     rol:'padre',       activo:true, alumnoIds:[1] },
+  { id:6,  usuario:'papa_sofia',  passHash:'58d699cf0b96ebd759f8cdefb501489d1d291862114343861373763caa05138c', nombre:'Carlos Martínez',    rol:'padre',       activo:true, alumnoIds:[1] },
+  { id:7,  usuario:'mama_lucas',  passHash:'58d699cf0b96ebd759f8cdefb501489d1d291862114343861373763caa05138c', nombre:'Pedro García',       rol:'padre',       activo:true, alumnoIds:[2] },
+  { id:8,  usuario:'mama_emma',   passHash:'58d699cf0b96ebd759f8cdefb501489d1d291862114343861373763caa05138c', nombre:'Ana López',          rol:'padre',       activo:true, alumnoIds:[3] },
+  { id:9,  usuario:'papa_pablo',  passHash:'58d699cf0b96ebd759f8cdefb501489d1d291862114343861373763caa05138c', nombre:'Carlos Sánchez',     rol:'padre',       activo:true, alumnoIds:[4] },
+  { id:10, usuario:'mama_torres', passHash:'58d699cf0b96ebd759f8cdefb501489d1d291862114343861373763caa05138c', nombre:'Laura Torres',       rol:'padre',       activo:true, alumnoIds:[5] },
+];
+// SHA-256 de "padres123" = 58d699cf0b96ebd759f8cdefb501489d1d291862114343861373763caa05138c
+// SHA-256 de "super2024" = c7b4b01ad5a0dee7bd25ea6c93c45b9fcbbbbf1b0fef7cbe31f1e4ccec2a1547
+
 // ─── Sample data ────────────────────────────────────────────────────────────
 const TODAY = new Date().toLocaleDateString('es-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
@@ -124,7 +152,9 @@ let state = {
   bienestar:  JSON.parse(JSON.stringify(BIENESTAR_INIT)),
   familias:   JSON.parse(JSON.stringify(FAMILIAS_INIT)),
   mensajes:   JSON.parse(JSON.stringify(MENSAJES_INIT)),
+  usuarios:   JSON.parse(JSON.stringify(USUARIOS_INIT)),
   currentPage:       'dashboard',
   familiaAlumnoId:   1,
   chatAlumnoId:      1,
+  _chatAbierto:      false,
 };

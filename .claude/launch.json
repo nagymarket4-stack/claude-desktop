@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "guarderia",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "3456", "--directory", "guarderia"],
+      "port": 3456
+    },
+    {
+      "name": "saas-admin",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "3457", "--directory", "saas-admin"],
+      "port": 3457
+    }
+  ]
+}

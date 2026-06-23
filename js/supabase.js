@@ -8,7 +8,7 @@ try {
 } catch (e) { console.warn('No se pudo iniciar Supabase:', e); }
 
 // Datos generales que viven en la tabla app_data (clave-valor JSON)
-const DATA_KEYS = ['alumnos', 'profesores', 'actividades', 'bienestar', 'familias', 'usuarios', 'fichajes'];
+const DATA_KEYS = ['alumnos', 'profesores', 'actividades', 'bienestar', 'familias', 'usuarios', 'fichajes', 'bano'];
 
 function supabaseActivo() { return !!sb; }
 

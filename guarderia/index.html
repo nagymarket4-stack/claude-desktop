@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guardería Sol & Luna</title>
+  <!-- Content Security Policy: bloquea scripts inline no autorizados y recursos externos no listados -->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self';
+             script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net 'unsafe-inline';
+             style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;
+             img-src 'self' data:;
+             connect-src 'self' https://*.supabase.co;
+             font-src 'self';
+             object-src 'none';
+             base-uri 'self';
+             form-action 'self';">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            green: {
+              50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0',
+              300: '#86efac', 400: '#4ade80', 500: '#22c55e',
+              600: '#16a34a', 700: '#15803d', 800: '#166534', 900: '#14532d'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-gray-50 font-sans">
+
+<!-- ═══════════════════════════════════════════════
+     PANTALLA DE LOGIN (visible hasta autenticarse)
+     ═══════════════════════════════════════════════ -->
+<div id="login-screen" class="fixed inset-0 z-[100] bg-green-800 flex items-center justify-center">
+  <div class="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-sm text-center">
+    <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6">🌱</div>
+    <h1 class="text-2xl font-bold text-gray-800 mb-1">Sol & Luna</h1>
+    <p class="text-gray-400 text-sm mb-8">Guardería Infantil · Acceso seguro</p>
+
+    <div id="login-error" class="hidden mb-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-2.5"></div>
+
+    <div class="text-left mb-4">
+      <label class="text-sm font-medium text-gray-700 block mb-1">Usuario</label>
+      <input id="login-user" type="text" placeholder="usuario"
+        class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-green-400"
+        autocomplete="username" />
+    </div>
+    <div class="text-left mb-6">
+      <label class="text-sm font-medium text-gray-700 block mb-1">Contraseña</label>
+      <input id="login-pass" type="password" placeholder="••••••••"
+        class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-green-400"
+        autocomplete="current-password"
+        onkeydown="if(event.key==='Enter') intentarLogin()" />
+    </div>
+
+    <button onclick="intentarLogin()"
+      class="w-full bg-green-600 text-white py-3 rounded-xl font-medium text-sm hover:bg-green-700 transition-colors">
+      Entrar
+    </button>
+
+    <p class="text-gray-300 text-xs mt-6">Acceso solo para personal autorizado</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     APLICACIÓN PRINCIPAL (oculta hasta login)
+     ═══════════════════════════════════════════ -->
+<div id="app" class="flex h-screen overflow-hidden hidden">
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="w-64 bg-green-800 text-white flex flex-col shadow-xl flex-shrink-0">
+    <div class="p-6 border-b border-green-700">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-green-400 rounded-xl flex items-center justify-center text-xl">🌱</div>
+        <div>
+          <h1 class="font-bold text-lg leading-tight">Sol & Luna</h1>
+          <p class="text-green-300 text-xs">Guardería Infantil</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="flex-1 p-4 space-y-1">
+      <button onclick="navigate('dashboard')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700" data-page="dashboard">
+        <span class="text-lg">🏠</span> Dashboard
+      </button>
+      <button onclick="navigate('alumnos')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700" data-page="alumnos">
+        <span class="text-lg">👦</span> Alumnos
+      </button>
+      <button onclick="navigate('profesores')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700" data-page="profesores">
+        <span class="text-lg">👩‍🏫</span> Profesores
+      </button>
+      <button onclick="navigate('actividades')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700" data-page="actividades">
+        <span class="text-lg">🎨</span> Actividades
+      </button>
+      <button onclick="navigate('bienestar')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700" data-page="bienestar">
+        <span class="text-lg">💛</span> Bienestar
+      </button>
+      <button onclick="navigate('mensajes')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700" data-page="mensajes">
+        <span class="text-lg">💬</span> Mensajes
+        <span id="badge-mensajes" class="ml-auto bg-green-400 text-green-900 text-xs font-bold rounded-full px-1.5 py-0.5 hidden">0</span>
+      </button>
+      <button onclick="navigate('familias')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700" data-page="familias">
+        <span class="text-lg">👨‍👩‍👧</span> Portal Familias
+      </button>
+    </nav>
+
+    <div class="p-4 border-t border-green-700">
+      <div class="flex items-center justify-between px-2">
+        <div class="flex items-center gap-3">
+          <div id="sidebar-avatar" class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-sm font-bold">A</div>
+          <div class="text-xs">
+            <p id="sidebar-nombre" class="font-medium">Admin</p>
+            <p id="sidebar-rol" class="text-green-300">Directora</p>
+          </div>
+        </div>
+        <button onclick="cerrarSesion()" title="Cerrar sesión"
+          class="text-green-400 hover:text-white text-lg transition-colors" aria-label="Cerrar sesión">⏻</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 overflow-auto">
+    <div id="page-dashboard" class="page hidden"></div>
+    <div id="page-alumnos" class="page hidden"></div>
+    <div id="page-profesores" class="page hidden"></div>
+    <div id="page-actividades" class="page hidden"></div>
+    <div id="page-bienestar" class="page hidden"></div>
+    <div id="page-mensajes" class="page hidden h-full"></div>
+    <div id="page-familias" class="page hidden"></div>
+  </main>
+</div>
+
+<!-- Toast notifications -->
+<div id="toast" class="fixed bottom-6 right-6 z-50 hidden">
+  <div class="bg-green-600 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-2 text-sm font-medium">
+    <span id="toast-msg">✓ Acción completada</span>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/pages/dashboard.js"></script>
+<script src="js/pages/alumnos.js"></script>
+<script src="js/pages/profesores.js"></script>
+<script src="js/pages/actividades.js"></script>
+<script src="js/pages/bienestar.js"></script>
+<script src="js/pages/mensajes.js"></script>
+<script src="js/pages/familias.js"></script>
+</body>
+</html>

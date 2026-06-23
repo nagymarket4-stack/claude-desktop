@@ -1,0 +1,29 @@
+* { box-sizing: border-box; }
+
+.nav-btn.active {
+  background-color: rgba(255,255,255,0.15);
+  color: white;
+}
+
+.page { animation: fadeIn 0.2s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.badge-entrada  { background: #dcfce7; color: #15803d; }
+.badge-salida   { background: #fee2e2; color: #b91c1c; }
+.badge-ausente  { background: #fef9c3; color: #854d0e; }
+.badge-fichado  { background: #dbeafe; color: #1d4ed8; }
+
+.tag { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+
+.card { background: white; border-radius: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+
+/* Avatar colors */
+.av-green  { background: #bbf7d0; color: #15803d; }
+.av-blue   { background: #bfdbfe; color: #1e40af; }
+.av-pink   { background: #fce7f3; color: #9d174d; }
+.av-orange { background: #fed7aa; color: #9a3412; }
+.av-purple { background: #ede9fe; color: #5b21b6; }

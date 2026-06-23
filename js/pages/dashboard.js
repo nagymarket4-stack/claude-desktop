@@ -6,9 +6,9 @@ function renderDashboard() {
   const actHoy      = state.actividades.filter(a => a.fecha.startsWith('Hoy')).length;
 
   document.getElementById('page-dashboard').innerHTML = `
-    <div class="p-8">
-      <div class="mb-8">
-        <h2 class="text-2xl font-bold text-gray-800">Buenos días 👋</h2>
+    <div class="p-4 md:p-8">
+      <div class="mb-6 md:mb-8">
+        <h2 class="text-xl md:text-2xl font-bold text-gray-800">Buenos días 👋</h2>
         <p class="text-gray-500 mt-1 capitalize">${esc(TODAY)}</p>
       </div>
 

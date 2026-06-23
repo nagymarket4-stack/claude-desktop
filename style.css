@@ -13,10 +13,12 @@
 .bnav-btn.active span.text-\[10px\] { color: #16a34a; font-weight: 700; }
 
 /* ── Page animation ──────────────────────────────────── */
+/* Solo opacidad: usar transform aquí crearía un containing block
+   que rompería el position:fixed de los modales dentro de .page */
 .page { animation: fadeIn 0.18s ease; }
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 /* ── Status badges ───────────────────────────────────── */

@@ -2,11 +2,11 @@ function renderProfesores() {
   const activos = state.profesores.filter(p => p.estado === 'fichado').length;
 
   document.getElementById('page-profesores').innerHTML = `
-    <div class="p-8">
-      <div class="flex items-center justify-between mb-8">
+    <div class="p-4 md:p-8">
+      <div class="flex items-center justify-between mb-6 md:mb-8">
         <div>
-          <h2 class="text-2xl font-bold text-gray-800">Fichaje de Profesores</h2>
-          <p class="text-gray-500 mt-1">${esc(activos)} de ${esc(state.profesores.length)} profesores en turno</p>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800">Fichaje de Profesores</h2>
+          <p class="text-gray-500 text-sm mt-1">${esc(activos)} de ${esc(state.profesores.length)} profesores en turno</p>
         </div>
       </div>
 

@@ -1,13 +1,13 @@
 function renderActividades() {
   document.getElementById('page-actividades').innerHTML = `
-    <div class="p-8">
-      <div class="flex items-center justify-between mb-8">
+    <div class="p-4 md:p-8">
+      <div class="flex items-center justify-between gap-3 mb-6 md:mb-8">
         <div>
-          <h2 class="text-2xl font-bold text-gray-800">Actividades del Día</h2>
-          <p class="text-gray-500 mt-1">${esc(state.actividades.length)} actividades registradas</p>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800">Actividades del Día</h2>
+          <p class="text-gray-500 text-sm mt-1">${esc(state.actividades.length)} actividades registradas</p>
         </div>
-        <button onclick="abrirModalActividad()" class="bg-green-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-green-700 transition-colors flex items-center gap-2">
-          <span>+</span> Nueva actividad
+        <button onclick="abrirModalActividad()" class="bg-green-600 text-white px-4 md:px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-green-700 transition-colors flex items-center gap-2 flex-shrink-0">
+          <span>+</span> <span class="hidden sm:inline">Nueva actividad</span>
         </button>
       </div>
 

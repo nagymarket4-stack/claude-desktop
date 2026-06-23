@@ -3,18 +3,18 @@ function renderAlumnos() {
   const total     = state.alumnos.length;
 
   document.getElementById('page-alumnos').innerHTML = `
-    <div class="p-8">
-      <div class="flex items-center justify-between mb-8">
+    <div class="p-4 md:p-8">
+      <div class="flex items-center justify-between gap-3 mb-6 md:mb-8">
         <div>
-          <h2 class="text-2xl font-bold text-gray-800">Registro de Alumnos</h2>
-          <p class="text-gray-500 mt-1">${esc(presentes)} de ${esc(total)} alumnos en el centro</p>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800">Registro de Alumnos</h2>
+          <p class="text-gray-500 text-sm mt-1">${esc(presentes)} de ${esc(total)} alumnos en el centro</p>
         </div>
-        <button onclick="abrirModalAlumno()" class="bg-green-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-green-700 transition-colors flex items-center gap-2">
-          <span>+</span> Nuevo alumno
+        <button onclick="abrirModalAlumno()" class="bg-green-600 text-white px-4 md:px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-green-700 transition-colors flex items-center gap-2 flex-shrink-0">
+          <span>+</span> <span class="hidden sm:inline">Nuevo alumno</span>
         </button>
       </div>
 
-      <div class="flex gap-3 mb-6 flex-wrap">
+      <div class="flex gap-2 md:gap-3 mb-6 flex-wrap">
         ${['Todos','Ositos','Conejitos','Estrellitas'].map(g => `
           <button onclick="filtrarGrupo('${esc(g)}')" id="filtro-${esc(g)}"
             class="filtro-btn px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${g==='Todos'?'bg-green-600 text-white border-green-600':'border-gray-200 text-gray-600 hover:border-green-400'}">
@@ -23,7 +23,8 @@ function renderAlumnos() {
         `).join('')}
       </div>
 
-      <div class="card overflow-hidden">
+      <!-- Vista tabla (desktop) -->
+      <div class="card overflow-hidden hidden md:block">
         <table class="w-full text-sm">
           <thead>
             <tr class="bg-gray-50 border-b border-gray-100">
@@ -39,6 +40,11 @@ function renderAlumnos() {
             ${alumnosFilas(state.alumnos)}
           </tbody>
         </table>
+      </div>
+
+      <!-- Vista tarjetas (móvil) -->
+      <div class="md:hidden space-y-3" id="cards-alumnos">
+        ${alumnosCards(state.alumnos)}
       </div>
     </div>
 
@@ -115,12 +121,46 @@ function alumnosFilas(lista) {
   `).join('');
 }
 
+function alumnosCards(lista) {
+  return lista.map(a => `
+    <div class="card p-4">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 ${esc(a.color)}">${esc(a.avatar)}</div>
+        <div class="flex-1 min-w-0">
+          <p class="font-medium text-gray-800 truncate">${esc(a.nombre)}</p>
+          <p class="text-xs text-gray-400 truncate">${esc(a.edad)} años · ${esc(a.grupo)} · ${esc(a.tutor)}</p>
+        </div>
+        ${badge(a.estado)}
+      </div>
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex gap-4 text-xs text-gray-500">
+          <span>Entrada: <span class="font-mono text-gray-700">${esc(a.hora_entrada) || '—'}</span></span>
+          <span>Salida: <span class="font-mono text-gray-700">${esc(a.hora_salida) || '—'}</span></span>
+        </div>
+        ${a.estado === 'ausente' ?
+          `<button onclick="registrarEntradaAlumno(${a.id})" class="bg-green-100 text-green-700 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-green-200 transition-colors flex-shrink-0">Entrada</button>` :
+          a.estado === 'entrada' ?
+          `<button onclick="registrarSalidaAlumno(${a.id})" class="bg-red-100 text-red-700 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-red-200 transition-colors flex-shrink-0">Salida</button>` :
+          `<span class="text-gray-400 text-xs flex-shrink-0">Recogido</span>`
+        }
+      </div>
+    </div>
+  `).join('');
+}
+
+function refrescarListasAlumnos(lista) {
+  const tabla = document.getElementById('tabla-alumnos');
+  const cards = document.getElementById('cards-alumnos');
+  if (tabla) tabla.innerHTML = alumnosFilas(lista);
+  if (cards) cards.innerHTML = alumnosCards(lista);
+}
+
 function registrarEntradaAlumno(id) {
   const a = state.alumnos.find(x => x.id === id);
   a.estado = 'entrada';
   a.hora_entrada = horaActual();
   a.hora_salida = null;
-  document.getElementById('tabla-alumnos').innerHTML = alumnosFilas(state.alumnos);
+  refrescarListasAlumnos(state.alumnos);
   showToast(`Entrada de ${a.nombre} registrada a las ${a.hora_entrada}`);
 }
 
@@ -128,7 +168,7 @@ function registrarSalidaAlumno(id) {
   const a = state.alumnos.find(x => x.id === id);
   a.estado = 'salida';
   a.hora_salida = horaActual();
-  document.getElementById('tabla-alumnos').innerHTML = alumnosFilas(state.alumnos);
+  refrescarListasAlumnos(state.alumnos);
   showToast(`Salida de ${a.nombre} registrada a las ${a.hora_salida}`);
 }
 
@@ -143,7 +183,7 @@ function filtrarGrupo(grupo) {
     btn.classList.remove('border-gray-200','text-gray-600');
   }
   const lista = grupo === 'Todos' ? state.alumnos : state.alumnos.filter(a => a.grupo === grupo);
-  document.getElementById('tabla-alumnos').innerHTML = alumnosFilas(lista);
+  refrescarListasAlumnos(lista);
 }
 
 function abrirModalAlumno() {

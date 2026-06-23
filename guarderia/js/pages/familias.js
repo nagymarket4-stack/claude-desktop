@@ -2,10 +2,10 @@ function renderFamilias() {
   const alumno = state.alumnos.find(a => a.id === state.familiaAlumnoId) || state.alumnos[0];
 
   document.getElementById('page-familias').innerHTML = `
-    <div class="p-8">
-      <div class="mb-8">
-        <h2 class="text-2xl font-bold text-gray-800">Portal de Familias</h2>
-        <p class="text-gray-500 mt-1">Consulta el estado y actividades de tu hijo</p>
+    <div class="p-4 md:p-8">
+      <div class="mb-6 md:mb-8">
+        <h2 class="text-xl md:text-2xl font-bold text-gray-800">Portal de Familias</h2>
+        <p class="text-gray-500 text-sm mt-1">Consulta el estado y actividades de tu hijo</p>
       </div>
 
       <div class="card p-4 mb-6 flex items-center gap-4">

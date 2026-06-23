@@ -15,6 +15,9 @@ const PAGE_TITLES = {
 function navigate(page) {
   state.currentPage = page;
 
+  // Al entrar a mensajes desde el menú, mostrar la lista (no un chat abierto) en móvil
+  if (page === 'mensajes') state._chatMobileOpen = false;
+
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   let el = document.getElementById('page-' + page);
   if (!el) {

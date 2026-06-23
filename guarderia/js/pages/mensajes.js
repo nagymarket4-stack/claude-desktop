@@ -3,11 +3,12 @@ function renderMensajes() {
     return acc + msgs.filter(m => !m.leido && m.de !== 'centro').length;
   }, 0);
 
+  const chatAbierto = !!state._chatMobileOpen;
   document.getElementById('page-mensajes').innerHTML = `
-    <div class="flex h-full" style="height:calc(100vh - 0px)">
+    <div class="flex h-full">
 
       <!-- Panel izquierdo: lista de alumnos -->
-      <div class="w-72 border-r border-gray-100 flex flex-col flex-shrink-0 bg-white">
+      <div class="${chatAbierto ? 'hidden md:flex' : 'flex'} w-full md:w-72 border-r border-gray-100 flex-col flex-shrink-0 bg-white">
         <div class="p-5 border-b border-gray-100">
           <h2 class="font-bold text-gray-800 text-lg">Mensajes</h2>
           ${totalNoLeidos > 0
@@ -42,7 +43,7 @@ function renderMensajes() {
       </div>
 
       <!-- Panel derecho: chat -->
-      <div class="flex-1 flex flex-col">
+      <div class="${chatAbierto ? 'flex' : 'hidden md:flex'} flex-1 flex-col min-w-0">
         ${state.chatAlumnoId ? panelChat(state.chatAlumnoId) : `
           <div class="flex-1 flex items-center justify-center text-gray-300 flex-col gap-3">
             <span class="text-5xl">💬</span>
@@ -90,9 +91,12 @@ function panelChat(alumnoId) {
 
   return `
     <!-- Header chat -->
-    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-white">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${esc(a.color)}">${esc(a.avatar)}</div>
+    <div class="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-gray-100 bg-white">
+      <div class="flex items-center gap-2 md:gap-3 min-w-0">
+        <button onclick="volverListaChat()" class="md:hidden w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-500 flex-shrink-0" aria-label="Volver">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 ${esc(a.color)}">${esc(a.avatar)}</div>
         <div>
           <p class="font-semibold text-gray-800">${esc(a.nombre)}</p>
           <div class="flex items-center gap-2">
@@ -187,6 +191,7 @@ function setRemitente(id, btn) {
 
 function abrirChat(alumnoId) {
   state.chatAlumnoId = alumnoId;
+  state._chatMobileOpen = true; // en móvil muestra el chat a pantalla completa
   _remitenteActual = 'centro';
   renderMensajes();
   // Scroll al final
@@ -194,6 +199,11 @@ function abrirChat(alumnoId) {
     const scroll = document.getElementById('mensajes-scroll');
     if (scroll) scroll.scrollTop = scroll.scrollHeight;
   }, 50);
+}
+
+function volverListaChat() {
+  state._chatMobileOpen = false;
+  renderMensajes();
 }
 
 function enviarMensaje(alumnoId) {

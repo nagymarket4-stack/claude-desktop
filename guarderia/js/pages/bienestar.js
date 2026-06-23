@@ -27,16 +27,16 @@ function renderBienestar() {
   const conRegistro = Object.values(state.bienestar).filter(b => b.humor !== null).length;
 
   document.getElementById('page-bienestar').innerHTML = `
-    <div class="p-8">
-      <div class="flex items-center justify-between mb-8">
+    <div class="p-4 md:p-8">
+      <div class="flex items-center justify-between gap-3 mb-6 md:mb-8">
         <div>
-          <h2 class="text-2xl font-bold text-gray-800">Bienestar Diario</h2>
-          <p class="text-gray-500 mt-1">${esc(conRegistro)} de ${esc(state.alumnos.length)} alumnos registrados hoy</p>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800">Bienestar Diario</h2>
+          <p class="text-gray-500 text-sm mt-1">${esc(conRegistro)} de ${esc(state.alumnos.length)} alumnos registrados hoy</p>
         </div>
         <!-- Barra de progreso -->
-        <div class="text-right">
+        <div class="text-right flex-shrink-0">
           <p class="text-xs text-gray-400 mb-1">Completado</p>
-          <div class="w-40 bg-gray-100 rounded-full h-2.5">
+          <div class="w-24 md:w-40 bg-gray-100 rounded-full h-2.5">
             <div class="bg-green-500 h-2.5 rounded-full transition-all" style="width:${Math.round(conRegistro/state.alumnos.length*100)}%"></div>
           </div>
           <p class="text-xs text-green-600 font-semibold mt-1">${Math.round(conRegistro/state.alumnos.length*100)}%</p>

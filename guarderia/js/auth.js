@@ -79,7 +79,10 @@ async function intentarLogin() {
 
   // Mostrar app
   document.getElementById('login-screen').classList.add('hidden');
-  document.getElementById('app').classList.remove('hidden');
+  const appEl = document.getElementById('app');
+  appEl.classList.remove('hidden');
+  appEl.classList.add('show');
+  document.getElementById('top-avatar').textContent = encontrado.nombre[0];
   navigate('dashboard');
 }
 

@@ -5,32 +5,8 @@ const PLANES = [
   { id:'enterprise',nombre:'Enterprise',precio:199, color:'amber',  max_alumnos:999, max_profesores:999,features:['Todo Pro','Múltiples centros','API access','SSO / LDAP','SLA 99.9%','Gestor de cuenta dedicado'] },
 ];
 
-const CLIENTES = [
-  { id:1,  nombre:'Guardería Sol & Luna',   ciudad:'Madrid',      plan:'pro',        estado:'activo',  alta:'2025-01-15', alumnos:48,  contacto:'Ana García',     email:'ana@solyluna.es',       mrr:79  },
-  { id:2,  nombre:'Pulgarcito BCN',         ciudad:'Barcelona',   plan:'pro',        estado:'activo',  alta:'2025-02-03', alumnos:61,  contacto:'Marta Puig',     email:'marta@pulgarcito.es',   mrr:79  },
-  { id:3,  nombre:'Arco Iris Valencia',     ciudad:'Valencia',    plan:'enterprise', estado:'activo',  alta:'2024-11-20', alumnos:142, contacto:'Carlos Sanz',    email:'carlos@arcoiris.es',    mrr:199 },
-  { id:4,  nombre:'Nube de Algodón',        ciudad:'Sevilla',     plan:'starter',    estado:'activo',  alta:'2025-03-10', alumnos:22,  contacto:'Lucía Romero',   email:'lucia@nubedealgodón.es',mrr:29  },
-  { id:5,  nombre:'Jardín Encantado',       ciudad:'Bilbao',      plan:'pro',        estado:'activo',  alta:'2025-01-28', alumnos:55,  contacto:'Jon Eguia',      email:'jon@jardinencantado.es',mrr:79  },
-  { id:6,  nombre:'Los Pinos Zaragoza',     ciudad:'Zaragoza',    plan:'enterprise', estado:'activo',  alta:'2024-10-05', alumnos:210, contacto:'Rosa Navarro',   email:'rosa@lospinos.es',      mrr:199 },
-  { id:7,  nombre:'Pequeños Exploradores',  ciudad:'Málaga',      plan:'pro',        estado:'activo',  alta:'2025-04-01', alumnos:73,  contacto:'Pedro Vega',     email:'pedro@exploradores.es', mrr:79  },
-  { id:8,  nombre:'La Casita Feliz',        ciudad:'Murcia',      plan:'starter',    estado:'activo',  alta:'2025-05-15', alumnos:19,  contacto:'Isabel Rubio',   email:'isabel@casitafeliz.es', mrr:29  },
-  { id:9,  nombre:'Kinder Plus Madrid',     ciudad:'Madrid',      plan:'enterprise', estado:'activo',  alta:'2024-09-12', alumnos:188, contacto:'Pablo Moreno',   email:'pablo@kinderplus.es',   mrr:199 },
-  { id:10, nombre:'Mundo Infantil Gijón',   ciudad:'Gijón',       plan:'pro',        estado:'activo',  alta:'2025-02-20', alumnos:44,  contacto:'Elena Fernández',email:'elena@mundoinfantil.es',mrr:79  },
-  { id:11, nombre:'Osos de Peluche',        ciudad:'Valladolid',  plan:'starter',    estado:'activo',  alta:'2025-06-01', alumnos:27,  contacto:'Silvia Castro',  email:'silvia@ososdepeluche.es',mrr:29 },
-  { id:12, nombre:'Alegría Infantil',       ciudad:'Alicante',    plan:'pro',        estado:'activo',  alta:'2025-03-22', alumnos:59,  contacto:'Tomás López',    email:'tomas@alegría.es',      mrr:79  },
-  { id:13, nombre:'Primeras Letras',        ciudad:'Granada',     plan:'enterprise', estado:'activo',  alta:'2024-12-01', alumnos:156, contacto:'María Ruiz',     email:'maria@primerasletras.es',mrr:199},
-  { id:14, nombre:'Duendes y Hadas',        ciudad:'Pamplona',    plan:'pro',        estado:'activo',  alta:'2025-04-15', alumnos:38,  contacto:'Iker Azcona',    email:'iker@duendes.es',       mrr:79  },
-  { id:15, nombre:'Smart Kids Palma',       ciudad:'Palma',       plan:'enterprise', estado:'activo',  alta:'2025-01-05', alumnos:201, contacto:'Clara Vidal',    email:'clara@smartkids.es',    mrr:199 },
-  { id:16, nombre:'Pequeñas Estrellas',     ciudad:'Santander',   plan:'pro',        estado:'activo',  alta:'2025-05-20', alumnos:46,  contacto:'Raúl Pérez',     email:'raul@estrellas.es',     mrr:79  },
-  { id:17, nombre:'Mariposas Córdoba',      ciudad:'Córdoba',     plan:'starter',    estado:'activo',  alta:'2025-06-10', alumnos:14,  contacto:'Nuria Jiménez',  email:'nuria@mariposas.es',    mrr:29  },
-  { id:18, nombre:'Montessori Norte',       ciudad:'Oviedo',      plan:'enterprise', estado:'activo',  alta:'2025-02-14', alumnos:178, contacto:'Fernando Díaz',  email:'fdiaz@montessorinorte.es',mrr:199},
-  { id:19, nombre:'Nidos de Primavera',     ciudad:'Burgos',      plan:'pro',        estado:'activo',  alta:'2025-03-08', alumnos:52,  contacto:'Laura Blanco',   email:'laura@nidosprimavera.es',mrr:79 },
-  { id:20, nombre:'Los Amiguitos',          ciudad:'Logroño',     plan:'starter',    estado:'pausado', alta:'2025-04-20', alumnos:18,  contacto:'Jorge Santos',   email:'jorge@amiguitos.es',    mrr:0   },
-  { id:21, nombre:'Happy Kids Lleida',      ciudad:'Lleida',      plan:'pro',        estado:'cancelado',alta:'2025-01-10',alumnos:0,  contacto:'Anna Soler',     email:'anna@happykids.es',     mrr:0   },
-  { id:22, nombre:'Delfines Tarragona',     ciudad:'Tarragona',   plan:'pro',        estado:'activo',  alta:'2025-05-30', alumnos:41,  contacto:'Marc Ferrer',    email:'marc@delfines.es',      mrr:79  },
-  { id:23, nombre:'Rayos de Sol Badajoz',   ciudad:'Badajoz',     plan:'pro',        estado:'activo',  alta:'2025-04-08', alumnos:33,  contacto:'Diego Morales',  email:'diego@rayossol.es',     mrr:79  },
-  { id:24, nombre:'El Bosque Encantado',    ciudad:'San Sebastián',plan:'enterprise',estado:'activo',  alta:'2025-03-01', alumnos:165, contacto:'Amaia Etxeberria',email:'amaia@bosqueencantado.es',mrr:199},
-];
+// Los clientes se cargan desde Supabase (tabla tenants) al iniciar sesión.
+let CLIENTES = [];
 
 const PIPELINE = [
   { id:'t1', nombre:'Pequeños Genios Madrid',   ciudad:'Madrid',    contacto:'Roberto Alonso', email:'roberto@pgenius.es',  plan_interes:'pro',        inicio_trial:'2026-06-15', fin_trial:'2026-06-29', alumnos_aprox:65, estado:'activo',    notas:'Demo realizada el lunes. Muy interesado. Precio ok.' },
@@ -50,20 +26,24 @@ const MRR_HISTORICO = [
   { mes:'Jun 25', mrr:2656 },
 ];
 
-const FACTURAS = CLIENTES
-  .filter(c => c.estado === 'activo')
-  .flatMap(c => {
-    const meses = ['Jun 2026','May 2026','Abr 2026'];
-    return meses.map((mes, i) => ({
-      id: `INV-${String(c.id).padStart(3,'0')}-${6-i}`,
-      cliente_id: c.id,
-      cliente: c.nombre,
-      mes,
-      importe: c.mrr,
-      estado: i === 0 ? 'pendiente' : 'pagada',
-      fecha: `2026-0${6-i}-01`,
-    }));
-  });
+// Facturas derivadas de los clientes activos (se recalculan tras cargar de Supabase)
+let FACTURAS = [];
+function recomputarFacturas() {
+  FACTURAS = CLIENTES
+    .filter(c => c.estado === 'activo')
+    .flatMap(c => {
+      const meses = ['Jun 2026','May 2026','Abr 2026'];
+      return meses.map((mes, i) => ({
+        id: `INV-${String(c.id).slice(0,6).toUpperCase()}-${6-i}`,
+        cliente_id: c.id,
+        cliente: c.nombre,
+        mes,
+        importe: c.mrr,
+        estado: i === 0 ? 'pendiente' : 'pagada',
+        fecha: `2026-0${6-i}-01`,
+      }));
+    });
+}
 
 function calcMRR() { return CLIENTES.filter(c=>c.estado==='activo').reduce((s,c)=>s+c.mrr,0); }
 function calcARR() { return calcMRR() * 12; }

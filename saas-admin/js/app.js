@@ -57,17 +57,40 @@ function toastSaas(msg, tipo='success') {
   t._timer = setTimeout(()=>t.classList.remove('show'),3000);
 }
 
-function doSaasLogin(e) {
+async function doSaasLogin(e) {
   if(e) e.preventDefault();
   const user = document.getElementById('saas-user').value.trim();
   const pass = document.getElementById('saas-pass').value;
   if(user==='admin' && pass==='admin2024') {
     document.getElementById('saas-login').style.display='none';
     document.getElementById('saas-app').style.display='flex';
+    document.getElementById('saas-top-title').textContent = 'Cargando…';
+    await refrescarClientes();
+    suscribirClientesRealtime();
     navegarSaas('dashboard');
   } else {
     document.getElementById('saas-login-err').textContent='Credenciales incorrectas';
   }
+}
+
+// Carga los clientes desde Supabase a la variable global CLIENTES
+async function refrescarClientes() {
+  if (typeof cargarTenants === 'function') {
+    CLIENTES = await cargarTenants();
+    recomputarFacturas();
+  }
+}
+
+// Sincroniza la lista de clientes en vivo entre dispositivos
+function suscribirClientesRealtime() {
+  if (!sbSaas) return;
+  sbSaas.channel('rt-tenants')
+    .on('postgres_changes', { event:'*', schema:'public', table:'tenants' }, async () => {
+      await refrescarClientes();
+      const r = PAGE_RENDERERS[saasState.currentPage];
+      if (r) r();
+    })
+    .subscribe();
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{

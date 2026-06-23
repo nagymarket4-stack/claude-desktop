@@ -12,9 +12,12 @@ function renderClientes() {
 
   document.getElementById('main-content').innerHTML = `
 <div class="page-content">
-  <div class="page-header">
-    <h1 class="page-title">Clientes</h1>
-    <span class="page-subtitle">${total} centros · ${fmtEuro(mrrTotal)} MRR filtrado</span>
+  <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+    <div>
+      <h1 class="page-title">Clientes</h1>
+      <span class="page-subtitle">${total} centros · ${fmtEuro(mrrTotal)} MRR filtrado</span>
+    </div>
+    <button class="btn-primary" onclick="abrirNuevoCliente()"><i class="ti ti-plus" aria-hidden="true"></i> Nuevo cliente</button>
   </div>
 
   <div class="toolbar">
@@ -32,7 +35,7 @@ function renderClientes() {
   <div class="card table-card">
     <div class="mobile-cards md-hidden">
       ${lista.map(c=>`
-        <div class="mobile-client-card" onclick="abrirClienteDetalle(${c.id})">
+        <div class="mobile-client-card" onclick="abrirClienteDetalle('${c.id}')">
           <div class="av av-${planColor(c.plan)} av-lg">${esc(c.nombre[0])}</div>
           <div class="mobile-card-body">
             <div class="mobile-card-name">${esc(c.nombre)}</div>
@@ -52,7 +55,7 @@ function renderClientes() {
       </thead>
       <tbody>
         ${lista.map(c=>`
-          <tr onclick="abrirClienteDetalle(${c.id})" class="row-clickable">
+          <tr onclick="abrirClienteDetalle('${c.id}')" class="row-clickable">
             <td>
               <div class="cell-name">
                 <div class="av av-${planColor(c.plan)}">${esc(c.nombre[0])}</div>
@@ -68,7 +71,7 @@ function renderClientes() {
             <td class="text-muted">${c.alumnos||'—'}</td>
             <td class="font-mono">${c.mrr?fmtEuro(c.mrr):'-'}</td>
             <td class="text-muted">${fmtFecha(c.alta)}</td>
-            <td><button class="icon-btn" onclick="event.stopPropagation();abrirClienteDetalle(${c.id})"><i class="ti ti-chevron-right" aria-hidden="true"></i></button></td>
+            <td><button class="icon-btn" onclick="event.stopPropagation();abrirClienteDetalle('${c.id}')"><i class="ti ti-chevron-right" aria-hidden="true"></i></button></td>
           </tr>
         `).join('')}
       </tbody>
@@ -79,6 +82,37 @@ function renderClientes() {
 
 <div id="cliente-modal" class="modal-overlay hidden" onclick="if(event.target===this)cerrarClienteDetalle()">
   <div id="cliente-panel" class="modal-panel"></div>
+</div>
+
+<div id="nuevo-modal" class="modal-overlay hidden" onclick="if(event.target===this)cerrarNuevoCliente()">
+  <div class="modal-panel">
+    <div class="modal-header">
+      <div class="modal-title-block">
+        <h2 class="modal-title">Nuevo cliente</h2>
+        <div class="modal-meta">Se generará su guardería automáticamente</div>
+      </div>
+      <button class="modal-close" onclick="cerrarNuevoCliente()"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </div>
+    <div class="modal-section">
+      <label class="form-label">Nombre del centro *</label>
+      <input id="nc-nombre" class="form-input" type="text" placeholder="Ej: Guardería Estrellita" maxlength="60">
+      <label class="form-label">Ciudad</label>
+      <input id="nc-ciudad" class="form-input" type="text" placeholder="Ej: Madrid" maxlength="40">
+      <label class="form-label">Persona de contacto</label>
+      <input id="nc-contacto" class="form-input" type="text" placeholder="Nombre y apellidos" maxlength="60">
+      <label class="form-label">Email</label>
+      <input id="nc-email" class="form-input" type="email" placeholder="contacto@centro.es" maxlength="80">
+      <label class="form-label">Plan</label>
+      <select id="nc-plan" class="form-input">
+        ${PLANES.map(p=>`<option value="${p.id}">${p.nombre} — €${p.precio}/mes</option>`).join('')}
+      </select>
+      <div id="nc-error" class="form-error hidden"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="cerrarNuevoCliente()">Cancelar</button>
+      <button class="btn-primary" id="nc-guardar" onclick="guardarNuevoCliente()">Crear cliente</button>
+    </div>
+  </div>
 </div>`;
 
   if (saasState.clienteDetalle) renderClienteDetalle(saasState.clienteDetalle);
@@ -88,14 +122,57 @@ function abrirClienteDetalle(id) {
   saasState.clienteDetalle = id;
   renderClientes();
 }
+
+function copiarUrlCliente(url) {
+  navigator.clipboard?.writeText(url).then(
+    () => toastSaas('Enlace copiado al portapapeles'),
+    () => toastSaas('No se pudo copiar', 'error')
+  );
+}
+
+// ── Crear nuevo cliente ───────────────────────────────────────────────────────
+function abrirNuevoCliente() {
+  document.getElementById('nuevo-modal').classList.remove('hidden');
+  document.getElementById('nc-nombre').focus();
+}
+function cerrarNuevoCliente() {
+  document.getElementById('nuevo-modal').classList.add('hidden');
+}
+
+async function guardarNuevoCliente() {
+  const nombre   = document.getElementById('nc-nombre').value.trim();
+  const ciudad   = document.getElementById('nc-ciudad').value.trim();
+  const contacto = document.getElementById('nc-contacto').value.trim();
+  const email    = document.getElementById('nc-email').value.trim();
+  const plan     = document.getElementById('nc-plan').value;
+  const errEl    = document.getElementById('nc-error');
+
+  if (nombre.length < 2) { errEl.textContent = 'Indica el nombre del centro.'; errEl.classList.remove('hidden'); return; }
+  errEl.classList.add('hidden');
+
+  const btn = document.getElementById('nc-guardar');
+  btn.disabled = true; btn.textContent = 'Creando…';
+  try {
+    const nuevo = await crearTenantRemoto({ nombre, ciudad, contacto, email, plan });
+    await refrescarClientes();
+    cerrarNuevoCliente();
+    renderClientes();
+    abrirClienteDetalle(nuevo.id);
+    toastSaas(`Guardería de ${nombre} creada`);
+  } catch (e) {
+    errEl.textContent = 'Error: ' + (e.message || 'no se pudo crear'); errEl.classList.remove('hidden');
+    btn.disabled = false; btn.textContent = 'Crear cliente';
+  }
+}
 function cerrarClienteDetalle() {
   saasState.clienteDetalle = null;
   document.getElementById('cliente-modal').classList.add('hidden');
 }
 
 function renderClienteDetalle(id) {
-  const c = CLIENTES.find(x=>x.id===id);
+  const c = CLIENTES.find(x=>String(x.id)===String(id));
   if(!c) return;
+  const url = (typeof urlCliente === 'function') ? urlCliente(c.id) : '#';
   const modal = document.getElementById('cliente-modal');
   const panel = document.getElementById('cliente-panel');
   modal.classList.remove('hidden');
@@ -119,8 +196,23 @@ function renderClienteDetalle(id) {
 
     <div class="modal-section">
       <div class="modal-section-title">Contacto</div>
-      <div class="detail-row"><i class="ti ti-user" aria-hidden="true"></i> ${esc(c.contacto)}</div>
-      <div class="detail-row"><i class="ti ti-mail" aria-hidden="true"></i> <a href="mailto:${esc(c.email)}">${esc(c.email)}</a></div>
+      <div class="detail-row"><i class="ti ti-user" aria-hidden="true"></i> ${esc(c.contacto) || '—'}</div>
+      <div class="detail-row"><i class="ti ti-mail" aria-hidden="true"></i> <a href="mailto:${esc(c.email)}">${esc(c.email) || '—'}</a></div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">Acceso a su guardería</div>
+      <div class="detail-row" style="word-break:break-all;"><i class="ti ti-link" aria-hidden="true"></i> <a href="${esc(url)}" target="_blank" rel="noopener">${esc(url)}</a></div>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+        <button class="btn-secondary" onclick="copiarUrlCliente('${esc(url)}')"><i class="ti ti-copy" aria-hidden="true"></i> Copiar enlace</button>
+        <a class="btn-secondary" href="${esc(url)}" target="_blank" rel="noopener"><i class="ti ti-external-link" aria-hidden="true"></i> Abrir guardería</a>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">Cobro</div>
+      <div class="detail-row"><i class="ti ti-credit-card" aria-hidden="true"></i> Pago con Stripe — <span class="badge b-warn">próximamente</span></div>
+      <button class="btn-secondary" disabled style="margin-top:8px;opacity:.6;cursor:not-allowed;"><i class="ti ti-brand-stripe" aria-hidden="true"></i> Cobrar con Stripe</button>
     </div>
 
     <div class="modal-section">
@@ -130,7 +222,7 @@ function renderClienteDetalle(id) {
           <div class="plan-option ${c.plan===p.id?'active':''}">
             <div class="plan-option-name">${esc(p.nombre)}</div>
             <div class="plan-option-price">€${p.precio}/mes</div>
-            ${c.plan!==p.id?`<button class="plan-change-btn" onclick="cambiarPlan(${c.id},'${p.id}')">Cambiar</button>`:'<span class="plan-current">Actual</span>'}
+            ${c.plan!==p.id?`<button class="plan-change-btn" onclick="cambiarPlan('${c.id}','${p.id}')">Cambiar</button>`:'<span class="plan-current">Actual</span>'}
           </div>
         `).join('')}
       </div>
@@ -150,28 +242,32 @@ function renderClienteDetalle(id) {
 
     <div class="modal-actions">
       <button class="btn-secondary" onclick="cerrarClienteDetalle()">Cerrar</button>
-      ${c.estado==='activo'?`<button class="btn-danger" onclick="cambiarEstadoCliente(${c.id},'pausado')">Pausar cuenta</button>`:''}
-      ${c.estado==='pausado'?`<button class="btn-primary" onclick="cambiarEstadoCliente(${c.id},'activo')">Reactivar</button>`:''}
+      ${c.estado==='activo'?`<button class="btn-danger" onclick="cambiarEstadoCliente('${c.id}','pausado')">Pausar cuenta</button>`:''}
+      ${c.estado==='pausado'?`<button class="btn-primary" onclick="cambiarEstadoCliente('${c.id}','activo')">Reactivar</button>`:''}
     </div>
   `;
 }
 
 function cambiarPlan(id, nuevoPlan) {
-  const c = CLIENTES.find(x=>x.id===id);
+  const c = CLIENTES.find(x=>String(x.id)===String(id));
   if(!c) return;
   const p = PLANES.find(x=>x.id===nuevoPlan);
   c.plan = nuevoPlan;
   c.mrr = c.estado==='activo' ? p.precio : 0;
+  if (typeof actualizarTenantRemoto === 'function') actualizarTenantRemoto(c.id, { plan: c.plan, mrr: c.mrr });
+  recomputarFacturas();
   renderClienteDetalle(id);
   toastSaas(`Plan de ${c.nombre} cambiado a ${p.nombre}`);
 }
 
 function cambiarEstadoCliente(id, nuevoEstado) {
-  const c = CLIENTES.find(x=>x.id===id);
+  const c = CLIENTES.find(x=>String(x.id)===String(id));
   if(!c) return;
   c.estado = nuevoEstado;
   if(nuevoEstado!=='activo') c.mrr=0;
   else { const p=PLANES.find(x=>x.id===c.plan); c.mrr=p?p.precio:0; }
+  if (typeof actualizarTenantRemoto === 'function') actualizarTenantRemoto(c.id, { estado: c.estado, mrr: c.mrr });
+  recomputarFacturas();
   cerrarClienteDetalle();
   renderClientes();
   toastSaas(`Cuenta de ${c.nombre} actualizada a: ${nuevoEstado}`);

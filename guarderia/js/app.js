@@ -234,9 +234,10 @@ function aplicarConfiguracion() {
 }
 
 // ─── Persistencia (localStorage) + sincronización entre pestañas ──────────────
-const LS_STATE  = 'guarderia_state_v1';
-const LS_SESION = 'guarderia_sesion_v1';
-const CLAVES_COMPARTIDAS = ['alumnos','profesores','actividades','bienestar','familias','mensajes','usuarios'];
+const _tnt = (typeof TENANT !== 'undefined' ? TENANT : 'demo');
+const LS_STATE  = 'guarderia_state_v1_' + _tnt;
+const LS_SESION = 'guarderia_sesion_v1_' + _tnt;
+const CLAVES_COMPARTIDAS = ['alumnos','profesores','actividades','bienestar','familias','mensajes','usuarios','fichajes','bano'];
 
 // Guarda datos compartidos + sesión en localStorage
 function persistir() {

@@ -8,7 +8,7 @@ function esc(str) {
 const PAGE_TITLES = {
   dashboard:'Dashboard', alumnos:'Alumnos', profesores:'Profesores',
   actividades:'Actividades', bienestar:'Bienestar', mensajes:'Mensajes',
-  familias:'Portal Familias', configuracion:'Configuración',
+  familias:'Portal Familias', configuracion:'Configuración', fichajes:'Registro de fichajes',
   'padre-inicio':'Inicio', 'padre-actividades':'Actividades', 'padre-mensajes':'Mensajes',
 };
 
@@ -21,6 +21,7 @@ const RENDERERS = {
   mensajes:            () => renderMensajes(),
   familias:            () => renderFamilias(),
   configuracion:       () => renderConfiguracion(),
+  fichajes:            () => renderFichajes(),
   'padre-inicio':      () => renderPadreInicio(),
   'padre-actividades': () => renderPadreActividades(),
   'padre-mensajes':    () => renderPadreMensajes(),
@@ -87,6 +88,9 @@ function renderSidebarStaff() {
     </button>
     ${esSuperAdmin ? `
     <div class="border-t border-green-700 my-2"></div>
+    <button onclick="navigate('fichajes')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="fichajes">
+      <span class="text-xl w-7 text-center">🕓</span> Fichajes
+    </button>
     <button onclick="navigate('configuracion')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="configuracion">
       <span class="text-xl w-7 text-center">⚙️</span> Configuración
     </button>` : ''}

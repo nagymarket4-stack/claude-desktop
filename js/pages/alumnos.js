@@ -48,6 +48,17 @@ function renderAlumnos() {
       </div>
     </div>
 
+    <!-- Modal historial de movimientos -->
+    <div id="modal-historial" class="hidden fixed inset-0 bg-black/40 z-50 flex items-end md:items-center justify-center p-4">
+      <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md max-h-[80vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-4">
+          <h3 id="hist-titulo" class="text-lg font-bold text-gray-800">Movimientos</h3>
+          <button onclick="cerrarModal('modal-historial')" class="text-gray-400 hover:text-gray-600 text-xl">✕</button>
+        </div>
+        <div id="hist-body"></div>
+      </div>
+    </div>
+
     <!-- Modal nuevo alumno -->
     <div id="modal-alumno" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
       <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
@@ -109,8 +120,12 @@ function alumnosFilas(lista) {
       <td class="px-6 py-4">${badge(a.estado)}</td>
       <td class="px-6 py-4 text-gray-600 font-mono text-xs">${esc(a.hora_entrada) || '—'}</td>
       <td class="px-6 py-4 text-gray-600 font-mono text-xs">${esc(a.hora_salida) || '—'}</td>
-      <td class="px-6 py-4 text-center">
-        ${botonesEstadoAlumno(a)}
+      <td class="px-6 py-4">
+        <div class="flex items-center justify-center gap-2">
+          ${botonesEstadoAlumno(a)}
+          <button onclick="verHistorialAlumno(${a.id})" title="Ver movimientos del día"
+            class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 flex-shrink-0">🕐</button>
+        </div>
       </td>
     </tr>
   `).join('');
@@ -148,7 +163,11 @@ function alumnosCards(lista) {
         <span>Entrada: <span class="font-mono text-gray-700">${esc(a.hora_entrada) || '—'}</span></span>
         <span>Salida: <span class="font-mono text-gray-700">${esc(a.hora_salida) || '—'}</span></span>
       </div>
-      <div class="flex">${botonesEstadoAlumno(a)}</div>
+      <div class="flex items-center gap-2">
+        ${botonesEstadoAlumno(a)}
+        <button onclick="verHistorialAlumno(${a.id})" title="Ver movimientos del día"
+          class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 flex-shrink-0">🕐</button>
+      </div>
     </div>
   `).join('');
 }
@@ -183,9 +202,45 @@ function cambiarEstadoAlumno(id, estado) {
     a.hora_salida = null;
     msg = `${a.nombre} marcado como ausente`;
   }
+  // Guardar el movimiento en el historial del día
+  a.historial = a.historial || [];
+  a.historial.push({ tipo: estado, hora, fecha: hoyFecha() });
+
   refrescarListasAlumnos(state.alumnos);
   sincronizarAlumnos();
   showToast(msg);
+}
+
+function hoyFecha() {
+  return new Date().toLocaleDateString('es-ES', { day:'2-digit', month:'2-digit', year:'numeric' });
+}
+
+function verHistorialAlumno(id) {
+  const a = state.alumnos.find(x => x.id === id);
+  if (!a) return;
+  const hist = (a.historial || []).slice().reverse();
+  const labels = {
+    entrada: { txt:'Entró al centro', icon:'🟢', color:'text-green-600' },
+    fuera:   { txt:'Salió del centro', icon:'🟡', color:'text-amber-600' },
+    ausente: { txt:'Marcado ausente',  icon:'⚪', color:'text-gray-500' },
+    salida:  { txt:'Salió del centro', icon:'🟡', color:'text-amber-600' },
+  };
+  document.getElementById('hist-titulo').textContent = `Movimientos de ${a.nombre}`;
+  document.getElementById('hist-body').innerHTML = hist.length === 0
+    ? `<p class="text-center text-gray-400 py-8 text-sm">Sin movimientos registrados hoy.</p>`
+    : `<div class="space-y-2">${hist.map(h => {
+        const l = labels[h.tipo] || { txt:h.tipo, icon:'•', color:'text-gray-500' };
+        return `
+        <div class="flex items-center gap-3 p-2.5 bg-gray-50 rounded-xl">
+          <span class="text-lg">${l.icon}</span>
+          <div class="flex-1">
+            <p class="text-sm font-medium ${l.color}">${l.txt}</p>
+            <p class="text-xs text-gray-400">${esc(h.fecha || '')}</p>
+          </div>
+          <span class="font-mono text-sm text-gray-700">${esc(h.hora || '—')}</span>
+        </div>`;
+      }).join('')}</div>`;
+  document.getElementById('modal-historial').classList.remove('hidden');
 }
 
 function filtrarGrupo(grupo) {

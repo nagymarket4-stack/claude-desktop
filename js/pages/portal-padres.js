@@ -231,6 +231,7 @@ function enviarMensajePadre() {
   if (!input) return;
   const texto = input.value.trim();
   if (!texto) return;
+  sincronizarDesdeStorage(); // traer mensajes recientes del centro antes de añadir
   const msgs = state.mensajes[state.chatAlumnoId];
   if (!msgs) return;
   msgs.push({
@@ -240,6 +241,7 @@ function enviarMensajePadre() {
     hora: horaActual(),
     leido: false,
   });
+  persistir(); // propagar a otras pestañas
   input.value = '';
   renderPadreMensajes();
 }

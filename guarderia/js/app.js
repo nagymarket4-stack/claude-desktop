@@ -12,6 +12,20 @@ const PAGE_TITLES = {
   'padre-inicio':'Inicio', 'padre-actividades':'Actividades', 'padre-mensajes':'Mensajes',
 };
 
+const RENDERERS = {
+  dashboard:           () => renderDashboard(),
+  alumnos:             () => renderAlumnos(),
+  profesores:          () => renderProfesores(),
+  actividades:         () => renderActividades(),
+  bienestar:           () => renderBienestar(),
+  mensajes:            () => renderMensajes(),
+  familias:            () => renderFamilias(),
+  configuracion:       () => renderConfiguracion(),
+  'padre-inicio':      () => renderPadreInicio(),
+  'padre-actividades': () => renderPadreActividades(),
+  'padre-mensajes':    () => renderPadreMensajes(),
+};
+
 function navigate(page) {
   state.currentPage = page;
 
@@ -28,21 +42,8 @@ function navigate(page) {
   }
   el.classList.remove('hidden');
 
-  const renderers = {
-    dashboard:           renderDashboard,
-    alumnos:             renderAlumnos,
-    profesores:          renderProfesores,
-    actividades:         renderActividades,
-    bienestar:           renderBienestar,
-    mensajes:            renderMensajes,
-    familias:            renderFamilias,
-    configuracion:       renderConfiguracion,
-    'padre-inicio':      renderPadreInicio,
-    'padre-actividades': renderPadreActividades,
-    'padre-mensajes':    renderPadreMensajes,
-  };
-
-  if (renderers[page]) renderers[page]();
+  if (RENDERERS[page]) RENDERERS[page]();
+  persistir();
 
   // Sync nav highlights
   document.querySelectorAll('.nav-btn').forEach(btn =>
@@ -222,4 +223,73 @@ function aplicarConfiguracion() {
   document.querySelectorAll('.centro-subtitulo').forEach(el => el.textContent = CONFIGURACION.subtitulo);
 }
 
-window.addEventListener('DOMContentLoaded', aplicarConfiguracion);
+// ─── Persistencia (localStorage) + sincronización entre pestañas ──────────────
+const LS_STATE  = 'guarderia_state_v1';
+const LS_SESION = 'guarderia_sesion_v1';
+const CLAVES_COMPARTIDAS = ['alumnos','profesores','actividades','bienestar','familias','mensajes','usuarios'];
+
+// Guarda datos compartidos + sesión en localStorage
+function persistir() {
+  try {
+    const blob = { CONFIGURACION };
+    CLAVES_COMPARTIDAS.forEach(k => blob[k] = state[k]);
+    localStorage.setItem(LS_STATE, JSON.stringify(blob));
+    if (sesionActual) localStorage.setItem(LS_SESION, JSON.stringify(sesionActual));
+    else localStorage.removeItem(LS_SESION);
+  } catch (e) { /* almacenamiento lleno o bloqueado */ }
+}
+
+// Carga datos compartidos desde localStorage al estado en memoria
+function sincronizarDesdeStorage() {
+  try {
+    const raw = localStorage.getItem(LS_STATE);
+    if (!raw) return;
+    const inc = JSON.parse(raw);
+    CLAVES_COMPARTIDAS.forEach(k => { if (inc[k] !== undefined) state[k] = inc[k]; });
+    if (inc.CONFIGURACION) Object.assign(CONFIGURACION, inc.CONFIGURACION);
+  } catch (e) { /* json corrupto */ }
+}
+
+// Re-renderiza la página actual sin tocar flags de navegación
+function refrescarPaginaActual() {
+  const p = state.currentPage;
+  if (RENDERERS[p]) RENDERERS[p]();
+  actualizarBadgeMensajes();
+}
+
+// Restaura la sesión guardada al cargar la página (auto-login)
+function restaurarSesion() {
+  sincronizarDesdeStorage();
+  aplicarConfiguracion();
+  let sesion = null;
+  try { sesion = JSON.parse(localStorage.getItem(LS_SESION)); } catch (e) {}
+  if (!sesion) return;
+  // Verificar que el usuario sigue existiendo y activo
+  const u = state.usuarios.find(x => x.id === sesion.id && x.activo);
+  if (!u) { localStorage.removeItem(LS_SESION); return; }
+
+  sesionActual = sesion;
+  document.getElementById('login-screen').classList.add('hidden');
+  const appEl = document.getElementById('app');
+  appEl.classList.remove('hidden');
+  appEl.classList.add('show');
+  if (sesionActual.rol === 'padre') iniciarPortalPadres();
+  else iniciarPortalStaff();
+}
+
+// Sincronización en vivo: otra pestaña del mismo navegador cambió los datos
+window.addEventListener('storage', e => {
+  if (e.key === LS_STATE && e.newValue && sesionActual) {
+    sincronizarDesdeStorage();
+    aplicarConfiguracion();
+    refrescarPaginaActual();
+  }
+});
+
+// Guardar antes de cerrar/ocultar la pestaña (recoge cambios de cualquier acción)
+window.addEventListener('pagehide', () => { if (sesionActual) persistir(); });
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden' && sesionActual) persistir();
+});
+
+window.addEventListener('DOMContentLoaded', restaurarSesion);

@@ -51,6 +51,8 @@ async function intentarLogin() {
   appEl.classList.remove('hidden');
   appEl.classList.add('show');
 
+  persistir(); // guardar sesión para mantener login al recargar
+
   if (sesionActual.rol === 'padre') {
     iniciarPortalPadres();
   } else {
@@ -92,7 +94,9 @@ function mostrarErrorLogin(msg) {
 }
 
 function cerrarSesion() {
+  persistir();            // guardar datos compartidos antes de salir
   sesionActual = null;
+  try { localStorage.removeItem(LS_SESION); } catch (e) {} // olvidar solo la sesión
   document.getElementById('login-user').value = '';
   document.getElementById('login-pass').value = '';
   document.getElementById('login-error').classList.add('hidden');

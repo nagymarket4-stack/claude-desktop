@@ -211,14 +211,16 @@ function enviarMensaje(alumnoId) {
   const texto = input.value.trim();
   if (!texto) return;
 
+  sincronizarDesdeStorage(); // traer mensajes recientes de otras pestañas antes de añadir
   const hora = horaActual();
   state.mensajes[alumnoId].push({
-    id:    (state.mensajes[alumnoId].length + 1),
+    id:    Date.now(),
     de:    _remitenteActual,
     texto,
     hora,
     leido: true,
   });
+  persistir(); // propagar a otras pestañas
 
   input.value = '';
   // Re-render solo el área de mensajes + scroll

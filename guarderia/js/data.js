@@ -14,8 +14,8 @@ let CONFIGURACION = {
 const USUARIOS_INIT = [
   { id:1,  usuario:'superadmin',  passHash:'4fa5c6a9cbc417f39a65f18659bb376dc48a457c3a75c2544e7baa289b7c7a3e', nombre:'Director General',   rol:'superadmin', activo:true, alumnoIds:[]  },
   { id:2,  usuario:'admin',       passHash:'8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', nombre:'Ana Díaz',           rol:'admin',       activo:true, alumnoIds:[]  },
-  { id:3,  usuario:'carmen',      passHash:'b14a7b8059d9c055954c92674ce60032d1ced612ad66ad4d7f92fe7d0b9b21b4', nombre:'Carmen Rodríguez',   rol:'profesor',    activo:true, alumnoIds:[]  },
-  { id:4,  usuario:'marta',       passHash:'9c56cc51b374c3ba189210d5b6d4bf57790d351ef8d0cf08d1a9d8f36a072a38', nombre:'Marta Jiménez',      rol:'profesor',    activo:true, alumnoIds:[]  },
+  { id:3,  usuario:'carmen',      passHash:'955dcfcdb605d30b38ab03059f7843f3e91af79abfee13588ec980d29f4b7c3d', nombre:'Carmen Rodríguez',   rol:'profesor',    activo:true, alumnoIds:[]  },
+  { id:4,  usuario:'marta',       passHash:'1012b10a6172a9e0c9cf0f81db785db1abc7cdd2eecb4a45b03442c7beb8b719', nombre:'Marta Jiménez',      rol:'profesor',    activo:true, alumnoIds:[]  },
   { id:5,  usuario:'mama_sofia',  passHash:'58d699cf0b96ebd759f8cdefb501489d1d291862114343861373763caa05138c', nombre:'María Martínez',     rol:'padre',       activo:true, alumnoIds:[1] },
   { id:6,  usuario:'papa_sofia',  passHash:'58d699cf0b96ebd759f8cdefb501489d1d291862114343861373763caa05138c', nombre:'Carlos Martínez',    rol:'padre',       activo:true, alumnoIds:[1] },
   { id:7,  usuario:'mama_lucas',  passHash:'58d699cf0b96ebd759f8cdefb501489d1d291862114343861373763caa05138c', nombre:'Pedro García',       rol:'padre',       activo:true, alumnoIds:[2] },
@@ -154,6 +154,7 @@ let state = {
   familias:   JSON.parse(JSON.stringify(FAMILIAS_INIT)),
   mensajes:   JSON.parse(JSON.stringify(MENSAJES_INIT)),
   usuarios:   JSON.parse(JSON.stringify(USUARIOS_INIT)),
+  fichajes:   [],   // registro de entradas/salidas de profesores (solo superadmin)
   currentPage:       'dashboard',
   familiaAlumnoId:   1,
   chatAlumnoId:      1,

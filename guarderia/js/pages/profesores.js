@@ -99,11 +99,28 @@ function profesoresCards() {
   `).join('');
 }
 
+// Registra un fichaje en el log persistente (solo lo consulta el superadmin)
+function registrarFichaje(p, tipo, hora) {
+  state.fichajes = state.fichajes || [];
+  state.fichajes.push({
+    id: Date.now(),
+    profesorId: p.id,
+    nombre: p.nombre,
+    cargo: p.cargo,
+    tipo,                                  // 'entrada' | 'salida'
+    fecha: new Date().toLocaleDateString('es-ES', { day:'2-digit', month:'2-digit', year:'numeric' }),
+    fechaISO: new Date().toISOString().slice(0,10),
+    hora,
+  });
+  if (typeof guardarDato === 'function') guardarDato('fichajes');
+}
+
 function ficharEntradaProfesor(id) {
   const p = state.profesores.find(x => x.id === id);
   p.estado = 'fichado';
   p.hora_entrada = horaActual();
   p.hora_salida = null;
+  registrarFichaje(p, 'entrada', p.hora_entrada);
   renderProfesores();
   if (typeof guardarDato === 'function') guardarDato('profesores');
   showToast(`${p.nombre} fichó entrada a las ${p.hora_entrada}`);
@@ -113,6 +130,7 @@ function ficharSalidaProfesor(id) {
   const p = state.profesores.find(x => x.id === id);
   p.estado = 'salida';
   p.hora_salida = horaActual();
+  registrarFichaje(p, 'salida', p.hora_salida);
   renderProfesores();
   if (typeof guardarDato === 'function') guardarDato('profesores');
   showToast(`${p.nombre} fichó salida a las ${p.hora_salida}`);

@@ -119,28 +119,25 @@ function renderPipelineDetalle(id) {
   `;
 }
 
-function convertirTrialACliente(trialId) {
+async function convertirTrialACliente(trialId) {
   const t = PIPELINE.find(x=>x.id===trialId);
   if(!t) return;
   const plan = PLANES.find(p=>p.id===t.plan_interes);
-  const nuevoId = CLIENTES.length + 1;
-  CLIENTES.push({
-    id: nuevoId,
-    nombre: t.nombre,
-    ciudad: t.ciudad,
-    plan: t.plan_interes,
-    estado: 'activo',
-    alta: new Date().toISOString().slice(0,10),
-    alumnos: t.alumnos_aprox,
-    contacto: t.contacto,
-    email: t.email,
-    mrr: plan ? plan.precio : 0,
-  });
-  const idx = PIPELINE.findIndex(x=>x.id===trialId);
-  if(idx!==-1) PIPELINE.splice(idx,1);
-  cerrarPipelineDetalle();
-  renderPipeline();
-  toastSaas(`¡${t.nombre} convertido a cliente! +${fmtEuro(plan?.precio||0)}/mes`);
+  try {
+    // Crear el cliente en Supabase (genera su guardería con el nombre de la empresa)
+    const nuevo = await crearTenantRemoto({
+      nombre: t.nombre, ciudad: t.ciudad, contacto: t.contacto, email: t.email, plan: t.plan_interes,
+    });
+    if (t.alumnos_aprox) await actualizarTenantRemoto(nuevo.id, { alumnos: t.alumnos_aprox });
+    await refrescarClientes();
+    const idx = PIPELINE.findIndex(x=>x.id===trialId);
+    if(idx!==-1) PIPELINE.splice(idx,1);
+    cerrarPipelineDetalle();
+    toastSaas(`¡${t.nombre} convertido a cliente! +${fmtEuro(plan?.precio||0)}/mes`);
+    navegarSaas('clientes');
+  } catch(e) {
+    toastSaas('Error al convertir: ' + (e.message || 'reintenta'), 'error');
+  }
 }
 
 function marcarContactado(trialId) {

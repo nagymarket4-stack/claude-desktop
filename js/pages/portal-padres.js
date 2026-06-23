@@ -204,7 +204,7 @@ function renderPadreMensajes() {
         return `
         <div class="flex ${esPadre ? 'justify-end' : 'justify-start'}">
           <div class="max-w-[80%] px-4 py-2.5 rounded-2xl text-sm ${esPadre ? 'bg-green-600 text-white rounded-br-sm' : 'bg-white text-gray-800 rounded-bl-sm border border-gray-100'}">
-            ${!esPadre ? `<p class="text-xs font-medium text-green-600 mb-1">Centro Sol & Luna</p>` : ''}
+            ${!esPadre ? `<p class="text-xs font-medium text-green-600 mb-1">Centro ${esc(CONFIGURACION.nombre)}</p>` : ''}
             <p>${esc(m.texto)}</p>
             <p class="text-xs mt-1 ${esPadre?'text-green-200':'text-gray-400'}">${esc(m.hora)}</p>
           </div>

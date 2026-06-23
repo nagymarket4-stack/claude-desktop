@@ -226,6 +226,7 @@ function aplicarConfiguracion() {
   document.querySelectorAll('.centro-nombre').forEach(el => el.textContent = CONFIGURACION.nombre);
   document.querySelectorAll('.centro-logo').forEach(el => el.textContent = CONFIGURACION.logo);
   document.querySelectorAll('.centro-subtitulo').forEach(el => el.textContent = CONFIGURACION.subtitulo);
+  document.title = `${CONFIGURACION.subtitulo} ${CONFIGURACION.nombre}`.trim();
 }
 
 // ─── Persistencia (localStorage) + sincronización entre pestañas ──────────────

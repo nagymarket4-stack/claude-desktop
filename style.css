@@ -1,0 +1,54 @@
+* { box-sizing: border-box; }
+
+/* ── App layout ──────────────────────────────────────── */
+#app { display: none; }
+#app.show { display: flex; }
+
+/* ── Sidebar slide ───────────────────────────────────── */
+.sidebar-panel { will-change: transform; }
+
+/* ── Nav active states ───────────────────────────────── */
+.nav-btn.active { background-color: rgba(255,255,255,0.15); color: white; }
+.bnav-btn.active span { color: #16a34a; }
+.bnav-btn.active span.text-\[10px\] { color: #16a34a; font-weight: 700; }
+
+/* ── Page animation ──────────────────────────────────── */
+.page { animation: fadeIn 0.18s ease; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Status badges ───────────────────────────────────── */
+.badge-entrada { background:#dcfce7; color:#15803d; }
+.badge-salida  { background:#fee2e2; color:#b91c1c; }
+.badge-ausente { background:#fef9c3; color:#854d0e; }
+.badge-fichado { background:#dbeafe; color:#1d4ed8; }
+.tag { display:inline-block; padding:2px 10px; border-radius:999px; font-size:12px; font-weight:500; }
+
+/* ── Card ────────────────────────────────────────────── */
+.card { background:white; border-radius:16px; box-shadow:0 1px 4px rgba(0,0,0,.07); }
+
+/* ── Avatar colors ───────────────────────────────────── */
+.av-green  { background:#bbf7d0; color:#15803d; }
+.av-blue   { background:#bfdbfe; color:#1e40af; }
+.av-pink   { background:#fce7f3; color:#9d174d; }
+.av-orange { background:#fed7aa; color:#9a3412; }
+.av-purple { background:#ede9fe; color:#5b21b6; }
+
+/* ── iOS safe area ───────────────────────────────────── */
+.safe-top    { padding-top: env(safe-area-inset-top, 0); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0); }
+
+/* ── Touch feedback ──────────────────────────────────── */
+button, input, select, textarea {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* ── Mobile: add bottom padding so content clears the bottom nav ── */
+@media (max-width: 1023px) {
+  #main-content > .page:not(#page-mensajes) {
+    padding-bottom: 5rem;
+  }
+}

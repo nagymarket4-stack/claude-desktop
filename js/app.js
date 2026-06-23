@@ -165,8 +165,9 @@ function horaActual() {
 
 function badge(estado) {
   const map = {
-    entrada: ['badge-entrada','En centro'],
-    salida:  ['badge-salida','Recogido'],
+    entrada: ['badge-entrada','En el centro'],
+    fuera:   ['bg-amber-100 text-amber-700','Fuera del centro'],
+    salida:  ['bg-amber-100 text-amber-700','Fuera del centro'], // back-compat
     ausente: ['badge-ausente','Ausente'],
     fichado: ['badge-fichado','En turno'],
   };

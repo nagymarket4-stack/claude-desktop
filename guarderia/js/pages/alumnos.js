@@ -155,12 +155,19 @@ function refrescarListasAlumnos(lista) {
   if (cards) cards.innerHTML = alumnosCards(lista);
 }
 
+// Guarda alumnos en la nube (si Supabase está activo) y en cache local
+function sincronizarAlumnos() {
+  if (typeof guardarDato === 'function') guardarDato('alumnos');
+  if (typeof persistir === 'function') persistir();
+}
+
 function registrarEntradaAlumno(id) {
   const a = state.alumnos.find(x => x.id === id);
   a.estado = 'entrada';
   a.hora_entrada = horaActual();
   a.hora_salida = null;
   refrescarListasAlumnos(state.alumnos);
+  sincronizarAlumnos();
   showToast(`Entrada de ${a.nombre} registrada a las ${a.hora_entrada}`);
 }
 
@@ -169,6 +176,7 @@ function registrarSalidaAlumno(id) {
   a.estado = 'salida';
   a.hora_salida = horaActual();
   refrescarListasAlumnos(state.alumnos);
+  sincronizarAlumnos();
   showToast(`Salida de ${a.nombre} registrada a las ${a.hora_salida}`);
 }
 
@@ -217,8 +225,9 @@ function guardarAlumno() {
   errEl.classList.add('hidden');
 
   const colores = ['av-green','av-blue','av-pink','av-orange','av-purple'];
+  const nuevoId = state.alumnos.reduce((max, a) => Math.max(max, a.id), 0) + 1;
   const nuevo = {
-    id: state.alumnos.length + 1,
+    id: nuevoId,
     nombre,
     edad: parseInt(document.getElementById('nuevo-edad').value),
     grupo: document.getElementById('nuevo-grupo').value,
@@ -232,5 +241,6 @@ function guardarAlumno() {
   state.alumnos.push(nuevo);
   cerrarModal('modal-alumno');
   renderAlumnos();
+  sincronizarAlumnos();
   showToast(`${nombre} añadido correctamente`);
 }

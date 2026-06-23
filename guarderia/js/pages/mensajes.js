@@ -86,8 +86,10 @@ function panelChat(alumnoId) {
   const msgs     = state.mensajes[alumnoId] || [];
   const familias = state.familias[alumnoId] || [];
 
-  // Marcar como leídos
+  // Marcar como leídos los mensajes de las familias
+  const habiaNoLeidos = msgs.some(m => m.de !== 'centro' && !m.leido);
   msgs.forEach(m => { if (m.de !== 'centro') m.leido = true; });
+  if (habiaNoLeidos && typeof marcarLeidosRemoto === 'function') marcarLeidosRemoto(alumnoId, 'centro');
 
   return `
     <!-- Header chat -->
@@ -210,19 +212,23 @@ function enviarMensaje(alumnoId) {
   const input = document.getElementById('msg-input');
   const texto = input.value.trim();
   if (!texto) return;
-
-  sincronizarDesdeStorage(); // traer mensajes recientes de otras pestañas antes de añadir
-  const hora = horaActual();
-  state.mensajes[alumnoId].push({
-    id:    Date.now(),
-    de:    _remitenteActual,
-    texto,
-    hora,
-    leido: true,
-  });
-  persistir(); // propagar a otras pestañas
-
+  const de = _remitenteActual;
   input.value = '';
+
+  if (typeof enviarMensajeRemoto === 'function' && supabaseActivo()) {
+    // Optimista: mostrar ya; el realtime reconciliará con la fila real
+    (state.mensajes[alumnoId] = state.mensajes[alumnoId] || []).push({ id: 'tmp' + Date.now(), de, texto, hora: horaActual(), leido: true });
+    renderMensajes();
+    const scroll = document.getElementById('mensajes-scroll');
+    if (scroll) scroll.scrollTop = scroll.scrollHeight;
+    enviarMensajeRemoto(alumnoId, de, texto);
+    return;
+  }
+
+  // Fallback local (sin Supabase)
+  sincronizarDesdeStorage();
+  state.mensajes[alumnoId].push({ id: Date.now(), de, texto, hora: horaActual(), leido: true });
+  persistir();
   // Re-render solo el área de mensajes + scroll
   const familias = state.familias[alumnoId] || [];
   const msgs     = state.mensajes[alumnoId];
@@ -265,6 +271,7 @@ function guardarFamiliar() {
     avatar: nombre[0].toUpperCase(),
     color:  colores[Math.floor(Math.random() * colores.length)],
   });
+  if (typeof guardarDato === 'function') guardarDato('familias');
   cerrarModal('modal-familiar');
   abrirChat(_familiarAlumnoId);
   showToast(`${nombre} añadido como ${rol}`);

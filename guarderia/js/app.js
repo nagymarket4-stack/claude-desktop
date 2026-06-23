@@ -292,4 +292,7 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden' && sesionActual) persistir();
 });
 
-window.addEventListener('DOMContentLoaded', restaurarSesion);
+window.addEventListener('DOMContentLoaded', async () => {
+  restaurarSesion();                          // 1. cache local + auto-login instantáneo
+  if (typeof initSupabase === 'function') await initSupabase(); // 2. datos en la nube + tiempo real
+});

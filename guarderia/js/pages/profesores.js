@@ -105,6 +105,7 @@ function ficharEntradaProfesor(id) {
   p.hora_entrada = horaActual();
   p.hora_salida = null;
   renderProfesores();
+  if (typeof guardarDato === 'function') guardarDato('profesores');
   showToast(`${p.nombre} fichó entrada a las ${p.hora_entrada}`);
 }
 
@@ -113,5 +114,6 @@ function ficharSalidaProfesor(id) {
   p.estado = 'salida';
   p.hora_salida = horaActual();
   renderProfesores();
+  if (typeof guardarDato === 'function') guardarDato('profesores');
   showToast(`${p.nombre} fichó salida a las ${p.hora_salida}`);
 }

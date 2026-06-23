@@ -155,5 +155,6 @@ function guardarActividad() {
   state.actividades.unshift(nueva);
   cerrarModal('modal-actividad');
   renderActividades();
+  if (typeof guardarDato === 'function') guardarDato('actividades');
   showToast(`"${nueva.titulo}" publicada`);
 }

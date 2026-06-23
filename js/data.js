@@ -76,18 +76,19 @@ const ACTIVIDADES = [
 ];
 
 // ─── Bienestar diario ─────────────────────────────────────────────────────────
-// sueno: horas (0-12), comida: 'nada'|'poco'|'normal'|'todo', humor: emoji key
-const BIENESTAR_DEFAULT = { sueno: null, comida: null, humor: null };
+// sueno: horas (0-12), humor: emoji key
+// comidas: { desayuno|snack|comida|merienda: { cantidad:'nada'|'poco'|'normal'|'todo', hora:'HH:MM' } }
+const BIENESTAR_DEFAULT = { sueno: null, comidas: {}, humor: null };
 
 const BIENESTAR_INIT = {
-  1: { sueno: 10, comida: 'todo',   humor: '😊' },
-  2: { sueno: 9,  comida: 'normal', humor: '😄' },
-  3: { sueno: 8,  comida: 'poco',   humor: '😐' },
-  4: { sueno: 11, comida: 'todo',   humor: '😄' },
-  5: { sueno: null, comida: null,   humor: null  },
-  6: { sueno: 7,  comida: 'normal', humor: '😴' },
-  7: { sueno: 10, comida: 'todo',   humor: '😊' },
-  8: { sueno: 9,  comida: 'poco',   humor: '🤒' },
+  1: { sueno: 10, humor: '😊', comidas: { desayuno:{cantidad:'todo',hora:'09:00'}, snack:{cantidad:'normal',hora:'11:00'}, comida:{cantidad:'todo',hora:'13:00'}, merienda:{cantidad:'poco',hora:'16:30'} } },
+  2: { sueno: 9,  humor: '😄', comidas: { desayuno:{cantidad:'normal',hora:'08:45'}, comida:{cantidad:'normal',hora:'13:15'} } },
+  3: { sueno: 8,  humor: '😐', comidas: { desayuno:{cantidad:'poco',hora:'09:10'} } },
+  4: { sueno: 11, humor: '😄', comidas: { desayuno:{cantidad:'todo',hora:'09:00'}, snack:{cantidad:'todo',hora:'11:00'}, comida:{cantidad:'todo',hora:'13:00'} } },
+  5: { sueno: null, humor: null, comidas: {} },
+  6: { sueno: 7,  humor: '😴', comidas: { desayuno:{cantidad:'normal',hora:'08:50'}, comida:{cantidad:'poco',hora:'13:00'} } },
+  7: { sueno: 10, humor: '😊', comidas: { desayuno:{cantidad:'todo',hora:'08:30'}, snack:{cantidad:'normal',hora:'11:15'}, comida:{cantidad:'todo',hora:'13:00'}, merienda:{cantidad:'normal',hora:'16:30'} } },
+  8: { sueno: 9,  humor: '🤒', comidas: { desayuno:{cantidad:'poco',hora:'09:00'} } },
 };
 
 // ─── Perfiles de familia (hasta 2 por alumno) ────────────────────────────────

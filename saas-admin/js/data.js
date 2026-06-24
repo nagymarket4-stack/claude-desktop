@@ -8,13 +8,8 @@ const PLANES = [
 // Los clientes se cargan desde Supabase (tabla tenants) al iniciar sesión.
 let CLIENTES = [];
 
-const PIPELINE = [
-  { id:'t1', nombre:'Pequeños Genios Madrid',   ciudad:'Madrid',    contacto:'Roberto Alonso', email:'roberto@pgenius.es',  plan_interes:'pro',        inicio_trial:'2026-06-15', fin_trial:'2026-06-29', alumnos_aprox:65, estado:'activo',    notas:'Demo realizada el lunes. Muy interesado. Precio ok.' },
-  { id:'t2', nombre:'Gotita de Rocío',          ciudad:'Huelva',    contacto:'Carmen Suárez',  email:'carmen@gotarocio.es', plan_interes:'starter',    inicio_trial:'2026-06-18', fin_trial:'2026-07-02', alumnos_aprox:20, estado:'activo',    notas:'Pequeño centro rural. Necesitan formación básica.' },
-  { id:'t3', nombre:'Red Montessori España',    ciudad:'Madrid',    contacto:'Álvaro Crespo',  email:'acrespo@redmontessori.es',plan_interes:'enterprise',inicio_trial:'2026-06-10',fin_trial:'2026-06-24',alumnos_aprox:500,estado:'negociando',notas:'10 centros. Quieren precio especial. Reunión con dirección el viernes.' },
-  { id:'t4', nombre:'Trotamundos BCN',          ciudad:'Barcelona', contacto:'Sonia Mas',      email:'sonia@trotamundos.es',plan_interes:'pro',        inicio_trial:'2026-05-20', fin_trial:'2026-06-03', alumnos_aprox:58, estado:'expirado',  notas:'No respondió emails post-trial. Llamar.' },
-  { id:'t5', nombre:'Arbolitos Alicante',       ciudad:'Alicante',  contacto:'Jaime García',   email:'jaime@arbolitos.es',  plan_interes:'pro',        inicio_trial:'2026-06-20', fin_trial:'2026-07-04', alumnos_aprox:44, estado:'activo',    notas:'Referido por Arco Iris Valencia. Alto potencial.' },
-];
+// El pipeline se rellena con los leads reales captados desde la web (tabla leads).
+let PIPELINE = [];
 
 const MRR_HISTORICO = [
   { mes:'Dic 24', mrr:890  },

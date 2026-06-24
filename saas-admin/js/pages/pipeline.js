@@ -129,6 +129,8 @@ async function convertirTrialACliente(trialId) {
       nombre: t.nombre, ciudad: t.ciudad, contacto: t.contacto, email: t.email, plan: t.plan_interes,
     });
     if (t.alumnos_aprox) await actualizarTenantRemoto(nuevo.id, { alumnos: t.alumnos_aprox });
+    // Marcar el lead como convertido para que salga del pipeline
+    if (t.leadId && typeof actualizarLeadRemoto === 'function') await actualizarLeadRemoto(t.leadId, { estado: 'convertido' });
     await refrescarClientes();
     const idx = PIPELINE.findIndex(x=>x.id===trialId);
     if(idx!==-1) PIPELINE.splice(idx,1);
@@ -140,10 +142,12 @@ async function convertirTrialACliente(trialId) {
   }
 }
 
-function marcarContactado(trialId) {
+async function marcarContactado(trialId) {
   const t = PIPELINE.find(x=>x.id===trialId);
   if(!t) return;
-  t.notas = t.notas + ' · Contactado ' + new Date().toLocaleDateString('es-ES');
+  if (t.leadId && typeof actualizarLeadRemoto === 'function') await actualizarLeadRemoto(t.leadId, { estado: 'negociando' });
+  await refrescarClientes();
   cerrarPipelineDetalle();
-  toastSaas('Contacto registrado');
+  renderPipeline();
+  toastSaas('Lead movido a negociación');
 }

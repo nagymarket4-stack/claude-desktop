@@ -12,6 +12,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "3457", "--directory", "saas-admin"],
       "port": 3457
+    },
+    {
+      "name": "landing",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "3458", "--directory", "landing"],
+      "port": 3458
     }
   ]
 }

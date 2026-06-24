@@ -225,6 +225,53 @@ function closeSidebar() {
   document.body.style.overflow = '';
 }
 
+// ─── Banner de suscripción (trial / pago) ────────────────────────────────────
+function mostrarBannerSuscripcion() {
+  const existente = document.getElementById('banner-suscripcion');
+  if (existente) existente.remove();
+  if (typeof SUSCRIPCION === 'undefined' || !SUSCRIPCION) return;
+  if (!sesionActual || sesionActual.rol === 'padre') return; // solo personal
+  if (SUSCRIPCION.estado === 'activo') return;               // ya paga, sin banner
+
+  const dias = (typeof diasTrialRestantes === 'function') ? diasTrialRestantes() : null;
+  const expirado = dias !== null && dias <= 0;
+  const banner = document.createElement('div');
+  banner.id = 'banner-suscripcion';
+  banner.className = expirado
+    ? 'flex items-center justify-between gap-3 px-4 py-2.5 text-sm font-medium bg-red-600 text-white flex-shrink-0'
+    : 'flex items-center justify-between gap-3 px-4 py-2.5 text-sm font-medium bg-amber-500 text-white flex-shrink-0';
+  banner.innerHTML = `
+    <span class="flex items-center gap-2">
+      ${expirado
+        ? '⚠️ Tu prueba ha finalizado. Activa tu suscripción para seguir usando la plataforma.'
+        : `✨ Estás en periodo de prueba${dias!=null?` · te quedan <b>${dias} día${dias===1?'':'s'}</b>`:''}.`}
+    </span>
+    <button onclick="iniciarPagoSuscripcion()" class="bg-white/95 hover:bg-white px-3 py-1.5 rounded-lg font-semibold whitespace-nowrap ${expirado?'text-red-600':'text-amber-600'}">
+      Activar suscripción
+    </button>`;
+  const app = document.getElementById('app');
+  app.insertBefore(banner, app.firstChild);
+}
+
+// Gestiona el retorno desde Stripe (?pago=ok / ?pago=cancel)
+function revisarEstadoPago() {
+  const pago = new URLSearchParams(location.search).get('pago');
+  if (!pago) return;
+  if (pago === 'ok') {
+    showToast('¡Pago completado! Tu suscripción está activándose…');
+    // recargar el estado de suscripción tras unos segundos (el webhook lo activa)
+    setTimeout(async () => {
+      if (typeof cargarSuscripcion === 'function') { await cargarSuscripcion(); mostrarBannerSuscripcion(); }
+    }, 4000);
+  } else if (pago === 'cancel') {
+    showToast('Pago cancelado. Puedes activarlo cuando quieras.');
+  }
+  // limpiar el parámetro de la URL
+  const url = new URL(location.href);
+  url.searchParams.delete('pago');
+  history.replaceState({}, '', url);
+}
+
 // ─── Actualizar textos del centro en UI ───────────────────────────────────────
 function aplicarConfiguracion() {
   document.querySelectorAll('.centro-nombre').forEach(el => el.textContent = CONFIGURACION.nombre);

@@ -52,9 +52,11 @@ async function crearTenantRemoto({ nombre, ciudad, contacto, email, plan }) {
   if (existe) slug = slug + '-' + Math.random().toString(36).slice(2, 6);
 
   const precio = precioPlan(plan);
+  const trialFin = new Date(Date.now() + 14 * 864e5).toISOString().slice(0, 10);
   const fila = {
     id: slug, nombre, ciudad: ciudad || '', contacto: contacto || '', email: email || '',
-    plan, estado: 'activo', alumnos: 0, mrr: precio, alta: new Date().toISOString().slice(0, 10),
+    plan, estado: 'trial', alumnos: 0, mrr: 0, alta: new Date().toISOString().slice(0, 10),
+    trial_fin: trialFin,
   };
   const { error } = await sbSaas.from('tenants').insert(fila);
   if (error) throw error;

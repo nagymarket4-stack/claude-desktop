@@ -1,0 +1,11 @@
+# Configuración de las Edge Functions de Guardalia
+project_id = "ylwxsawiixvtjttsogzu"
+
+# El checkout lo llama la guardería con la anon key → requiere JWT (por defecto).
+[functions.crear-checkout]
+verify_jwt = true
+
+# El webhook lo llama Stripe (sin JWT) → debe ir sin verificación de JWT.
+# La seguridad la da la firma de Stripe (STRIPE_WEBHOOK_SECRET).
+[functions.stripe-webhook]
+verify_jwt = false

@@ -1,0 +1,4 @@
+# CLI standalone de Tailwind (binario de 40 MB, se descarga, no se versiona)
+tailwindcss.exe
+tailwindcss
+node_modules/

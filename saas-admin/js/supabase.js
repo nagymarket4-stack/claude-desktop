@@ -2,8 +2,12 @@
 const SB_URL = 'https://ylwxsawiixvtjttsogzu.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlsd3hzYXdpaXh2dGp0dHNvZ3p1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjMwMDEsImV4cCI6MjA5Nzc5OTAwMX0.mVckH5Yp_J1uZbUzX1XFihCxz8HHgqAYfJT_2UWvHgw';
 
-// URL pública de la app de guardería (el producto que se vende)
-const GUARDERIA_URL = 'https://nagymarket4-stack.github.io/claude-desktop/';
+// URL pública de la app de guardería (el producto que se vende).
+// En Vercel el panel está en /panel y la guardería en /app del mismo dominio.
+// Si se sirve fuera de Vercel (ej. GitHub Pages) se usa la URL fija de respaldo.
+const GUARDERIA_URL = location.hostname.includes('github.io')
+  ? 'https://nagymarket4-stack.github.io/claude-desktop/'
+  : location.origin + '/app/';
 
 let sbSaas = null;
 try {

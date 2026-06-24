@@ -1,11 +1,24 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/guarderia/$1" }],
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/app", "destination": "/guarderia/index.html" },
+    { "source": "/app/", "destination": "/guarderia/index.html" },
+    { "source": "/app/(.*)", "destination": "/guarderia/$1" },
+    { "source": "/panel", "destination": "/saas-admin/index.html" },
+    { "source": "/panel/", "destination": "/saas-admin/index.html" },
+    { "source": "/panel/(.*)", "destination": "/saas-admin/$1" },
+    { "source": "/", "destination": "/landing/index.html" },
+    { "source": "/(.*)", "destination": "/landing/$1" }
+  ],
   "headers": [
     {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
-      ]
+      "source": "/(.*)\\.html",
+      "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
+    },
+    {
+      "source": "/(.*)\\.(js|css)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=300, must-revalidate" }]
     }
   ]
 }

@@ -73,23 +73,30 @@ async function doSaasLogin(e) {
   }
 }
 
-// Carga los clientes desde Supabase a la variable global CLIENTES
+// Carga clientes y leads desde Supabase a las variables globales
 async function refrescarClientes() {
   if (typeof cargarTenants === 'function') {
     CLIENTES = await cargarTenants();
     recomputarFacturas();
   }
+  if (typeof cargarLeads === 'function') {
+    PIPELINE = await cargarLeads();
+  }
 }
 
-// Sincroniza la lista de clientes en vivo entre dispositivos
+// Sincroniza clientes y leads en vivo (nuevos leads aparecen al instante)
 function suscribirClientesRealtime() {
   if (!sbSaas) return;
+  const refrescarYrender = async () => {
+    await refrescarClientes();
+    const r = PAGE_RENDERERS[saasState.currentPage];
+    if (r) r();
+  };
   sbSaas.channel('rt-tenants')
-    .on('postgres_changes', { event:'*', schema:'public', table:'tenants' }, async () => {
-      await refrescarClientes();
-      const r = PAGE_RENDERERS[saasState.currentPage];
-      if (r) r();
-    })
+    .on('postgres_changes', { event:'*', schema:'public', table:'tenants' }, refrescarYrender)
+    .subscribe();
+  sbSaas.channel('rt-leads')
+    .on('postgres_changes', { event:'*', schema:'public', table:'leads' }, refrescarYrender)
     .subscribe();
 }
 

@@ -74,3 +74,34 @@ async function actualizarTenantRemoto(id, cambios) {
   try { await sbSaas.from('tenants').update(cambios).eq('id', id); }
   catch (e) { console.warn('Error actualizando cliente:', e); }
 }
+
+// ── Leads captados desde la web (tabla leads) → formato del pipeline ───────────
+async function cargarLeads() {
+  if (!sbSaas) return [];
+  const { data, error } = await sbSaas.from('leads').select('*').order('created_at', { ascending: false });
+  if (error) { console.warn('Error cargando leads:', error.message); return []; }
+  const estadoMap = { nuevo:'activo', contactado:'activo', negociando:'negociando', expirado:'expirado', descartado:'expirado' };
+  return (data || []).filter(l => l.estado !== 'convertido').map(l => {
+    const inicio = (l.created_at || '').slice(0, 10);
+    const fin = new Date(new Date(l.created_at || Date.now()).getTime() + 14 * 864e5).toISOString().slice(0, 10);
+    return {
+      id: 'lead-' + l.id, leadId: l.id,
+      nombre: l.centro || l.nombre || 'Lead sin nombre',
+      ciudad: l.ciudad || '—',
+      contacto: l.nombre || '',
+      email: l.email || '',
+      telefono: l.telefono || '',
+      plan_interes: l.plan_interes || 'pro',
+      inicio_trial: inicio, fin_trial: fin,
+      alumnos_aprox: 0,
+      estado: estadoMap[l.estado] || 'activo',
+      notas: (l.mensaje || 'Sin notas') + (l.telefono ? ' · Tel: ' + l.telefono : ''),
+    };
+  });
+}
+
+async function actualizarLeadRemoto(leadId, cambios) {
+  if (!sbSaas) return;
+  try { await sbSaas.from('leads').update(cambios).eq('id', leadId); }
+  catch (e) { console.warn('Error actualizando lead:', e); }
+}

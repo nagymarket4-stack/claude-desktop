@@ -56,6 +56,9 @@ a:hover { text-decoration: underline; }
 .nav-link i { font-size:18px; }
 .nav-link:hover { background:rgba(255,255,255,.08); color:rgba(255,255,255,.9); }
 .nav-link.active { background:rgba(79,70,229,.7); color:#fff; }
+.nav-sep { height:1px; background:rgba(255,255,255,.1); margin:10px 6px; }
+.nav-link.nav-ext { text-decoration:none; }
+.nav-ext-ic { font-size:13px !important; margin-left:auto; opacity:.5; }
 .sidebar-footer { padding:1rem; border-top:1px solid rgba(255,255,255,.08); }
 .sidebar-mrr { background:rgba(255,255,255,.07); border-radius:8px; padding:10px 12px; }
 .sidebar-mrr-label { font-size:10px; color:rgba(255,255,255,.45); text-transform:uppercase; letter-spacing:.5px; }

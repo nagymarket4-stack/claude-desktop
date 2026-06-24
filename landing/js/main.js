@@ -47,7 +47,7 @@ form.addEventListener('submit', async (e) => {
     form.reset();
     mostrarMsg('¡Gracias! Hemos recibido tu solicitud. Te contactaremos en menos de 24h. 🎉', 'ok');
   } catch (err) {
-    mostrarMsg('No se pudo enviar (¿conexión?). Escríbenos a hola@guardalia.com', 'err');
+    mostrarMsg('No se pudo enviar (¿conexión?). Escríbenos a hola@guardialia.com', 'err');
   } finally {
     btn.disabled = false; btn.textContent = 'Solicitar prueba gratis';
   }

@@ -5,4 +5,4 @@ Allow: /
 Disallow: /app/
 Disallow: /panel/
 
-Sitemap: https://guardalia.com/sitemap.xml
+Sitemap: https://guardialia.com/sitemap.xml

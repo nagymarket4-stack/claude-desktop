@@ -72,6 +72,7 @@ function iniciarPortalStaff() {
   if (sr) sr.textContent = { superadmin:'Superadministrador', admin:'Administración', profesor:'Profesor/a', padre:'Familia' }[sesionActual.rol] || sesionActual.rol;
   if (sa) sa.textContent = sesionActual.nombre[0];
   navigate('dashboard');
+  if (typeof mostrarBannerSuscripcion === 'function') mostrarBannerSuscripcion();
 }
 
 function iniciarPortalPadres() {

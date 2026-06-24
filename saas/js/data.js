@@ -49,7 +49,7 @@ function calcChurn() {
 function planColor(id) { return {starter:'green',pro:'purple',enterprise:'amber'}[id]||'gray'; }
 function planLabel(id) { return {starter:'Starter',pro:'Pro',enterprise:'Enterprise'}[id]||id; }
 function estadoBadge(e) {
-  const m = {activo:'<span class="badge b-ok">Activo</span>',pausado:'<span class="badge b-warn">Pausado</span>',cancelado:'<span class="badge b-danger">Cancelado</span>',negociando:'<span class="badge b-info">Negociando</span>',expirado:'<span class="badge b-warn">Expirado</span>'};
+  const m = {activo:'<span class="badge b-ok">Activo</span>',trial:'<span class="badge b-info">En prueba</span>',pausado:'<span class="badge b-warn">Pausado</span>',cancelado:'<span class="badge b-danger">Cancelado</span>',negociando:'<span class="badge b-info">Negociando</span>',expirado:'<span class="badge b-warn">Expirado</span>'};
   return m[e] || e;
 }
 function planBadge(id) {

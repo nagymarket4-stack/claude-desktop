@@ -19,6 +19,42 @@ const DATA_KEYS = ['alumnos', 'profesores', 'actividades', 'bienestar', 'familia
 
 function supabaseActivo() { return !!sb; }
 
+// ── Suscripción del cliente (estado trial/activo, días restantes) ─────────────
+let SUSCRIPCION = null;
+
+async function cargarSuscripcion() {
+  if (!sb || TENANT === 'demo') { SUSCRIPCION = null; return; }
+  try {
+    const { data } = await sb.from('tenants').select('*').eq('id', TENANT).maybeSingle();
+    SUSCRIPCION = data || null;
+  } catch (e) { SUSCRIPCION = null; }
+}
+
+function diasTrialRestantes() {
+  if (!SUSCRIPCION?.trial_fin) return null;
+  const fin = new Date(SUSCRIPCION.trial_fin + 'T23:59:59');
+  return Math.ceil((fin - new Date()) / 86400000);
+}
+
+// Llama a la Edge Function para crear la sesión de pago y redirige a Stripe
+async function iniciarPagoSuscripcion() {
+  if (!sb) return;
+  const plan = SUSCRIPCION?.plan || 'pro';
+  const email = SUSCRIPCION?.email || '';
+  try {
+    const resp = await fetch(`${SB_URL}/functions/v1/crear-checkout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY, 'apikey': SB_KEY },
+      body: JSON.stringify({ tenant: TENANT, plan, email, returnUrl: location.origin + location.pathname }),
+    });
+    const data = await resp.json();
+    if (data.url) { location.href = data.url; }
+    else { showToast('No se pudo iniciar el pago: ' + (data.error || 'error')); }
+  } catch (e) {
+    showToast('Error al conectar con la pasarela de pago');
+  }
+}
+
 // ── Reconstruye state.mensajes (agrupado por alumno) desde filas de la tabla ──
 function reconstruirMensajes(rows) {
   const m = {};
@@ -133,9 +169,12 @@ async function initSupabase() {
   if (!sb) { console.warn('Supabase no configurado: la app funciona solo en local.'); return; }
   try {
     await cargarDeSupabase();
+    await cargarSuscripcion();
     suscribirRealtime();
     aplicarConfiguracion();
     if (sesionActual) refrescarPaginaActual();
+    if (typeof revisarEstadoPago === 'function') revisarEstadoPago();
+    if (typeof mostrarBannerSuscripcion === 'function') mostrarBannerSuscripcion();
   } catch (e) {
     console.warn('Supabase no disponible, usando datos locales:', e.message);
   }

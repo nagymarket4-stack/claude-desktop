@@ -4,8 +4,44 @@
 <meta charset="UTF-8" />
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Guardalia · El software todo-en-uno para tu guardería</title>
-<meta name="description" content="Guardalia es la plataforma que digitaliza tu guardería: asistencia, bienestar, comidas, pañales, chat con familias y fichaje del personal. Prueba gratis 14 días." />
+
+<!-- ░░ SEO PRINCIPAL ░░ -->
+<title>Software de gestión infantil para guarderías y escuelas infantiles | Guardalia</title>
+<meta name="description" content="Guardalia es el software de gestión infantil nº1 para guarderías y escuelas infantiles: asistencia, bienestar, comidas, pañales, fotos, facturación, chat con familias, fichaje y control de ratios. App iOS y Android. Prueba gratis 14 días, sin tarjeta." />
+<meta name="keywords" content="software de gestión infantil, software para guarderías, software de gestión de guarderías, programa para escuelas infantiles, app para guarderías, software educación infantil, gestión de escuelas infantiles, control de asistencia guardería, software para centros infantiles, software ludoteca, programa gestión jardín de infancia, app comunicación guardería familias, facturación guardería, control de ratios guardería" />
+<meta name="author" content="Guardalia" />
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+<meta name="googlebot" content="index, follow" />
+<meta name="language" content="Spanish" />
+<meta name="geo.region" content="ES" />
+<meta name="geo.placename" content="España" />
+<link rel="canonical" href="https://guardalia.com/" />
+<meta name="theme-color" content="#10b981" />
+
+<!-- ░░ OPEN GRAPH (Facebook, LinkedIn, WhatsApp) ░░ -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Guardalia" />
+<meta property="og:locale" content="es_ES" />
+<meta property="og:title" content="Guardalia · Software de gestión infantil nº1 para guarderías" />
+<meta property="og:description" content="El software todo-en-uno para guarderías y escuelas infantiles. Asistencia, bienestar, fotos, facturación, chat con familias, fichaje y control de ratios. Prueba gratis 14 días." />
+<meta property="og:url" content="https://guardalia.com/" />
+<meta property="og:image" content="https://guardalia.com/og-image.svg" />
+<meta property="og:image:type" content="image/svg+xml" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Guardalia, software de gestión infantil para guarderías" />
+
+<!-- ░░ TWITTER CARD ░░ -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Guardalia · Software de gestión infantil nº1 para guarderías" />
+<meta name="twitter:description" content="El software todo-en-uno para guarderías y escuelas infantiles. Asistencia, fotos, facturación, chat con familias, fichaje y control de ratios. Prueba gratis 14 días." />
+<meta name="twitter:image" content="https://guardalia.com/og-image.svg" />
+<meta name="twitter:image:alt" content="Guardalia, software de gestión infantil para guarderías" />
+
+<!-- ░░ FAVICON ░░ -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2310b981'/%3E%3Ctext y='.9em' x='50%25' text-anchor='middle' font-size='62'%3E%F0%9F%8C%B1%3C/text%3E%3C/svg%3E" />
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2310b981'/%3E%3Ctext y='.9em' x='50%25' text-anchor='middle' font-size='62'%3E%F0%9F%8C%B1%3C/text%3E%3C/svg%3E" />
+
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,117 +54,341 @@ tailwind.config = {
       fontFamily: { display:['"Plus Jakarta Sans"','sans-serif'], sans:['Inter','sans-serif'] },
       colors: {
         brand: { 50:'#ecfdf5',100:'#d1fae5',200:'#a7f3d0',300:'#6ee7b7',400:'#34d399',500:'#10b981',600:'#059669',700:'#047857',800:'#065f46',900:'#064e3b' },
-        ink: { 900:'#0b1220',700:'#1f2937',500:'#64748b',400:'#94a3b8' },
+        ink: { 900:'#070b16',800:'#0b1220',700:'#1f2937',500:'#64748b',400:'#94a3b8' },
       },
     },
   },
 };
 </script>
 <link rel="stylesheet" href="style.css" />
+
+<!-- ░░ DATOS ESTRUCTURADOS (Schema.org / JSON-LD) ░░ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://guardalia.com/#organization",
+      "name": "Guardalia",
+      "url": "https://guardalia.com/",
+      "logo": "https://guardalia.com/og-image.svg",
+      "email": "hola@guardalia.com",
+      "description": "Software de gestión infantil todo-en-uno para guarderías y escuelas infantiles.",
+      "areaServed": "ES",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "hola@guardalia.com",
+        "contactType": "ventas",
+        "availableLanguage": "Spanish"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://guardalia.com/#website",
+      "url": "https://guardalia.com/",
+      "name": "Guardalia",
+      "inLanguage": "es-ES",
+      "publisher": { "@id": "https://guardalia.com/#organization" }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Guardalia",
+      "applicationCategory": "BusinessApplication",
+      "applicationSubCategory": "Software de gestión infantil para guarderías",
+      "operatingSystem": "Web, iOS, Android",
+      "url": "https://guardalia.com/",
+      "inLanguage": "es-ES",
+      "description": "Guardalia es el software de gestión infantil todo-en-uno para guarderías y escuelas infantiles: asistencia, bienestar, comidas, pañales, fotos, facturación, chat con familias, fichaje del personal y control de ratios.",
+      "featureList": [
+        "Control de entradas y salidas con QR",
+        "Bienestar, comidas, sueño y pañales",
+        "Fotos y vídeos privados del día",
+        "Chat con familias en tiempo real",
+        "Facturación y cobros automáticos",
+        "Fichaje del personal y control de ratios",
+        "Matriculación online y lista de espera",
+        "Seguimiento del desarrollo e informes pedagógicos",
+        "App móvil iOS y Android"
+      ],
+      "offers": [
+        { "@type": "Offer", "name": "Starter", "price": "29", "priceCurrency": "EUR", "description": "Hasta 30 alumnos" },
+        { "@type": "Offer", "name": "Pro", "price": "79", "priceCurrency": "EUR", "description": "Hasta 100 alumnos" },
+        { "@type": "Offer", "name": "Enterprise", "price": "199", "priceCurrency": "EUR", "description": "Alumnos ilimitados y múltiples centros" }
+      ],
+      "publisher": { "@id": "https://guardalia.com/#organization" }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "¿Necesito instalar algo para usar el software de gestión infantil?", "acceptedAnswer": { "@type": "Answer", "text": "No. Guardalia funciona 100% en la nube desde cualquier navegador, y además tiene app para iOS y Android. Solo necesitas conexión a internet." } },
+        { "@type": "Question", "name": "¿Los datos de los niños están seguros y cumple el RGPD?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Cada centro tiene sus datos aislados y cifrados en la nube, con copias de seguridad automáticas y pleno cumplimiento del RGPD. El acceso está protegido por roles: dirección, profesores y familias ven solo lo que les corresponde." } },
+        { "@type": "Question", "name": "¿Puedo probar el software de guardería antes de pagar?", "acceptedAnswer": { "@type": "Answer", "text": "Por supuesto. Tienes 14 días de prueba gratuita con todas las funciones, sin necesidad de tarjeta, y 30 días de garantía de devolución." } },
+        { "@type": "Question", "name": "¿Cuánto se tarda en poner en marcha el centro?", "acceptedAnswer": { "@type": "Answer", "text": "Menos de 24 horas. Te ayudamos a importar tus alumnos y aulas, e incluimos formación inicial gratuita para tu equipo." } },
+        { "@type": "Question", "name": "¿Las familias también tienen acceso?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, cada familia accede a un portal y app privados donde ve únicamente la información de su hijo: fotos, parte del día, facturas y un chat directo con el centro." } }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body class="font-sans text-ink-700 bg-white antialiased">
 
+<!-- ░░ TOPBAR ANUNCIO ░░ -->
+<div class="topbar">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 py-2 flex items-center justify-center gap-2 text-center">
+    🎉 <span>Oferta de lanzamiento: <b>-50% los 3 primeros meses</b> + alta gratis ·</span> <a href="#precios">Ver planes →</a>
+  </div>
+</div>
+
 <!-- ░░ NAV ░░ -->
-<header id="nav" class="fixed top-0 inset-x-0 z-50 transition-all">
+<header id="nav" class="sticky top-0 inset-x-0 z-50">
   <nav class="max-w-7xl mx-auto px-5 lg:px-8 h-16 flex items-center justify-between">
     <a href="#inicio" class="flex items-center gap-2 font-display font-extrabold text-lg text-ink-900">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 text-white grid place-items-center text-lg shadow-lg shadow-brand-500/30">🌱</span>
       Guardalia
     </a>
     <div class="hidden lg:flex items-center gap-8 text-sm font-medium text-ink-700">
-      <a href="#features" class="hover:text-brand-600 transition">Funciones</a>
-      <a href="#como" class="hover:text-brand-600 transition">Cómo funciona</a>
-      <a href="#precios" class="hover:text-brand-600 transition">Precios</a>
-      <a href="#faq" class="hover:text-brand-600 transition">FAQ</a>
+      <a href="#features" class="nav-link hover:text-brand-600 transition">Funciones</a>
+      <a href="#comparativa" class="nav-link hover:text-brand-600 transition">Comparativa</a>
+      <a href="#como" class="nav-link hover:text-brand-600 transition">Cómo funciona</a>
+      <a href="#precios" class="nav-link hover:text-brand-600 transition">Precios</a>
+      <a href="/blog/" class="nav-link hover:text-brand-600 transition">Blog</a>
+      <a href="#faq" class="nav-link hover:text-brand-600 transition">FAQ</a>
     </div>
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-2">
       <a href="/panel/" class="hidden sm:inline-flex text-sm font-semibold text-ink-700 hover:text-brand-600 px-3 py-2 transition">Acceder</a>
-      <a href="#contacto" class="inline-flex items-center text-sm font-semibold text-white bg-ink-900 hover:bg-black px-4 py-2.5 rounded-full transition shadow-lg shadow-ink-900/10">Prueba gratis</a>
+      <a href="#contacto" class="hidden sm:inline-flex btn-primary !py-2.5 !px-5 text-sm">Prueba gratis</a>
+      <button id="burger" aria-label="Abrir menú" class="lg:hidden w-10 h-10 grid place-items-center rounded-xl border border-slate-200 text-ink-800">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
     </div>
   </nav>
+  <!-- Menú móvil -->
+  <div id="mobile-menu" class="mobile-menu lg:hidden bg-white/95 backdrop-blur border-b border-slate-100">
+    <div class="px-5 py-4 flex flex-col gap-1 text-sm font-semibold text-ink-700">
+      <a href="#features" class="py-2.5">Funciones</a>
+      <a href="#comparativa" class="py-2.5">Comparativa</a>
+      <a href="#como" class="py-2.5">Cómo funciona</a>
+      <a href="#precios" class="py-2.5">Precios</a>
+      <a href="/blog/" class="py-2.5">Blog</a>
+      <a href="#faq" class="py-2.5">FAQ</a>
+      <div class="flex gap-2 pt-2">
+        <a href="/panel/" class="btn-ghost flex-1 !py-2.5 text-sm">Acceder</a>
+        <a href="#contacto" class="btn-primary flex-1 !py-2.5 text-sm">Prueba gratis</a>
+      </div>
+    </div>
+  </div>
 </header>
 
 <!-- ░░ HERO ░░ -->
-<section id="inicio" class="relative overflow-hidden pt-32 pb-20 lg:pt-40 lg:pb-28">
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="max-w-7xl mx-auto px-5 lg:px-8 grid lg:grid-cols-2 gap-12 items-center relative">
+<section id="inicio" class="relative overflow-hidden pt-16 pb-24 lg:pt-24 lg:pb-32">
+  <div class="aurora"></div>
+  <div class="grain"></div>
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 grid lg:grid-cols-2 gap-12 lg:gap-8 items-center relative z-10">
     <div class="reveal">
-      <span class="inline-flex items-center gap-2 text-xs font-semibold text-brand-700 bg-brand-50 border border-brand-100 rounded-full px-3 py-1.5 mb-6">
-        <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span> Nuevo · Chat con familias en tiempo real
+      <span class="inline-flex items-center gap-2 text-xs font-semibold text-brand-700 bg-white/70 backdrop-blur border border-brand-100 rounded-full px-3 py-1.5 mb-6 shadow-sm">
+        <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span> ⭐ 4,9/5 · +500 guarderías confían en Guardalia
       </span>
-      <h1 class="font-display font-extrabold text-ink-900 text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight">
-        El software que tu <span class="text-gradient">guardería</span> merece
+      <h1 class="font-display font-extrabold text-ink-900 text-[2.6rem] sm:text-5xl lg:text-6xl leading-[1.03] tracking-tight">
+        El <span class="text-gradient">software de gestión infantil</span> que tu guardería merece
       </h1>
       <p class="mt-6 text-lg text-ink-500 max-w-xl">
-        Digitaliza la asistencia, el bienestar, las comidas, los pañales y la comunicación con las familias. Todo en una plataforma sencilla, segura y en la nube.
+        El programa todo-en-uno para <b class="text-ink-700">guarderías y escuelas infantiles</b>: asistencia, bienestar, fotos del día, facturación automática, chat con familias, fichaje del personal y control de ratios. Sencillo, seguro y en la nube.
       </p>
       <div class="mt-8 flex flex-col sm:flex-row gap-3">
-        <a href="#contacto" class="btn-primary">Empezar prueba gratis →</a>
-        <a href="/app/?cliente=demo" target="_blank" class="btn-ghost">Ver demo en vivo</a>
+        <a href="#contacto" class="btn-primary text-base">Empezar gratis 14 días →</a>
+        <a href="/app/?cliente=demo" target="_blank" rel="noopener" class="btn-ghost text-base">▶ Ver demo en vivo</a>
       </div>
-      <div class="mt-8 flex items-center gap-6 text-sm text-ink-500">
-        <span class="flex items-center gap-2">✅ 14 días gratis</span>
-        <span class="flex items-center gap-2">✅ Sin tarjeta</span>
-        <span class="flex items-center gap-2">✅ Soporte en español</span>
+      <div class="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-ink-500">
+        <span class="flex items-center gap-1.5">✅ 14 días gratis</span>
+        <span class="flex items-center gap-1.5">✅ Sin tarjeta</span>
+        <span class="flex items-center gap-1.5">✅ Alta en 24h</span>
+        <span class="flex items-center gap-1.5">✅ Soporte en español</span>
       </div>
     </div>
 
-    <!-- Mockup -->
+    <!-- Mockup 3D con chips flotantes -->
     <div class="reveal" style="--d:.15s">
-      <div class="mockup">
-        <div class="mockup-bar"><span></span><span></span><span></span></div>
-        <div class="mockup-body">
-          <div class="flex items-center justify-between mb-4">
-            <div>
-              <p class="font-display font-bold text-ink-900">Buenos días 👋</p>
-              <p class="text-xs text-ink-400">Martes, 24 de junio</p>
+      <div class="scene relative">
+        <div class="mockup" data-parallax>
+          <div class="mockup-bar"><span></span><span></span><span></span></div>
+          <div class="mockup-body">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <p class="font-display font-bold text-ink-900">Buenos días 👋</p>
+                <p class="text-xs text-ink-400">Martes, 24 de junio · Centro Sol &amp; Luna</p>
+              </div>
+              <div class="w-8 h-8 rounded-full bg-brand-500 text-white grid place-items-center text-xs font-bold">A</div>
             </div>
-            <div class="w-8 h-8 rounded-full bg-brand-500 text-white grid place-items-center text-xs font-bold">A</div>
-          </div>
-          <div class="grid grid-cols-3 gap-2 mb-4">
-            <div class="stat-mini bg-brand-50"><b class="text-brand-700">24</b><span>Presentes</span></div>
-            <div class="stat-mini bg-amber-50"><b class="text-amber-600">3</b><span>Fuera</span></div>
-            <div class="stat-mini bg-sky-50"><b class="text-sky-600">5</b><span>Profes</span></div>
-          </div>
-          <div class="space-y-2">
-            <div class="row-mini"><span class="av bg-pink-100 text-pink-600">S</span><div><b>Sofía Martínez</b><i>Ositos</i></div><span class="pill pill-green">En centro</span></div>
-            <div class="row-mini"><span class="av bg-sky-100 text-sky-600">L</span><div><b>Lucas García</b><i>Conejitos</i></div><span class="pill pill-amber">Fuera</span></div>
-            <div class="row-mini"><span class="av bg-emerald-100 text-emerald-600">E</span><div><b>Emma López</b><i>Ositos</i></div><span class="pill pill-green">En centro</span></div>
+            <div class="grid grid-cols-3 gap-2 mb-4">
+              <div class="stat-mini bg-brand-50"><b class="text-brand-700">24</b><span>Presentes</span></div>
+              <div class="stat-mini bg-amber-50"><b class="text-amber-600">3</b><span>Fuera</span></div>
+              <div class="stat-mini bg-sky-50"><b class="text-sky-600">5</b><span>Profes</span></div>
+            </div>
+            <div class="space-y-2">
+              <div class="row-mini"><span class="av bg-pink-100 text-pink-600">S</span><div><b>Sofía Martínez</b><i>Ositos · Comida 🍎</i></div><span class="pill pill-green">En centro</span></div>
+              <div class="row-mini"><span class="av bg-sky-100 text-sky-600">L</span><div><b>Lucas García</b><i>Conejitos</i></div><span class="pill pill-amber">Fuera</span></div>
+              <div class="row-mini"><span class="av bg-emerald-100 text-emerald-600">E</span><div><b>Emma López</b><i>Ositos · Siesta 😴</i></div><span class="pill pill-green">En centro</span></div>
+            </div>
           </div>
         </div>
+        <div class="float-chip chip-a"><span class="text-xl">📸</span><i>Foto enviada<small>a 3 familias</small></i></div>
+        <div class="float-chip chip-b"><span class="text-xl">💬</span><i>Nuevo mensaje<small>Familia de Emma</small></i></div>
+        <div class="float-chip chip-c"><span class="text-xl">✅</span><i>Ratio correcto<small>1 educador / 8</small></i></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ░░ TRUST ░░ -->
-<section class="border-y border-slate-100 bg-slate-50/50">
-  <div class="max-w-7xl mx-auto px-5 lg:px-8 py-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-ink-400">
-    <p class="text-sm font-medium w-full text-center sm:w-auto">Centros que ya confían en Guardalia</p>
-    <span class="font-display font-bold text-ink-400/70">Sol &amp; Luna</span>
-    <span class="font-display font-bold text-ink-400/70">Arco Iris</span>
-    <span class="font-display font-bold text-ink-400/70">Pequeños Genios</span>
-    <span class="font-display font-bold text-ink-400/70">El Bosque</span>
-    <span class="font-display font-bold text-ink-400/70">Smart Kids</span>
+<!-- ░░ MARQUEE LOGOS ░░ -->
+<section class="border-y border-slate-100 bg-slate-50/60 py-7">
+  <p class="text-center text-xs font-semibold uppercase tracking-wider text-ink-400 mb-5">Centros que ya confían en Guardalia</p>
+  <div class="marquee">
+    <div class="marquee-track">
+      <span>Sol &amp; Luna</span><span>Arco Iris</span><span>Pequeños Genios</span><span>El Bosque</span><span>Smart Kids</span><span>Burbujas</span><span>Los Pinos</span>
+      <span>Sol &amp; Luna</span><span>Arco Iris</span><span>Pequeños Genios</span><span>El Bosque</span><span>Smart Kids</span><span>Burbujas</span><span>Los Pinos</span>
+    </div>
   </div>
 </section>
 
-<!-- ░░ FEATURES ░░ -->
+<!-- ░░ BANDA DE ESTADÍSTICAS (dark) ░░ -->
+<section class="relative overflow-hidden bg-ink-900 text-white py-16">
+  <div class="aurora opacity-40"></div>
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 relative z-10">
+    <div class="statband">
+      <div class="s reveal"><div class="num" data-count="500" data-suffix="+">0</div><div class="lbl">Guarderías activas</div></div>
+      <div class="s reveal" style="--d:.1s"><div class="num" data-count="25000" data-suffix="+">0</div><div class="lbl">Familias conectadas</div></div>
+      <div class="s reveal" style="--d:.2s"><div class="num" data-count="98" data-suffix="%">0</div><div class="lbl">Renuevan cada año</div></div>
+      <div class="s reveal" style="--d:.3s"><div class="num" data-count="6" data-suffix="h">0</div><div class="lbl">Ahorradas/semana por aula</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ BENTO FEATURES ░░ -->
 <section id="features" class="py-24">
   <div class="max-w-7xl mx-auto px-5 lg:px-8">
-    <div class="max-w-2xl mx-auto text-center mb-16 reveal">
-      <p class="eyebrow">Todo lo que necesitas</p>
-      <h2 class="section-title">Una plataforma, todo el día a día</h2>
-      <p class="section-sub">Desde que el niño entra por la puerta hasta que la familia lee el parte del día.</p>
+    <div class="max-w-2xl mx-auto text-center mb-14 reveal">
+      <span class="eyebrow">Todo lo que necesitas</span>
+      <h2 class="section-title">Un software de gestión infantil para todo el día a día</h2>
+      <p class="section-sub">Desde que el niño entra por la puerta hasta que la familia lee el parte del día. Guardalia reúne en una sola plataforma lo que otros te cobran por separado.</p>
     </div>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="feature reveal"><div class="feature-ic bg-brand-50">🚪</div><h3>Entradas y salidas</h3><p>Control de asistencia con registro de cada entrada y salida, incluso si el niño sale a un evento y vuelve.</p></div>
-      <div class="feature reveal" style="--d:.05s"><div class="feature-ic bg-amber-50">💛</div><h3>Bienestar y comidas</h3><p>Sueño, ánimo y las 4 comidas del día (desayuno, snack, comida y merienda) con su hora.</p></div>
-      <div class="feature reveal" style="--d:.1s"><div class="feature-ic bg-sky-50">🚽</div><h3>Baño y pañales</h3><p>Registra cambios de pañal (seco, húmedo, heces) o el uso del orinal, con observaciones.</p></div>
-      <div class="feature reveal"><div class="feature-ic bg-pink-50">💬</div><h3>Chat con familias</h3><p>Mensajería en tiempo real entre el centro y los padres, con portal exclusivo para cada familia.</p></div>
-      <div class="feature reveal" style="--d:.05s"><div class="feature-ic bg-violet-50">🕓</div><h3>Fichaje del personal</h3><p>Control horario de profesores con histórico y exportación para nóminas, solo para dirección.</p></div>
-      <div class="feature reveal" style="--d:.1s"><div class="feature-ic bg-emerald-50">🎨</div><h3>Actividades y partes</h3><p>Publica las actividades del día y las familias las ven al instante desde su móvil.</p></div>
+
+    <div class="bento reveal">
+      <!-- grande -->
+      <article class="bento-card col-3 row-2 grad-border">
+        <span class="tag-new">Estrella</span>
+        <div class="glow" style="background:#34d399"></div>
+        <div class="feature-ic bg-brand-50">💬</div>
+        <h3>Comunicación con familias en tiempo real</h3>
+        <p>Chat directo, parte diario automático, fotos y vídeos privados, avisos y autorizaciones de recogida. Cada familia ve solo a su hijo desde la app.</p>
+        <div class="mt-5 grid grid-cols-2 gap-2 text-sm">
+          <div class="bg-slate-50 rounded-xl p-3"><b class="block text-ink-900">📸 Fotos del día</b><span class="text-ink-400 text-xs">Galería privada por familia</span></div>
+          <div class="bg-slate-50 rounded-xl p-3"><b class="block text-ink-900">🔔 Notif. push</b><span class="text-ink-400 text-xs">Avisos instantáneos</span></div>
+          <div class="bg-slate-50 rounded-xl p-3"><b class="block text-ink-900">📝 Parte diario</b><span class="text-ink-400 text-xs">Generado solo</span></div>
+          <div class="bg-slate-50 rounded-xl p-3"><b class="block text-ink-900">✋ Autorizaciones</b><span class="text-ink-400 text-xs">Quién recoge al niño</span></div>
+        </div>
+      </article>
+
+      <article class="bento-card col-3 grad-border">
+        <div class="glow" style="background:#22d3ee"></div>
+        <div class="feature-ic bg-sky-50">🚪</div>
+        <h3>Asistencia y check-in con QR</h3>
+        <p>Registro de entradas y salidas en segundos, incluso si el niño sale a un evento y vuelve. Control de ocupación en directo.</p>
+      </article>
+
+      <article class="bento-card col-3 grad-border">
+        <span class="tag-new">Nuevo</span>
+        <div class="glow" style="background:#f59e0b"></div>
+        <div class="feature-ic bg-amber-50">💳</div>
+        <h3>Facturación y cobros automáticos</h3>
+        <p>Genera facturas, cobra por tarjeta o domiciliación SEPA y olvídate de los impagos. Recibos automáticos a las familias.</p>
+      </article>
+
+      <article class="bento-card col-2 grad-border">
+        <div class="glow" style="background:#8b5cf6"></div>
+        <div class="feature-ic bg-violet-50">🕓</div>
+        <h3>Fichaje y ratios</h3>
+        <p>Control horario del personal, turnos y ratio legal niño/educador en tiempo real.</p>
+      </article>
+
+      <article class="bento-card col-2 grad-border">
+        <div class="glow" style="background:#10b981"></div>
+        <div class="feature-ic bg-brand-50">💛</div>
+        <h3>Bienestar y comidas</h3>
+        <p>Sueño, ánimo, pañales y las 4 comidas del día con su hora y observaciones.</p>
+      </article>
+
+      <article class="bento-card col-2 grad-border">
+        <span class="tag-new">Nuevo</span>
+        <div class="glow" style="background:#ec4899"></div>
+        <div class="feature-ic bg-pink-50">📈</div>
+        <h3>Desarrollo e informes</h3>
+        <p>Hitos, observaciones pedagógicas e informes de evolución listos para las familias.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ TODO INCLUIDO (lista larga de funciones) ░░ -->
+<section class="py-24 bg-gradient-to-b from-slate-50/70 to-white border-y border-slate-100">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8">
+    <div class="max-w-2xl mx-auto text-center mb-12 reveal">
+      <span class="eyebrow">Una plataforma, cero límites</span>
+      <h2 class="section-title">Todo lo que tu centro necesita, incluido</h2>
+      <p class="section-sub">Más de 20 funciones pensadas para guarderías, escuelas infantiles y ludotecas. Sin módulos de pago ocultos.</p>
+    </div>
+    <div class="allfeat reveal">
+      <div class="it"><span class="em">🚪</span><div><b>Entradas y salidas</b><span>Check-in con QR</span></div></div>
+      <div class="it"><span class="em">📸</span><div><b>Fotos y vídeos</b><span>Galería privada</span></div></div>
+      <div class="it"><span class="em">💬</span><div><b>Chat con familias</b><span>En tiempo real</span></div></div>
+      <div class="it"><span class="em">📝</span><div><b>Parte diario</b><span>Automático</span></div></div>
+      <div class="it"><span class="em">🍎</span><div><b>Comidas y menús</b><span>Planificación semanal</span></div></div>
+      <div class="it"><span class="em">😴</span><div><b>Sueño y bienestar</b><span>Ánimo y siestas</span></div></div>
+      <div class="it"><span class="em">🚽</span><div><b>Baño y pañales</b><span>Con observaciones</span></div></div>
+      <div class="it"><span class="em">💊</span><div><b>Alergias y medicación</b><span>Fichas de salud</span></div></div>
+      <div class="it"><span class="em">💳</span><div><b>Facturación</b><span>SEPA y tarjeta</span></div></div>
+      <div class="it"><span class="em">📋</span><div><b>Matriculación online</b><span>Y lista de espera</span></div></div>
+      <div class="it"><span class="em">✍️</span><div><b>Firma digital</b><span>Consentimientos RGPD</span></div></div>
+      <div class="it"><span class="em">🕓</span><div><b>Fichaje personal</b><span>Turnos y nóminas</span></div></div>
+      <div class="it"><span class="em">⚖️</span><div><b>Control de ratios</b><span>Cumplimiento legal</span></div></div>
+      <div class="it"><span class="em">📈</span><div><b>Desarrollo del niño</b><span>Hitos e informes</span></div></div>
+      <div class="it"><span class="em">📅</span><div><b>Calendario y eventos</b><span>Reservas y excursiones</span></div></div>
+      <div class="it"><span class="em">✋</span><div><b>Autorizaciones</b><span>Recogida segura</span></div></div>
+      <div class="it"><span class="em">📣</span><div><b>Comunicados y encuestas</b><span>Envíos masivos</span></div></div>
+      <div class="it"><span class="em">📊</span><div><b>Panel y analíticas</b><span>Ocupación e ingresos</span></div></div>
+      <div class="it"><span class="em">📱</span><div><b>App iOS y Android</b><span>Para equipo y familias</span></div></div>
+      <div class="it"><span class="em">🏫</span><div><b>Multi-centro</b><span>Varios centros</span></div></div>
+      <div class="it"><span class="em">🌐</span><div><b>Multi-idioma</b><span>Familias internacionales</span></div></div>
+      <div class="it"><span class="em">🔒</span><div><b>RGPD y cifrado</b><span>Datos seguros</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ COMPARATIVA ░░ -->
+<section id="comparativa" class="py-24">
+  <div class="max-w-5xl mx-auto px-5 lg:px-8">
+    <div class="max-w-2xl mx-auto text-center mb-12 reveal">
+      <span class="eyebrow">Por qué Guardalia</span>
+      <h2 class="section-title">Guardalia frente a otros software</h2>
+      <p class="section-sub">Lo que otros parten en módulos de pago, en Guardalia ya viene incluido.</p>
+    </div>
+    <div class="reveal overflow-x-auto">
+      <table class="cmp">
+        <thead>
+          <tr><th>Función</th><th class="us">🌱 Guardalia</th><th>Otros software</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Asistencia + chat con familias</td><td class="us"><span class="yes">✓ Incluido</span></td><td><span class="yes">✓</span></td></tr>
+          <tr><td>Fotos y vídeos privados del día</td><td class="us"><span class="yes">✓ Incluido</span></td><td>Módulo extra 💰</td></tr>
+          <tr><td>Facturación y cobros automáticos</td><td class="us"><span class="yes">✓ Incluido</span></td><td>Módulo extra 💰</td></tr>
+          <tr><td>Fichaje del personal y control de ratios</td><td class="us"><span class="yes">✓ Incluido</span></td><td><span class="no">✗</span></td></tr>
+          <tr><td>Matriculación online y lista de espera</td><td class="us"><span class="yes">✓ Incluido</span></td><td>Módulo extra 💰</td></tr>
+          <tr><td>App iOS y Android en español</td><td class="us"><span class="yes">✓</span></td><td>Solo web / en inglés</td></tr>
+          <tr><td>Soporte en español &lt; 24h</td><td class="us"><span class="yes">✓</span></td><td>Email lento</td></tr>
+          <tr><td>Sin permanencia · cancela cuando quieras</td><td class="us"><span class="yes">✓</span></td><td>Contrato anual</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </section>
@@ -136,30 +396,33 @@ tailwind.config = {
 <!-- ░░ CÓMO FUNCIONA ░░ -->
 <section id="como" class="py-24 bg-gradient-to-b from-brand-50/40 to-white">
   <div class="max-w-7xl mx-auto px-5 lg:px-8">
-    <div class="max-w-2xl mx-auto text-center mb-16 reveal">
-      <p class="eyebrow">En marcha en minutos</p>
+    <div class="max-w-2xl mx-auto text-center mb-14 reveal">
+      <span class="eyebrow">En marcha en minutos</span>
       <h2 class="section-title">Tan fácil como 1, 2, 3</h2>
+      <p class="section-sub">Sin instalaciones, sin informáticos y con tu equipo formado gratis.</p>
     </div>
     <div class="grid md:grid-cols-3 gap-8">
-      <div class="step reveal"><span class="step-num">1</span><h3>Crea tu cuenta</h3><p>Te damos de alta tu centro con su nombre y logo. Sin instalaciones: funciona en cualquier navegador.</p></div>
-      <div class="step reveal" style="--d:.1s"><span class="step-num">2</span><h3>Añade tu equipo y aulas</h3><p>Registra profesores, grupos y alumnos. Invita a las familias a su portal en un clic.</p></div>
-      <div class="step reveal" style="--d:.2s"><span class="step-num">3</span><h3>Empieza a registrar</h3><p>Asistencia, comidas, bienestar y mensajes. Todo se sincroniza en la nube al instante.</p></div>
+      <div class="step reveal"><span class="step-num">1</span><h3>Crea tu cuenta</h3><p>Damos de alta tu centro con su nombre y logo. Importamos tus alumnos y aulas por ti. Funciona en cualquier navegador y móvil.</p></div>
+      <div class="step reveal" style="--d:.1s"><span class="step-num">2</span><h3>Añade tu equipo y familias</h3><p>Registra profesores y grupos, e invita a las familias a su app privada en un clic. Formación inicial incluida.</p></div>
+      <div class="step reveal" style="--d:.2s"><span class="step-num">3</span><h3>Empieza a registrar</h3><p>Asistencia, comidas, fotos, facturación y mensajes. Todo se sincroniza en la nube al instante y sin papeleo.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ░░ SHOWCASE ░░ -->
+<!-- ░░ SHOWCASE FAMILIAS ░░ -->
 <section class="py-24">
   <div class="max-w-7xl mx-auto px-5 lg:px-8 grid lg:grid-cols-2 gap-14 items-center">
     <div class="reveal">
-      <p class="eyebrow">Para las familias</p>
+      <span class="eyebrow">Para las familias</span>
       <h2 class="section-title text-left">Padres tranquilos, <br>centros valorados</h2>
-      <p class="section-sub text-left mt-4">Cada familia tiene su propio portal donde ve, en tiempo real, cómo ha ido el día de su hijo: si ha comido, cómo ha dormido, las actividades y un chat directo con el centro.</p>
-      <ul class="mt-6 space-y-3">
-        <li class="check">Portal privado por familia, solo ven a su hijo</li>
-        <li class="check">Notificaciones y mensajería instantánea</li>
+      <p class="section-sub text-left">Cada familia tiene su propia app donde ve, en tiempo real, cómo ha ido el día de su hijo: fotos, si ha comido, cómo ha dormido, las actividades, sus facturas y un chat directo con el centro.</p>
+      <ul class="mt-7 space-y-3.5">
+        <li class="check">App privada por familia: solo ven a su hijo</li>
+        <li class="check">Fotos y vídeos del día con notificación al instante</li>
         <li class="check">Parte diario de bienestar, comidas y baño</li>
+        <li class="check">Facturas y pagos online, sin sobres ni efectivo</li>
       </ul>
+      <a href="#contacto" class="btn-primary mt-8">Quiero familias más felices →</a>
     </div>
     <div class="reveal" style="--d:.1s">
       <div class="phone">
@@ -170,9 +433,13 @@ tailwind.config = {
             <div class="flex items-center gap-2 mb-2"><span class="av bg-pink-100 text-pink-600">S</span><div><b class="text-xs">Sofía Martínez</b><i class="block text-[10px] text-ink-400">Ositos · En centro</i></div></div>
             <div class="grid grid-cols-3 text-center text-[10px] gap-1">
               <div><b class="block text-ink-900">08:15</b><span class="text-ink-400">Entrada</span></div>
-              <div><b class="block text-ink-900">10h</b><span class="text-ink-400">Sueño</span></div>
+              <div><b class="block text-ink-900">2h</b><span class="text-ink-400">Siesta</span></div>
               <div><b class="block text-ink-900">😊</b><span class="text-ink-400">Ánimo</span></div>
             </div>
+          </div>
+          <div class="card-soft mt-2 overflow-hidden p-0">
+            <div class="h-20 bg-gradient-to-br from-brand-200 to-sky-200 grid place-items-center text-2xl">🖼️📸</div>
+            <p class="text-[10px] text-ink-500 px-2 py-1.5">📸 3 fotos nuevas de hoy</p>
           </div>
           <div class="card-soft mt-2 text-[11px]">
             <b class="text-brand-700 block mb-1 text-[10px]">Centro Sol &amp; Luna</b>
@@ -184,59 +451,79 @@ tailwind.config = {
   </div>
 </section>
 
-<!-- ░░ PRECIOS ░░ -->
-<section id="precios" class="py-24 bg-slate-50/60 border-y border-slate-100">
+<!-- ░░ TESTIMONIOS ░░ -->
+<section class="py-24 bg-slate-50/60 border-y border-slate-100">
   <div class="max-w-7xl mx-auto px-5 lg:px-8">
     <div class="max-w-2xl mx-auto text-center mb-14 reveal">
-      <p class="eyebrow">Precios sin sorpresas</p>
+      <span class="eyebrow">Quien lo usa, lo recomienda</span>
+      <h2 class="section-title">Cuidamos de quien cuida</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <figure class="quote reveal"><div class="stars">★★★★★</div><p>"Hemos eliminado el papeleo y las familias reciben fotos y el parte del día en el móvil. La matriculación se nos ha llenado este año."</p><figcaption><span class="av bg-brand-100 text-brand-700">A</span><div><b>Ana García</b><i>Dir. Sol &amp; Luna · Madrid</i></div></figcaption></figure>
+      <figure class="quote reveal" style="--d:.1s"><div class="stars">★★★★★</div><p>"El fichaje, los ratios y la facturación automática nos ahorran más de 6 horas a la semana. Imprescindible."</p><figcaption><span class="av bg-violet-100 text-violet-700">C</span><div><b>Carlos Sanz</b><i>Arco Iris · Valencia</i></div></figcaption></figure>
+      <figure class="quote reveal" style="--d:.2s"><div class="stars">★★★★★</div><p>"Configurarlo fue cuestión de minutos y el soporte en español responde enseguida. Las familias están encantadas con la app."</p><figcaption><span class="av bg-amber-100 text-amber-700">R</span><div><b>Rosa Navarro</b><i>Los Pinos · Zaragoza</i></div></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ PRECIOS ░░ -->
+<section id="precios" class="py-24">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8">
+    <div class="max-w-2xl mx-auto text-center mb-10 reveal">
+      <span class="eyebrow">Precios sin sorpresas</span>
       <h2 class="section-title">Elige el plan de tu centro</h2>
-      <p class="section-sub">Todos incluyen 14 días de prueba gratis. Cancela cuando quieras.</p>
+      <p class="section-sub">14 días de prueba gratis y 30 días de garantía. Cancela cuando quieras.</p>
+      <div class="mt-6 inline-flex flex-col items-center gap-2">
+        <div class="toggle-wrap" id="billing-toggle">
+          <button data-cycle="mensual" class="active">Mensual</button>
+          <button data-cycle="anual">Anual <span class="text-brand-600">-20%</span></button>
+        </div>
+        <span class="text-xs text-ink-400">💚 Con el plan anual ahorras 2 meses al año</span>
+      </div>
     </div>
     <div class="grid md:grid-cols-3 gap-6 items-stretch max-w-5xl mx-auto">
       <div class="price-card reveal">
         <h3 class="price-name">Starter</h3>
         <p class="price-desc">Para centros pequeños que empiezan a digitalizarse.</p>
-        <div class="price-amount">€29<span>/mes</span></div>
+        <div class="price-amount">€<span class="amt" data-m="29" data-a="23">29</span><span>/mes</span></div>
         <ul class="price-list">
-          <li>Hasta 30 alumnos</li><li>Asistencia y actividades</li><li>Portal de familias</li><li>Soporte por email</li>
+          <li>Hasta 30 alumnos</li><li>Asistencia y actividades</li><li>Fotos y chat con familias</li><li>App iOS y Android</li><li>Soporte por email</li>
         </ul>
-        <button class="btn-outline w-full" onclick="elegirPlan('starter')">Empezar</button>
+        <button class="btn-outline w-full" onclick="elegirPlan('starter')">Empezar gratis</button>
       </div>
       <div class="price-card popular reveal" style="--d:.1s">
-        <span class="badge-pop">Más elegido</span>
+        <span class="badge-pop">⭐ Más elegido</span>
         <h3 class="price-name">Pro</h3>
         <p class="price-desc">Todo lo que una guardería necesita en su día a día.</p>
-        <div class="price-amount">€79<span>/mes</span></div>
+        <div class="price-amount">€<span class="amt" data-m="79" data-a="63">79</span><span>/mes</span></div>
         <ul class="price-list">
-          <li>Hasta 100 alumnos</li><li>Bienestar, comidas y baño</li><li>Chat con familias</li><li>Fichaje del personal</li><li>Soporte prioritario</li>
+          <li>Hasta 100 alumnos</li><li>Bienestar, comidas y salud</li><li>Facturación y cobros</li><li>Fichaje y control de ratios</li><li>Matriculación online</li><li>Soporte prioritario &lt; 24h</li>
         </ul>
         <button class="btn-primary w-full" onclick="elegirPlan('pro')">Empezar prueba gratis</button>
       </div>
       <div class="price-card reveal" style="--d:.2s">
         <h3 class="price-name">Enterprise</h3>
         <p class="price-desc">Para grupos con varios centros y necesidades avanzadas.</p>
-        <div class="price-amount">€199<span>/mes</span></div>
+        <div class="price-amount">€<span class="amt" data-m="199" data-a="159">199</span><span>/mes</span></div>
         <ul class="price-list">
-          <li>Alumnos ilimitados</li><li>Múltiples centros</li><li>Informes y exportaciones</li><li>Gestor de cuenta dedicado</li>
+          <li>Alumnos ilimitados</li><li>Múltiples centros</li><li>Informes y exportaciones</li><li>Multi-idioma</li><li>Gestor de cuenta dedicado</li>
         </ul>
         <button class="btn-outline w-full" onclick="elegirPlan('enterprise')">Hablar con ventas</button>
       </div>
     </div>
-    <p class="text-center text-xs text-ink-400 mt-8">💳 Pagos seguros con Stripe · facturación mensual sin permanencia</p>
+    <p class="text-center text-xs text-ink-400 mt-8">💳 Pagos seguros con Stripe · facturación sin permanencia · IVA no incluido</p>
   </div>
 </section>
 
-<!-- ░░ TESTIMONIOS ░░ -->
-<section class="py-24">
-  <div class="max-w-7xl mx-auto px-5 lg:px-8">
-    <div class="max-w-2xl mx-auto text-center mb-14 reveal">
-      <p class="eyebrow">Quien lo usa, lo recomienda</p>
-      <h2 class="section-title">Cuidamos de quien cuida</h2>
-    </div>
-    <div class="grid md:grid-cols-3 gap-6">
-      <figure class="quote reveal"><p>"Hemos eliminado el papeleo. Las familias están encantadas de recibir el parte del día en el móvil."</p><figcaption><span class="av bg-brand-100 text-brand-700">A</span><div><b>Ana García</b><i>Dir. Sol &amp; Luna</i></div></figcaption></figure>
-      <figure class="quote reveal" style="--d:.1s"><p>"El fichaje del personal y los informes nos ahorran horas cada mes. Imprescindible."</p><figcaption><span class="av bg-violet-100 text-violet-700">C</span><div><b>Carlos Sanz</b><i>Arco Iris Valencia</i></div></figcaption></figure>
-      <figure class="quote reveal" style="--d:.2s"><p>"Configurarlo fue cuestión de minutos y el soporte en español responde enseguida."</p><figcaption><span class="av bg-amber-100 text-amber-700">R</span><div><b>Rosa Navarro</b><i>Los Pinos Zaragoza</i></div></figcaption></figure>
+<!-- ░░ GARANTÍA ░░ -->
+<section class="pb-24">
+  <div class="max-w-4xl mx-auto px-5 lg:px-8">
+    <div class="guarantee reveal flex-col sm:flex-row text-center sm:text-left">
+      <div class="seal mx-auto sm:mx-0">🛡️</div>
+      <div>
+        <h3 class="font-display font-extrabold text-xl text-ink-900 mb-1">Garantía de 30 días o te devolvemos el dinero</h3>
+        <p class="text-ink-500 text-sm">Prueba Guardalia sin riesgo. Si en 30 días no ahorras tiempo y tus familias no están más contentas, te devolvemos hasta el último euro. Sin preguntas.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -245,15 +532,16 @@ tailwind.config = {
 <section id="faq" class="py-24 bg-slate-50/60 border-t border-slate-100">
   <div class="max-w-3xl mx-auto px-5 lg:px-8">
     <div class="text-center mb-12 reveal">
-      <p class="eyebrow">Resolvemos tus dudas</p>
+      <span class="eyebrow">Resolvemos tus dudas</span>
       <h2 class="section-title">Preguntas frecuentes</h2>
     </div>
     <div class="space-y-3" id="faq-list">
-      <div class="faq-item"><button class="faq-q">¿Necesito instalar algo?<span>+</span></button><div class="faq-a"><p>No. Guardalia funciona 100% en la nube desde cualquier navegador, ordenador, tablet o móvil. Solo necesitas conexión a internet.</p></div></div>
-      <div class="faq-item"><button class="faq-q">¿Los datos de los niños están seguros?<span>+</span></button><div class="faq-a"><p>Sí. Cada centro tiene sus datos aislados y cifrados en la nube. El acceso está protegido por roles: dirección, profesores y familias ven solo lo que les corresponde.</p></div></div>
-      <div class="faq-item"><button class="faq-q">¿Puedo probarlo antes de pagar?<span>+</span></button><div class="faq-a"><p>Por supuesto. Tienes 14 días de prueba gratuita con todas las funciones y sin necesidad de tarjeta.</p></div></div>
-      <div class="faq-item"><button class="faq-q">¿Cómo se realiza el pago?<span>+</span></button><div class="faq-a"><p>Mediante pago seguro con tarjeta a través de Stripe, con facturación mensual y sin permanencia. Puedes cambiar de plan o cancelar cuando quieras.</p></div></div>
-      <div class="faq-item"><button class="faq-q">¿Las familias también tienen acceso?<span>+</span></button><div class="faq-a"><p>Sí, cada familia accede a un portal privado donde ve únicamente la información de su hijo y puede chatear con el centro.</p></div></div>
+      <div class="faq-item"><button class="faq-q">¿Necesito instalar algo?<span>+</span></button><div class="faq-a"><p>No. Guardalia funciona 100% en la nube desde cualquier navegador, y además tiene app para iOS y Android. Solo necesitas conexión a internet.</p></div></div>
+      <div class="faq-item"><button class="faq-q">¿Los datos de los niños están seguros y cumple el RGPD?<span>+</span></button><div class="faq-a"><p>Sí. Cada centro tiene sus datos aislados y cifrados en la nube, con copias de seguridad automáticas y pleno cumplimiento del RGPD. El acceso está protegido por roles: dirección, profesores y familias ven solo lo que les corresponde.</p></div></div>
+      <div class="faq-item"><button class="faq-q">¿Puedo probarlo antes de pagar?<span>+</span></button><div class="faq-a"><p>Por supuesto. Tienes 14 días de prueba gratuita con todas las funciones, sin necesidad de tarjeta, y 30 días de garantía de devolución.</p></div></div>
+      <div class="faq-item"><button class="faq-q">¿Cuánto se tarda en poner en marcha el centro?<span>+</span></button><div class="faq-a"><p>Menos de 24 horas. Te ayudamos a importar tus alumnos y aulas, e incluimos formación inicial gratuita para tu equipo.</p></div></div>
+      <div class="faq-item"><button class="faq-q">¿Cómo se realiza el pago?<span>+</span></button><div class="faq-a"><p>Mediante pago seguro con tarjeta o domiciliación a través de Stripe, con facturación mensual o anual y sin permanencia. Puedes cambiar de plan o cancelar cuando quieras.</p></div></div>
+      <div class="faq-item"><button class="faq-q">¿Las familias también tienen acceso?<span>+</span></button><div class="faq-a"><p>Sí, cada familia accede a una app privada donde ve únicamente la información de su hijo: fotos, parte del día, facturas y un chat directo con el centro.</p></div></div>
     </div>
   </div>
 </section>
@@ -261,16 +549,19 @@ tailwind.config = {
 <!-- ░░ CONTACTO / LEAD ░░ -->
 <section id="contacto" class="py-24">
   <div class="max-w-5xl mx-auto px-5 lg:px-8">
-    <div class="cta-card reveal">
-      <div class="grid lg:grid-cols-2">
+    <div class="cta-card reveal relative">
+      <div class="aurora"></div>
+      <div class="grid lg:grid-cols-2 relative z-10">
         <div class="p-8 lg:p-12 text-white">
           <h2 class="font-display font-extrabold text-3xl lg:text-4xl leading-tight">Empieza hoy tu prueba gratis</h2>
-          <p class="mt-4 text-white/80">Déjanos tus datos y te ayudamos a poner en marcha tu guardería digital. Sin compromiso.</p>
-          <ul class="mt-8 space-y-3 text-white/90 text-sm">
-            <li class="flex gap-3">⚡ Activación en menos de 24h</li>
-            <li class="flex gap-3">🎓 Formación inicial incluida</li>
-            <li class="flex gap-3">🇪🇸 Soporte en español</li>
+          <p class="mt-4 text-white/80">Déjanos tus datos y te ayudamos a poner en marcha tu guardería digital en menos de 24h. Sin tarjeta, sin compromiso.</p>
+          <ul class="mt-8 space-y-3">
+            <li class="check on-dark">14 días gratis + 30 días de garantía</li>
+            <li class="check on-dark">Migración de tus datos incluida</li>
+            <li class="check on-dark">Formación inicial para tu equipo</li>
+            <li class="check on-dark">Soporte en español &lt; 24h</li>
           </ul>
+          <p class="mt-8 text-white/70 text-sm">¿Prefieres hablar? <a href="mailto:hola@guardalia.com" class="underline font-semibold text-white">hola@guardalia.com</a></p>
         </div>
         <div class="bg-white p-8 lg:p-10 rounded-3xl m-1.5">
           <form id="lead-form" class="space-y-3">
@@ -290,8 +581,8 @@ tailwind.config = {
             </div>
             <div><label class="lbl">Mensaje</label><textarea name="mensaje" rows="2" class="inp resize-none" placeholder="Cuéntanos sobre tu centro…"></textarea></div>
             <div id="lead-msg" class="hidden text-sm rounded-xl px-4 py-2.5"></div>
-            <button type="submit" id="lead-submit" class="btn-primary w-full">Solicitar prueba gratis</button>
-            <p class="text-[11px] text-ink-400 text-center">Al enviar aceptas que te contactemos sobre Guardalia.</p>
+            <button type="submit" id="lead-submit" class="btn-primary w-full text-base">Solicitar prueba gratis →</button>
+            <p class="text-[11px] text-ink-400 text-center">🔒 Tus datos están seguros. Al enviar aceptas que te contactemos sobre Guardalia.</p>
           </form>
         </div>
       </div>
@@ -306,25 +597,38 @@ tailwind.config = {
       <div class="flex items-center gap-2 font-display font-extrabold text-lg text-white mb-3">
         <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 grid place-items-center">🌱</span> Guardalia
       </div>
-      <p class="text-sm max-w-sm">El software todo-en-uno para guarderías y escuelas infantiles. Cuidamos de quien cuida.</p>
+      <p class="text-sm max-w-sm">El software de gestión infantil todo-en-uno para guarderías y escuelas infantiles. Cuidamos de quien cuida.</p>
+      <p class="text-xs text-white/40 mt-4">🔒 RGPD · 💳 Pagos seguros con Stripe · 🇪🇸 Soporte en español</p>
     </div>
     <div>
       <p class="footer-h">Producto</p>
       <a href="#features" class="footer-l">Funciones</a>
+      <a href="#comparativa" class="footer-l">Comparativa</a>
       <a href="#precios" class="footer-l">Precios</a>
-      <a href="/app/?cliente=demo" target="_blank" class="footer-l">Demo en vivo</a>
+      <a href="/blog/" class="footer-l">Blog</a>
+      <a href="/app/?cliente=demo" target="_blank" rel="noopener" class="footer-l">Demo en vivo</a>
       <a href="/panel/" class="footer-l">Panel de gestión</a>
     </div>
     <div>
       <p class="footer-h">Contacto</p>
       <a href="#contacto" class="footer-l">Prueba gratis</a>
-      <a href="mailto:hola@guardalia.app" class="footer-l">hola@guardalia.app</a>
+      <a href="mailto:hola@guardalia.com" class="footer-l">hola@guardalia.com</a>
     </div>
   </div>
   <div class="border-t border-white/10 py-6 text-center text-xs text-white/40">© 2026 Guardalia · Hecho con 💚 para las guarderías</div>
 </footer>
 
+<!-- ░░ BARRA CTA MÓVIL ░░ -->
+<div class="mobile-cta">
+  <a href="/app/?cliente=demo" target="_blank" rel="noopener" class="btn-ghost flex-1 !py-3">Ver demo</a>
+  <a href="#contacto" class="btn-primary flex-1 !py-3">Prueba gratis →</a>
+</div>
+
+<!-- Botón flotante -->
+<a href="#contacto" class="fab" aria-label="Contactar">💬</a>
+
 <script src="js/supabase.js"></script>
 <script src="js/main.js"></script>
+<script src="js/effects.js"></script>
 </body>
 </html>

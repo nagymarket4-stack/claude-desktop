@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Áreas privadas de la aplicación (no aportan valor SEO)
+Disallow: /app/
+Disallow: /panel/
+
+Sitemap: https://guardalia.com/sitemap.xml

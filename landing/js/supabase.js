@@ -24,3 +24,28 @@ async function enviarLead(datos) {
   if (error) throw error;
   return true;
 }
+
+// Crea la guardería en prueba (tenant + acceso superadmin + email) vía Edge Function.
+// Devuelve { ok, url, usuario, password, trial_fin } o null si no está disponible.
+async function crearTrialRemoto(datos) {
+  try {
+    const resp = await fetch(`${SB_URL}/functions/v1/crear-trial`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY, 'apikey': SB_KEY },
+      body: JSON.stringify({
+        nombre:   datos.centro || datos.nombre || '',
+        contacto: datos.nombre || '',
+        email:    datos.email || '',
+        telefono: datos.telefono || '',
+        ciudad:   datos.ciudad || '',
+        plan:     datos.plan_interes || 'pro',
+      }),
+    });
+    const data = await resp.json();
+    if (!resp.ok || !data.ok) throw new Error(data.error || 'Error creando la guardería');
+    return data;
+  } catch (e) {
+    console.warn('No se pudo crear el trial automáticamente:', e.message);
+    return null;
+  }
+}

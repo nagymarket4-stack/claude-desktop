@@ -98,8 +98,9 @@ async function cargarDeSupabase() {
   if (faltan.length) await sb.from('app_data').upsert(faltan);
 
   const { data: msgs } = await sb.from('mensajes').select('*').eq('tenant', TENANT).order('id');
-  if (!msgs || msgs.length === 0) await sembrarMensajes();
-  else reconstruirMensajes(msgs);
+  if (msgs && msgs.length) reconstruirMensajes(msgs);
+  else if (TENANT === 'demo') await sembrarMensajes();  // solo el demo arranca con mensajes de muestra
+  else state.mensajes = {};                              // cliente real: chat vacío
 }
 
 async function sembrarMensajes() {

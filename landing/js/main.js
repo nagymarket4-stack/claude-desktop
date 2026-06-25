@@ -41,17 +41,41 @@ form.addEventListener('submit', async (e) => {
     mostrarMsg('Por favor, completa tu nombre y email.', 'err'); return;
   }
 
-  btn.disabled = true; btn.textContent = 'Enviando…';
+  btn.disabled = true; btn.textContent = 'Creando tu guardería…';
   try {
-    if (typeof enviarLead === 'function') await enviarLead(datos);
+    // Guardar el lead (CRM) sin bloquear el alta si fallara
+    if (typeof enviarLead === 'function') { try { await enviarLead(datos); } catch (_) {} }
+    // Crear la guardería en prueba + accesos
+    let trial = null;
+    if (typeof crearTrialRemoto === 'function') trial = await crearTrialRemoto(datos);
+
     form.reset();
-    mostrarMsg('¡Gracias! Hemos recibido tu solicitud. Te contactaremos en menos de 24h. 🎉', 'ok');
+    if (trial && trial.url) mostrarAcceso(trial);
+    else mostrarMsg('¡Gracias! Hemos recibido tu solicitud. Te contactaremos en menos de 24h. 🎉', 'ok');
   } catch (err) {
     mostrarMsg('No se pudo enviar (¿conexión?). Escríbenos a hola@guardialia.com', 'err');
   } finally {
     btn.disabled = false; btn.textContent = 'Solicitar prueba gratis';
   }
 });
+
+// Muestra el panel de acceso recién creado (con la guardería ya activa)
+function mostrarAcceso(t) {
+  const msg = document.getElementById('lead-msg');
+  if (!msg) return;
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+  msg.className = 'text-sm rounded-xl px-4 py-3 bg-brand-50 text-ink-700 border border-brand-100';
+  msg.innerHTML = `
+    <p class="font-bold text-brand-700 mb-1">🎉 ¡Tu guardería ya está activa!</p>
+    <p class="mb-2">14 días de prueba gratis. Guarda tus datos de acceso:</p>
+    <div class="bg-white rounded-lg p-3 border border-brand-100 space-y-1">
+      <p>🔗 <a href="${esc(t.url)}" target="_blank" rel="noopener" class="text-brand-700 font-semibold underline">Entrar a mi guardería</a></p>
+      <p>👤 Usuario: <b>${esc(t.usuario)}</b></p>
+      <p>🔑 Contraseña: <b>${esc(t.password)}</b></p>
+    </div>
+    <p class="text-[11px] text-ink-400 mt-2">Cámbiala al entrar desde Configuración → Usuarios.${t.emailEnviado ? ' También te la hemos enviado por email.' : ''}</p>`;
+  msg.classList.remove('hidden');
+}
 
 function mostrarMsg(texto, tipo) {
   const msg = document.getElementById('lead-msg');

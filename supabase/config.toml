@@ -5,6 +5,10 @@ project_id = "ylwxsawiixvtjttsogzu"
 [functions.crear-checkout]
 verify_jwt = true
 
+# El alta de trials la llama la landing con la anon key → requiere JWT.
+[functions.crear-trial]
+verify_jwt = true
+
 # El webhook lo llama Stripe (sin JWT) → debe ir sin verificación de JWT.
 # La seguridad la da la firma de Stripe (STRIPE_WEBHOOK_SECRET).
 [functions.stripe-webhook]

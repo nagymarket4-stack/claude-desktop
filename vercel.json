@@ -1,4 +1,8 @@
 {
+  "redirects": [
+    { "source": "/panel", "destination": "/panel/", "permanent": false },
+    { "source": "/app", "destination": "/app/", "permanent": false }
+  ],
   "rewrites": [
     { "source": "/app/(.*)", "destination": "/guarderia/$1" },
     { "source": "/app", "destination": "/guarderia/index.html" },

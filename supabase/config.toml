@@ -13,3 +13,11 @@ verify_jwt = true
 # La seguridad la da la firma de Stripe (STRIPE_WEBHOOK_SECRET).
 [functions.stripe-webhook]
 verify_jwt = false
+
+# Campaña de prospección: la disparas tú (cron/curl). La protege CAMPANA_SECRET.
+[functions.enviar-campana]
+verify_jwt = false
+
+# Baja/unsubscribe: enlace público desde el email.
+[functions.baja]
+verify_jwt = false

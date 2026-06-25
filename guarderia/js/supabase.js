@@ -38,9 +38,9 @@ function diasTrialRestantes() {
 }
 
 // Llama a la Edge Function para crear la sesión de pago y redirige a Stripe
-async function iniciarPagoSuscripcion() {
+async function iniciarPagoSuscripcion(planOverride) {
   if (!sb) return;
-  const plan = SUSCRIPCION?.plan || 'pro';
+  const plan = planOverride || SUSCRIPCION?.plan || 'pro';
   const email = SUSCRIPCION?.email || '';
   try {
     const resp = await fetch(`${SB_URL}/functions/v1/crear-checkout`, {

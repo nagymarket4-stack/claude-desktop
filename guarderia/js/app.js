@@ -65,6 +65,19 @@ function navigate(page) {
   if (sesionActual && !puedeAcceder(page)) {
     page = sesionActual.rol === 'padre' ? 'padre-inicio' : 'dashboard';
   }
+  // Control por plan: si el plan del centro no incluye la función, muro de mejora
+  if (sesionActual && typeof tieneAccesoPlan === 'function' && !tieneAccesoPlan(page)) {
+    state.currentPage = page;
+    if (!document.getElementById('page-' + page)) {
+      const d = document.createElement('div'); d.id = 'page-' + page; d.className = 'page';
+      document.getElementById('main-content').appendChild(d);
+    }
+    muroUpgrade(page);
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+    const t = document.getElementById('top-bar-title'); if (t) t.textContent = PAGE_TITLES[page] || page;
+    closeSidebar();
+    return;
+  }
   state.currentPage = page;
 
   // Al entrar a mensajes desde el menú, mostrar la lista (no un chat abierto) en móvil
@@ -98,9 +111,12 @@ function navigate(page) {
 
 // ─── Sidebar nav por rol ──────────────────────────────────────────────────────
 function navItem(page, icon, label, extra='') {
+  const locked = (typeof tieneAccesoPlan === 'function') && sesionActual && !tieneAccesoPlan(page);
+  const click  = locked ? `muroUpgrade('${page}')` : `navigate('${page}')`;
+  const candado = locked ? `<span class="ml-auto text-amber-300 text-base" title="Mejora tu plan para desbloquear">🔒</span>` : '';
   return `
-    <button onclick="navigate('${page}')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="${page}">
-      <span class="text-xl w-7 text-center">${icon}</span> ${label}${extra}
+    <button onclick="${click}" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900 ${locked ? 'opacity-70' : ''}" data-page="${page}">
+      <span class="text-xl w-7 text-center">${icon}</span> ${label}${extra}${candado}
     </button>`;
 }
 function navSep(titulo) {

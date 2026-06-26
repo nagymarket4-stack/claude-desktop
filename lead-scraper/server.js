@@ -76,6 +76,45 @@ app.post('/api/search', (req, res) => {
   res.json({ id: job.id });
 });
 
+// --- Diagnóstico: IP de salida, clave usada y respuesta cruda de Google ---
+app.get('/api/diag', async (req, res) => {
+  const out = {
+    keyConfigured: Boolean(API_KEY),
+    keyLength: API_KEY ? API_KEY.length : 0,
+    keyLast4: API_KEY ? API_KEY.slice(-4) : null,
+    keyHasSpaces: API_KEY ? /\s/.test(API_KEY) : false,
+  };
+
+  // IP de salida real de este servidor (la que ve Google).
+  try {
+    const ipRes = await fetch('https://api.ipify.org?format=json', { signal: AbortSignal.timeout(8000) });
+    out.outboundIp = (await ipRes.json()).ip;
+  } catch (e) {
+    out.outboundIp = 'error: ' + e.message;
+  }
+
+  // Petición mínima a Places para ver la respuesta tal cual.
+  try {
+    const r = await fetch('https://places.googleapis.com/v1/places:searchText', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': API_KEY || '',
+        'X-Goog-FieldMask': 'places.displayName',
+      },
+      body: JSON.stringify({ textQuery: 'escuela infantil en Madrid', languageCode: 'es', regionCode: 'ES' }),
+      signal: AbortSignal.timeout(15000),
+    });
+    out.placesStatus = r.status;
+    out.placesContentType = r.headers.get('content-type');
+    out.placesBodyPreview = (await r.text()).slice(0, 400);
+  } catch (e) {
+    out.placesError = e.message;
+  }
+
+  res.json(out);
+});
+
 // --- Estado / progreso ---
 app.get('/api/jobs/:id', (req, res) => {
   const job = getJob(req.params.id);

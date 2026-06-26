@@ -280,6 +280,12 @@ function guardarAlumno() {
   const tel    = document.getElementById('nuevo-tel').value.trim();
   const errEl  = document.getElementById('modal-alumno-error');
 
+  // Tope de alumnos según el plan contratado
+  if (typeof bloquearPorLimite === 'function' && bloquearPorLimite('alumnos')) {
+    cerrarModal('modal-alumno');
+    return;
+  }
+
   if (!SOLO_TEXTO.test(nombre)) {
     errEl.textContent = 'Nombre inválido (solo letras, 2-80 caracteres).';
     errEl.classList.remove('hidden'); return;

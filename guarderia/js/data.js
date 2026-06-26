@@ -145,6 +145,65 @@ const MENSAJES_INIT = {
   4: [], 5: [], 6: [], 7: [], 8: [],
 };
 
+// ─── Facturación (recibos por alumno) ─────────────────────────────────────────
+// estado: 'pendiente' | 'pagada'
+const FACTURAS_INIT = [
+  { id:'F-1001', alumnoId:1, concepto:'Cuota mensual', periodo:'Junio 2026', importe:295, estado:'pagada',    fecha:'2026-06-01', fechaPago:'2026-06-03' },
+  { id:'F-1002', alumnoId:2, concepto:'Cuota mensual', periodo:'Junio 2026', importe:295, estado:'pendiente', fecha:'2026-06-01', fechaPago:null },
+  { id:'F-1003', alumnoId:3, concepto:'Cuota mensual + comedor', periodo:'Junio 2026', importe:360, estado:'pendiente', fecha:'2026-06-01', fechaPago:null },
+];
+
+// ─── Comunicados y encuestas a las familias ──────────────────────────────────
+// encuesta (opcional): { opciones:[{ texto, votos:[userId] }] }
+const COMUNICADOS_INIT = [
+  { id:1, titulo:'Cierre por festivo local', texto:'El próximo viernes 26 el centro permanecerá cerrado por festivo local. ¡Buen puente!', fecha:'2026-06-22', grupo:'Todos', autor:'Dirección', encuesta:null },
+  { id:2, titulo:'Excursión a la granja escuela', texto:'Estamos organizando una excursión a la granja. ¿Qué día os viene mejor?', fecha:'2026-06-20', grupo:'Todos', autor:'Dirección',
+    encuesta:{ opciones:[ {texto:'Martes 1 de julio', votos:[]}, {texto:'Jueves 3 de julio', votos:[]} ] } },
+];
+
+// ─── Calendario / eventos ────────────────────────────────────────────────────
+const EVENTOS_INIT = [
+  { id:1, titulo:'Reunión de familias', fecha:'2026-06-30', hora:'17:00', descripcion:'Reunión trimestral con las tutoras de cada grupo.', grupo:'Todos' },
+  { id:2, titulo:'Fiesta de fin de curso', fecha:'2026-07-10', hora:'18:00', descripcion:'Actuación de los peques y merienda compartida en el patio.', grupo:'Todos' },
+];
+
+// ─── Menú semanal del comedor ────────────────────────────────────────────────
+const MENUS_INIT = {
+  actualizado: '2026-06-22',
+  dias: {
+    lunes:     { comida:'Lentejas con verduras y pollo',     postre:'Fruta de temporada' },
+    martes:    { comida:'Crema de calabacín y merluza',       postre:'Yogur natural' },
+    miercoles: { comida:'Arroz a la cubana',                  postre:'Plátano' },
+    jueves:    { comida:'Pasta boloñesa de pavo',             postre:'Pera' },
+    viernes:   { comida:'Pescado al horno con patata',        postre:'Macedonia' },
+  },
+};
+
+// ─── Desarrollo / informes pedagógicos (por alumno) ──────────────────────────
+// area: 'Lenguaje'|'Motricidad'|'Social'|'Autonomía'|'Cognitivo' · hito: marca un logro
+const DESARROLLO_INIT = {
+  1: [
+    { id:1, fecha:'2026-06-18', area:'Lenguaje',   texto:'Construye frases de 3-4 palabras y nombra colores básicos.', autor:'Carmen Rodríguez', hito:true },
+    { id:2, fecha:'2026-06-10', area:'Autonomía',  texto:'Empieza a comer sola con la cuchara sin ayuda.', autor:'Carmen Rodríguez', hito:false },
+  ],
+  2: [
+    { id:1, fecha:'2026-06-15', area:'Motricidad', texto:'Salta con los dos pies juntos y sube escaleras alternando.', autor:'Marta Jiménez', hito:true },
+  ],
+};
+
+// ─── Matrículas online y lista de espera ─────────────────────────────────────
+// estado: 'nueva' | 'lista_espera' | 'aceptada' | 'rechazada'
+const MATRICULAS_INIT = [
+  { id:1, nino:'Hugo Navarro',  edad:2, tutor:'Elena Navarro', email:'elena.navarro@email.com', telefono:'611 222 333', grupo:'Conejitos', estado:'nueva',        fecha:'2026-06-21', notas:'' },
+  { id:2, nino:'Lía Romero',    edad:1, tutor:'David Romero',  email:'david.romero@email.com',  telefono:'622 333 444', grupo:'Ositos',    estado:'lista_espera', fecha:'2026-06-19', notas:'Sin plaza en Ositos hasta septiembre.' },
+];
+
+// ─── Salud: alergias, medicación y personas autorizadas (por alumno) ─────────
+const SALUD_INIT = {
+  1: { alergias:'Alergia a los frutos secos', medicacion:[], autorizados:[ {id:'a1', nombre:'Lucía Martínez', relacion:'Abuela', dni:'12345678Z', tel:'699 111 222'} ] },
+  2: { alergias:'', medicacion:[ {id:'m1', nombre:'Jarabe (tos)', dosis:'5 ml', hora:'13:00', obs:'Solo si tiene tos, hasta el viernes.'} ], autorizados:[] },
+};
+
 // ─── Estado global ────────────────────────────────────────────────────────────
 let state = {
   alumnos:    JSON.parse(JSON.stringify(ALUMNOS)),
@@ -156,6 +215,13 @@ let state = {
   usuarios:   JSON.parse(JSON.stringify(USUARIOS_INIT)),
   fichajes:   [],   // registro de entradas/salidas de profesores (solo superadmin)
   bano:       {},   // registro de baño/pañales por alumno: { alumnoId: [ {id,tipo,obs,hora,fecha} ] }
+  facturas:    JSON.parse(JSON.stringify(FACTURAS_INIT)),
+  comunicados: JSON.parse(JSON.stringify(COMUNICADOS_INIT)),
+  eventos:     JSON.parse(JSON.stringify(EVENTOS_INIT)),
+  menus:       JSON.parse(JSON.stringify(MENUS_INIT)),
+  desarrollo:  JSON.parse(JSON.stringify(DESARROLLO_INIT)),
+  matriculas:  JSON.parse(JSON.stringify(MATRICULAS_INIT)),
+  salud:       JSON.parse(JSON.stringify(SALUD_INIT)),
   currentPage:       'dashboard',
   familiaAlumnoId:   1,
   chatAlumnoId:      1,

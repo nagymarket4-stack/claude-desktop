@@ -15,7 +15,8 @@ try {
 } catch (e) { console.warn('No se pudo iniciar Supabase:', e); }
 
 // Datos generales que viven en la tabla app_data (clave-valor JSON)
-const DATA_KEYS = ['alumnos', 'profesores', 'actividades', 'bienestar', 'familias', 'usuarios', 'fichajes', 'bano'];
+const DATA_KEYS = ['alumnos', 'profesores', 'actividades', 'bienestar', 'familias', 'usuarios', 'fichajes', 'bano',
+  'facturas', 'comunicados', 'eventos', 'menus', 'desarrollo', 'matriculas', 'salud'];
 
 function supabaseActivo() { return !!sb; }
 
@@ -37,9 +38,9 @@ function diasTrialRestantes() {
 }
 
 // Llama a la Edge Function para crear la sesión de pago y redirige a Stripe
-async function iniciarPagoSuscripcion() {
+async function iniciarPagoSuscripcion(planOverride) {
   if (!sb) return;
-  const plan = SUSCRIPCION?.plan || 'pro';
+  const plan = planOverride || SUSCRIPCION?.plan || 'pro';
   const email = SUSCRIPCION?.email || '';
   try {
     const resp = await fetch(`${SB_URL}/functions/v1/crear-checkout`, {
@@ -86,6 +87,8 @@ async function cargarDeSupabase() {
   const defaults = {
     alumnos: ALUMNOS, profesores: PROFESORES, actividades: ACTIVIDADES,
     bienestar: BIENESTAR_INIT, familias: FAMILIAS_INIT, usuarios: USUARIOS_INIT,
+    facturas: FACTURAS_INIT, comunicados: COMUNICADOS_INIT, eventos: EVENTOS_INIT,
+    menus: MENUS_INIT, desarrollo: DESARROLLO_INIT, matriculas: MATRICULAS_INIT, salud: SALUD_INIT,
   };
   const faltan = [];
   for (const [k, v] of Object.entries(defaults)) {
@@ -95,8 +98,9 @@ async function cargarDeSupabase() {
   if (faltan.length) await sb.from('app_data').upsert(faltan);
 
   const { data: msgs } = await sb.from('mensajes').select('*').eq('tenant', TENANT).order('id');
-  if (!msgs || msgs.length === 0) await sembrarMensajes();
-  else reconstruirMensajes(msgs);
+  if (msgs && msgs.length) reconstruirMensajes(msgs);
+  else if (TENANT === 'demo') await sembrarMensajes();  // solo el demo arranca con mensajes de muestra
+  else state.mensajes = {};                              // cliente real: chat vacío
 }
 
 async function sembrarMensajes() {

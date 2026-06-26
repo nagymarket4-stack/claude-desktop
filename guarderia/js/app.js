@@ -9,7 +9,11 @@ const PAGE_TITLES = {
   dashboard:'Dashboard', alumnos:'Alumnos', profesores:'Profesores',
   actividades:'Actividades', bienestar:'Bienestar', bano:'Baño y pañales', mensajes:'Mensajes',
   familias:'Portal Familias', configuracion:'Configuración', fichajes:'Registro de fichajes',
+  desarrollo:'Desarrollo e informes', salud:'Salud y autorizaciones', facturacion:'Facturación',
+  matriculas:'Matrículas', comunicados:'Comunicados', eventos:'Calendario', menus:'Menú del comedor',
   'padre-inicio':'Inicio', 'padre-actividades':'Actividades', 'padre-mensajes':'Mensajes',
+  'padre-informes':'Informes', 'padre-facturas':'Facturas', 'padre-agenda':'Calendario y menú',
+  'padre-comunicados':'Comunicados',
 };
 
 const RENDERERS = {
@@ -23,12 +27,57 @@ const RENDERERS = {
   familias:            () => renderFamilias(),
   configuracion:       () => renderConfiguracion(),
   fichajes:            () => renderFichajes(),
+  desarrollo:          () => renderDesarrollo(),
+  salud:               () => renderSalud(),
+  facturacion:         () => renderFacturacion(),
+  matriculas:          () => renderMatriculas(),
+  comunicados:         () => renderComunicados(),
+  eventos:             () => renderEventos(),
+  menus:               () => renderMenus(),
   'padre-inicio':      () => renderPadreInicio(),
   'padre-actividades': () => renderPadreActividades(),
   'padre-mensajes':    () => renderPadreMensajes(),
+  'padre-informes':    () => renderPadreInformes(),
+  'padre-facturas':    () => renderPadreFacturas(),
+  'padre-agenda':      () => renderPadreAgenda(),
+  'padre-comunicados': () => renderPadreComunicados(),
 };
 
+// ─── Helpers de rol (control de acceso) ───────────────────────────────────────
+function esSuperadmin() { return sesionActual?.rol === 'superadmin'; }
+function esAdmin()      { return sesionActual?.rol === 'admin' || sesionActual?.rol === 'superadmin'; }
+function esStaff()      { return sesionActual && sesionActual.rol !== 'padre'; }
+
+// Páginas permitidas por rol. Bloquea la navegación a páginas no autorizadas.
+const ACCESO_PAGINAS = {
+  superadmin: ['dashboard','alumnos','profesores','actividades','bienestar','bano','desarrollo','salud','mensajes','familias','facturacion','matriculas','comunicados','eventos','menus','fichajes','configuracion'],
+  admin:      ['dashboard','alumnos','profesores','actividades','bienestar','bano','desarrollo','salud','mensajes','familias','facturacion','matriculas','comunicados','eventos','menus'],
+  profesor:   ['dashboard','alumnos','actividades','bienestar','bano','desarrollo','salud','mensajes','familias'],
+  padre:      ['padre-inicio','padre-actividades','padre-mensajes','padre-informes','padre-facturas','padre-agenda','padre-comunicados'],
+};
+function puedeAcceder(page) {
+  const permitidas = ACCESO_PAGINAS[sesionActual?.rol];
+  return !permitidas || permitidas.includes(page);
+}
+
 function navigate(page) {
+  // Control de acceso por rol: si no está permitida, redirige al inicio del rol
+  if (sesionActual && !puedeAcceder(page)) {
+    page = sesionActual.rol === 'padre' ? 'padre-inicio' : 'dashboard';
+  }
+  // Control por plan: si el plan del centro no incluye la función, muro de mejora
+  if (sesionActual && typeof tieneAccesoPlan === 'function' && !tieneAccesoPlan(page)) {
+    state.currentPage = page;
+    if (!document.getElementById('page-' + page)) {
+      const d = document.createElement('div'); d.id = 'page-' + page; d.className = 'page';
+      document.getElementById('main-content').appendChild(d);
+    }
+    muroUpgrade(page);
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+    const t = document.getElementById('top-bar-title'); if (t) t.textContent = PAGE_TITLES[page] || page;
+    closeSidebar();
+    return;
+  }
   state.currentPage = page;
 
   // Al entrar a mensajes desde el menú, mostrar la lista (no un chat abierto) en móvil
@@ -61,59 +110,61 @@ function navigate(page) {
 }
 
 // ─── Sidebar nav por rol ──────────────────────────────────────────────────────
+function navItem(page, icon, label, extra='') {
+  const locked = (typeof tieneAccesoPlan === 'function') && sesionActual && !tieneAccesoPlan(page);
+  const click  = locked ? `muroUpgrade('${page}')` : `navigate('${page}')`;
+  const candado = locked ? `<span class="ml-auto text-amber-300 text-base" title="Mejora tu plan para desbloquear">🔒</span>` : '';
+  return `
+    <button onclick="${click}" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900 ${locked ? 'opacity-70' : ''}" data-page="${page}">
+      <span class="text-xl w-7 text-center">${icon}</span> ${label}${extra}${candado}
+    </button>`;
+}
+function navSep(titulo) {
+  return `<p class="px-4 pt-4 pb-1 text-[11px] font-semibold uppercase tracking-wider text-green-400/80">${titulo}</p>`;
+}
+
 function renderSidebarStaff() {
   const nav = document.getElementById('sidebar-nav');
-  const esSuperAdmin = sesionActual?.rol === 'superadmin';
+  const admin  = esAdmin();
+  const sadmin = esSuperadmin();
+  const badge = `<span id="badge-mensajes" class="ml-auto bg-green-400 text-green-900 text-xs font-bold rounded-full px-1.5 py-0.5 hidden">0</span>`;
   nav.innerHTML = `
-    <button onclick="navigate('dashboard')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="dashboard">
-      <span class="text-xl w-7 text-center">🏠</span> Dashboard
-    </button>
-    <button onclick="navigate('alumnos')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="alumnos">
-      <span class="text-xl w-7 text-center">👦</span> Alumnos
-    </button>
-    <button onclick="navigate('profesores')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="profesores">
-      <span class="text-xl w-7 text-center">👩‍🏫</span> Profesores
-    </button>
-    <button onclick="navigate('actividades')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="actividades">
-      <span class="text-xl w-7 text-center">🎨</span> Actividades
-    </button>
-    <button onclick="navigate('bienestar')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="bienestar">
-      <span class="text-xl w-7 text-center">💛</span> Bienestar
-    </button>
-    <button onclick="navigate('bano')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="bano">
-      <span class="text-xl w-7 text-center">🚽</span> Baño y pañales
-    </button>
-    <button onclick="navigate('mensajes')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="mensajes">
-      <span class="text-xl w-7 text-center">💬</span> Mensajes
-      <span id="badge-mensajes" class="ml-auto bg-green-400 text-green-900 text-xs font-bold rounded-full px-1.5 py-0.5 hidden">0</span>
-    </button>
-    <button onclick="navigate('familias')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="familias">
-      <span class="text-xl w-7 text-center">👨‍👩‍👧</span> Portal Familias
-    </button>
-    ${esSuperAdmin ? `
-    <div class="border-t border-green-700 my-2"></div>
-    <button onclick="navigate('fichajes')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="fichajes">
-      <span class="text-xl w-7 text-center">🕓</span> Fichajes
-    </button>
-    <button onclick="navigate('configuracion')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="configuracion">
-      <span class="text-xl w-7 text-center">⚙️</span> Configuración
-    </button>` : ''}
+    ${navItem('dashboard','🏠','Dashboard')}
+    ${navSep('Día a día')}
+    ${navItem('alumnos','👦','Alumnos')}
+    ${navItem('actividades','🎨','Actividades')}
+    ${navItem('bienestar','💛','Bienestar')}
+    ${navItem('bano','🚽','Baño y pañales')}
+    ${navItem('desarrollo','📈','Desarrollo')}
+    ${navItem('salud','🩺','Salud')}
+    ${navItem('mensajes','💬','Mensajes', badge)}
+    ${navItem('familias','👨‍👩‍👧','Portal Familias')}
+    ${admin ? `
+    ${navSep('Gestión')}
+    ${navItem('facturacion','💳','Facturación')}
+    ${navItem('matriculas','📋','Matrículas')}
+    ${navItem('comunicados','📣','Comunicados')}
+    ${navItem('eventos','📅','Calendario')}
+    ${navItem('menus','🍽️','Menú comedor')}
+    ${navItem('profesores','👩‍🏫','Profesores')}` : ''}
+    ${sadmin ? `
+    ${navSep('Dirección')}
+    ${navItem('fichajes','🕓','Fichajes')}
+    ${navItem('configuracion','⚙️','Configuración')}` : ''}
   `;
 }
 
 function renderSidebarPadres() {
   const nav = document.getElementById('sidebar-nav');
+  const badge = `<span id="badge-mensajes" class="ml-auto bg-green-400 text-green-900 text-xs font-bold rounded-full px-1.5 py-0.5 hidden">0</span>`;
   nav.innerHTML = `
-    <button onclick="navigate('padre-inicio')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="padre-inicio">
-      <span class="text-xl w-7 text-center">🏠</span> Inicio
-    </button>
-    <button onclick="navigate('padre-actividades')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="padre-actividades">
-      <span class="text-xl w-7 text-center">🎨</span> Actividades
-    </button>
-    <button onclick="navigate('padre-mensajes')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-medium transition-all hover:bg-green-700 active:bg-green-900" data-page="padre-mensajes">
-      <span class="text-xl w-7 text-center">💬</span> Mensajes
-      <span id="badge-mensajes" class="ml-auto bg-green-400 text-green-900 text-xs font-bold rounded-full px-1.5 py-0.5 hidden">0</span>
-    </button>
+    ${navItem('padre-inicio','🏠','Inicio')}
+    ${navItem('padre-actividades','🎨','Actividades')}
+    ${navItem('padre-informes','📈','Informes')}
+    ${navItem('padre-agenda','📅','Calendario y menú')}
+    ${navItem('padre-comunicados','📣','Comunicados')}
+    ${navItem('padre-facturas','💳','Facturas')}
+    ${navItem('padre-mensajes','💬','Mensajes', badge)}
   `;
 }
 
@@ -284,7 +335,8 @@ function aplicarConfiguracion() {
 const _tnt = (typeof TENANT !== 'undefined' ? TENANT : 'demo');
 const LS_STATE  = 'guarderia_state_v1_' + _tnt;
 const LS_SESION = 'guarderia_sesion_v1_' + _tnt;
-const CLAVES_COMPARTIDAS = ['alumnos','profesores','actividades','bienestar','familias','mensajes','usuarios','fichajes','bano'];
+const CLAVES_COMPARTIDAS = ['alumnos','profesores','actividades','bienestar','familias','mensajes','usuarios','fichajes','bano',
+  'facturas','comunicados','eventos','menus','desarrollo','matriculas','salud'];
 
 // Guarda datos compartidos + sesión en localStorage
 function persistir() {

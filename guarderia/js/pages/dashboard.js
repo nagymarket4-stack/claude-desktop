@@ -5,6 +5,12 @@ function renderDashboard() {
   const profActivos = state.profesores.filter(p => p.estado === 'fichado').length;
   const actHoy      = state.actividades.filter(a => a.fecha.startsWith('Hoy')).length;
 
+  // Control de ratios: niños presentes por educador (referencia legal orientativa 1:8)
+  const RATIO_MAX = 8;
+  const ratio     = profActivos > 0 ? (presentes / profActivos) : presentes;
+  const ratioOk   = profActivos > 0 && ratio <= RATIO_MAX;
+  const ratioTxt  = profActivos > 0 ? `1 : ${ratio.toFixed(1).replace('.0','')}` : 'Sin personal fichado';
+
   document.getElementById('page-dashboard').innerHTML = `
     <div class="p-4 md:p-8">
       <div class="mb-6 md:mb-8">
@@ -17,6 +23,22 @@ function renderDashboard() {
         ${statCard('🚪','Fuera del centro', fuera, 'bg-amber-50','text-amber-700','text-amber-600')}
         ${statCard('😴','Ausentes', ausentes, 'bg-yellow-50','text-yellow-700','text-yellow-600')}
         ${statCard('👩‍🏫','Profesores activos', profActivos, 'bg-blue-50','text-blue-700','text-blue-600')}
+      </div>
+
+      <div class="card p-5 mb-8 ${ratioOk ? 'bg-green-50' : 'bg-amber-50'}">
+        <div class="flex items-center gap-4">
+          <span class="text-3xl">${ratioOk ? '✅' : '⚠️'}</span>
+          <div class="flex-1">
+            <p class="font-semibold text-gray-800">Control de ratios · ${esc(ratioTxt)}</p>
+            <p class="text-xs ${ratioOk ? 'text-green-700' : 'text-amber-700'} mt-0.5">
+              ${profActivos > 0
+                ? (ratioOk
+                    ? `Dentro de ratio: ${presentes} niños / ${profActivos} educadores (máx. orientativo 1:${RATIO_MAX}).`
+                    : `Fuera de ratio: ${presentes} niños / ${profActivos} educadores. Refuerza el personal presente.`)
+                : 'No hay personal fichado. Registra la entrada del equipo en Fichajes.'}
+            </p>
+          </div>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">

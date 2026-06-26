@@ -117,6 +117,21 @@ function renderPadreInicio() {
     </div>`;
     })()}
 
+    ${(() => {
+      const s = (state.salud && state.salud[hijo.id]) || {};
+      const tieneAlgo = (s.alergias && s.alergias.trim()) || (s.medicacion && s.medicacion.length) || (s.autorizados && s.autorizados.length);
+      if (!tieneAlgo) return '';
+      return `
+    <div class="px-5 pb-4 pt-2 border-t border-gray-50">
+      <p class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">🩺 Salud y recogida</p>
+      <div class="flex flex-col gap-2 text-sm">
+        ${s.alergias && s.alergias.trim() ? `<div class="bg-red-50 rounded-lg px-3 py-2 text-red-700">🥜 <b>Alergias:</b> ${esc(s.alergias)}</div>` : ''}
+        ${(s.medicacion || []).map(m => `<div class="bg-gray-50 rounded-lg px-3 py-2 text-gray-700">💊 ${esc(m.nombre)}${m.dosis ? ' · ' + esc(m.dosis) : ''}${m.hora ? ' · ' + esc(m.hora) : ''}</div>`).join('')}
+        ${(s.autorizados || []).length ? `<div class="bg-gray-50 rounded-lg px-3 py-2 text-gray-700">✋ <b>Autorizados:</b> ${s.autorizados.map(p => esc(p.nombre) + ' (' + esc(p.relacion) + ')').join(', ')}</div>` : ''}
+      </div>
+    </div>`;
+    })()}
+
     ${ultimoMsg ? `
     <div class="mx-5 mb-5 p-3 bg-green-50 rounded-xl border border-green-100">
       <p class="text-xs text-green-600 font-medium mb-1">Último mensaje del centro</p>

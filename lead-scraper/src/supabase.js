@@ -35,19 +35,31 @@ function dedupe(rows) {
   return out;
 }
 
+// Devuelve solo el dominio de SUPABASE_URL (https://xxx.supabase.co), descartando
+// cualquier ruta de más que se haya pegado por error (p. ej. .../rest/v1).
+export function supabaseBase() {
+  const url = process.env.SUPABASE_URL;
+  if (!url) return null;
+  try {
+    return new URL(url).origin;
+  } catch {
+    return url.replace(/\/+$/, '');
+  }
+}
+
 // Sube las filas a `prospectos`. Upsert con on_conflict=email e ignore-duplicates:
 // los emails ya existentes (incluidos los que están en estado 'baja') NO se tocan.
 export async function saveProspectos(results) {
-  const url = process.env.SUPABASE_URL;
+  const base = supabaseBase();
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) {
+  if (!base || !key) {
     throw new Error('Supabase no configurado: faltan SUPABASE_URL y/o SUPABASE_SERVICE_ROLE_KEY.');
   }
 
   const rows = dedupe(results.map(toRow));
   if (!rows.length) return { sent: 0, inserted: 0, skipped: 0 };
 
-  const endpoint = `${url.replace(/\/$/, '')}/rest/v1/prospectos?on_conflict=email`;
+  const endpoint = `${base}/rest/v1/prospectos?on_conflict=email`;
   const res = await fetch(endpoint, {
     method: 'POST',
     headers: {

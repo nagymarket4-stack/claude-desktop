@@ -6,7 +6,7 @@ import { searchAll, normalizePlace } from './src/places.js';
 import { findEmails, mapLimit } from './src/email.js';
 import { createJob, getJob, log, summary } from './src/jobs.js';
 import { toCSV } from './src/csv.js';
-import { saveProspectos } from './src/supabase.js';
+import { saveProspectos, supabaseBase } from './src/supabase.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -119,6 +119,23 @@ app.get('/api/diag', async (req, res) => {
 
   out.sinUserAgent = await probe({});
   out.conUserAgent = await probe({ 'User-Agent': browserUA, Accept: 'application/json' });
+
+  // Sondeo de Supabase: lee 1 fila de prospectos para validar URL + clave + tabla.
+  const sbBase = supabaseBase();
+  const sbKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  out.supabase = { base: sbBase, keyConfigured: Boolean(sbKey) };
+  if (sbBase && sbKey) {
+    try {
+      const r = await fetch(`${sbBase}/rest/v1/prospectos?select=id&limit=1`, {
+        headers: { apikey: sbKey, Authorization: `Bearer ${sbKey}` },
+        signal: AbortSignal.timeout(10000),
+      });
+      out.supabase.status = r.status;
+      out.supabase.bodyPreview = (await r.text()).slice(0, 200);
+    } catch (e) {
+      out.supabase.error = e.message;
+    }
+  }
 
   res.json(out);
 });

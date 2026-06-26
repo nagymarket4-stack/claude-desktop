@@ -93,24 +93,32 @@ app.get('/api/diag', async (req, res) => {
     out.outboundIp = 'error: ' + e.message;
   }
 
-  // Petición mínima a Places para ver la respuesta tal cual.
-  try {
-    const r = await fetch('https://places.googleapis.com/v1/places:searchText', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Goog-Api-Key': API_KEY || '',
-        'X-Goog-FieldMask': 'places.displayName',
-      },
-      body: JSON.stringify({ textQuery: 'escuela infantil en Madrid', languageCode: 'es', regionCode: 'ES' }),
-      signal: AbortSignal.timeout(15000),
-    });
-    out.placesStatus = r.status;
-    out.placesContentType = r.headers.get('content-type');
-    out.placesBodyPreview = (await r.text()).slice(0, 400);
-  } catch (e) {
-    out.placesError = e.message;
+  // Petición mínima a Places, probando SIN y CON User-Agent de navegador.
+  const browserUA =
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+
+  async function probe(extraHeaders) {
+    try {
+      const r = await fetch('https://places.googleapis.com/v1/places:searchText', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Goog-Api-Key': API_KEY || '',
+          'X-Goog-FieldMask': 'places.displayName',
+          ...extraHeaders,
+        },
+        body: JSON.stringify({ textQuery: 'escuela infantil en Madrid', languageCode: 'es', regionCode: 'ES' }),
+        signal: AbortSignal.timeout(15000),
+      });
+      const body = await r.text();
+      return { status: r.status, contentType: r.headers.get('content-type'), bodyPreview: body.slice(0, 200) };
+    } catch (e) {
+      return { error: e.message };
+    }
   }
+
+  out.sinUserAgent = await probe({});
+  out.conUserAgent = await probe({ 'User-Agent': browserUA, Accept: 'application/json' });
 
   res.json(out);
 });

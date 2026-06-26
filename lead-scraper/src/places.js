@@ -29,6 +29,10 @@ async function searchPage({ apiKey, textQuery, pageToken, languageCode = 'es', r
       'Content-Type': 'application/json',
       'X-Goog-Api-Key': apiKey,
       'X-Goog-FieldMask': FIELD_MASK,
+      // Algunas IPs de datacenter reciben la página anti-bot de Google si la
+      // petición no parece de un cliente normal. Un User-Agent estándar ayuda.
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+      Accept: 'application/json',
     },
     body: JSON.stringify(body),
   });

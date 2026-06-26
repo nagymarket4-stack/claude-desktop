@@ -35,6 +35,17 @@ async function searchPage({ apiKey, textQuery, pageToken, languageCode = 'es', r
 
   if (!res.ok) {
     const txt = await res.text();
+    // Si Google devuelve HTML (página de error del robot) en vez de JSON, casi siempre
+    // es una restricción de la API key que bloquea peticiones de servidor.
+    if (/<html/i.test(txt)) {
+      let hint = `HTTP ${res.status} (Google devolvió una página de error, no JSON).`;
+      if (res.status === 403) {
+        hint += ' Causa habitual: la API key tiene "Application restrictions" (p. ej. HTTP referrers)'
+          + ' que bloquean al servidor. Solución: en Google Cloud → Credenciales → tu key,'
+          + ' pon "Application restrictions: None" y deja "API restrictions" solo con Places API (New).';
+      }
+      throw new Error(`Places API: ${hint}`);
+    }
     throw new Error(`Places API ${res.status}: ${txt.slice(0, 500)}`);
   }
   return res.json();

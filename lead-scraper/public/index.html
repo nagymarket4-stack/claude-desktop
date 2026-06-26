@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Guardalia · Buscador de leads</title>
+  <style>
+    :root {
+      --bg: #0f172a; --panel: #1e293b; --panel2: #334155; --line: #475569;
+      --text: #f1f5f9; --muted: #94a3b8; --accent: #6366f1; --accent2: #8b5cf6;
+      --ok: #22c55e; --warn: #f59e0b; --err: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(1200px 600px at 50% -10%, #1e293b, var(--bg)); color: var(--text);
+      min-height: 100vh; padding: 24px;
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; }
+    h1 { font-size: 24px; margin: 0 0 4px; }
+    h1 span { background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .sub { color: var(--muted); margin: 0 0 24px; font-size: 14px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+    label { display: block; font-size: 13px; color: var(--muted); margin: 0 0 6px; }
+    textarea, input, select {
+      width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line);
+      border-radius: 10px; padding: 10px 12px; font-size: 14px; font-family: inherit;
+    }
+    textarea { resize: vertical; min-height: 70px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .field { margin-bottom: 16px; }
+    .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    button {
+      background: linear-gradient(90deg, var(--accent), var(--accent2)); color: white; border: 0;
+      border-radius: 10px; padding: 12px 22px; font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    button.ghost { background: var(--panel2); }
+    .check { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 14px; }
+    .check input { width: auto; }
+    .bar { height: 8px; background: var(--bg); border-radius: 99px; overflow: hidden; margin: 8px 0; }
+    .bar > i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); width: 0; transition: width .3s; }
+    .stats { display: flex; gap: 24px; flex-wrap: wrap; margin: 8px 0; }
+    .stat b { font-size: 22px; display: block; }
+    .stat span { color: var(--muted); font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; position: sticky; top: 0; background: var(--panel); }
+    td a { color: #a5b4fc; text-decoration: none; }
+    .tablebox { max-height: 480px; overflow: auto; border: 1px solid var(--line); border-radius: 12px; }
+    .pill { font-size: 11px; padding: 2px 8px; border-radius: 99px; background: var(--panel2); color: var(--muted); }
+    .log { font-family: ui-monospace, monospace; font-size: 12px; color: var(--muted); background: var(--bg); border-radius: 10px; padding: 12px; max-height: 160px; overflow: auto; white-space: pre-wrap; }
+    .hide { display: none; }
+    .muted { color: var(--muted); font-size: 13px; }
+    @media (max-width: 760px) { .grid, .grid3 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Buscador de leads <span>Guardalia</span></h1>
+    <p class="sub">Escuelas infantiles con teléfono y correo · vía Google Places API (sin baneos de IP)</p>
+
+    <div class="card" id="formCard">
+      <div class="field">
+        <label>¿Qué buscar? (una por línea)</label>
+        <textarea id="queries" placeholder="escuela infantil&#10;guardería&#10;centro de educación infantil">escuela infantil
+guardería</textarea>
+      </div>
+      <div class="field">
+        <label>Zonas / ciudades (una por línea, opcional — se combina con cada término)</label>
+        <textarea id="locations" placeholder="Madrid&#10;Barcelona&#10;Valencia">Madrid
+Barcelona
+Valencia</textarea>
+      </div>
+      <div class="grid3">
+        <div class="field">
+          <label>Máx. resultados por consulta (1–60)</label>
+          <input id="maxPerQuery" type="number" min="1" max="60" value="60" />
+        </div>
+        <div class="field">
+          <label>Idioma</label>
+          <input id="languageCode" value="es" />
+        </div>
+        <div class="field">
+          <label>País (regionCode)</label>
+          <input id="regionCode" value="ES" />
+        </div>
+      </div>
+      <div class="row" style="gap:20px">
+        <label class="check"><input type="checkbox" id="skipEmails" /> No buscar emails (más rápido, solo teléfono)</label>
+        <label class="check"><input type="checkbox" id="autoSave" /> Guardar en <b>prospectos</b> (Supabase) al terminar</label>
+      </div>
+      <div class="row" style="margin-top:16px">
+        <button id="go">Buscar leads</button>
+        <span class="muted" id="estimate"></span>
+      </div>
+    </div>
+
+    <div class="card hide" id="progressCard">
+      <div class="row" style="justify-content: space-between">
+        <strong id="phase">Iniciando…</strong>
+        <span class="pill" id="status">running</span>
+      </div>
+      <div class="bar"><i id="progFill"></i></div>
+      <div class="stats">
+        <div class="stat"><b id="sFound">0</b><span>centros</span></div>
+        <div class="stat"><b id="sPhone">0</b><span>con teléfono</span></div>
+        <div class="stat"><b id="sEmail">0</b><span>con email</span></div>
+      </div>
+      <div class="log" id="log"></div>
+    </div>
+
+    <div class="card hide" id="resultsCard">
+      <div class="row" style="justify-content: space-between; margin-bottom: 12px">
+        <strong>Resultados (<span id="rCount">0</span>)</strong>
+        <div class="row">
+          <button class="ghost" id="newSearch">Nueva búsqueda</button>
+          <button class="ghost" id="saveDb">Guardar en prospectos</button>
+          <button id="download">Descargar CSV</button>
+        </div>
+      </div>
+      <p class="muted hide" id="saveMsg" style="margin:0 0 12px"></p>
+      <div class="tablebox">
+        <table>
+          <thead>
+            <tr><th>Nombre</th><th>Teléfono</th><th>Email</th><th>Web</th><th>Dirección</th><th>★</th></tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let jobId = null, timer = null;
+
+    function lines(id) {
+      return $(id).value.split('\n').map((s) => s.trim()).filter(Boolean);
+    }
+
+    function updateEstimate() {
+      const q = lines('queries').length, l = lines('locations').length;
+      const combos = l ? q * l : q;
+      $('estimate').textContent = combos ? `${combos} consulta(s) a la API` : '';
+    }
+    ['queries', 'locations'].forEach((id) => $(id).addEventListener('input', updateEstimate));
+    updateEstimate();
+
+    $('go').addEventListener('click', async () => {
+      const body = {
+        queries: lines('queries'),
+        locations: lines('locations'),
+        maxPerQuery: Number($('maxPerQuery').value) || 60,
+        languageCode: $('languageCode').value.trim() || 'es',
+        regionCode: $('regionCode').value.trim() || 'ES',
+        skipEmails: $('skipEmails').checked,
+        autoSave: $('autoSave').checked,
+      };
+      if (!body.queries.length) return alert('Indica al menos un término de búsqueda.');
+
+      $('go').disabled = true;
+      const res = await fetch('/api/search', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      $('go').disabled = false;
+      if (!res.ok) return alert(data.error || 'Error al iniciar la búsqueda.');
+
+      jobId = data.id;
+      $('formCard').classList.add('hide');
+      $('progressCard').classList.remove('hide');
+      $('resultsCard').classList.add('hide');
+      poll();
+      timer = setInterval(poll, 1500);
+    });
+
+    async function poll() {
+      if (!jobId) return;
+      const res = await fetch(`/api/jobs/${jobId}`);
+      if (!res.ok) return;
+      const j = await res.json();
+
+      $('phase').textContent = j.phase;
+      $('status').textContent = j.status;
+      $('sFound').textContent = j.found;
+      $('sEmail').textContent = j.withEmail;
+      $('log').textContent = (j.log || []).slice(-40).join('\n');
+      $('log').scrollTop = $('log').scrollHeight;
+
+      // Progreso: fase de emails si aplica, si no fase de búsqueda
+      let pct = 10;
+      if (j.emailsTotal > 0) pct = 30 + Math.round((j.emailsDone / j.emailsTotal) * 70);
+      else if (j.status === 'done') pct = 100;
+      $('progFill').style.width = pct + '%';
+
+      if (j.status === 'done' || j.status === 'error') {
+        clearInterval(timer);
+        if (j.status === 'error') { alert('Error: ' + j.error); return; }
+        $('progFill').style.width = '100%';
+        loadResults();
+      }
+    }
+
+    async function loadResults() {
+      const res = await fetch(`/api/jobs/${jobId}?results=1`);
+      const j = await res.json();
+      const rows = j.results || [];
+      $('sPhone').textContent = rows.filter((r) => r.phone).length;
+      $('rCount').textContent = rows.length;
+      // Resultado del guardado automático, si lo hubo.
+      if (j.saved) {
+        if (j.saved.error) showSave('⚠️ Error al guardar en prospectos: ' + j.saved.error);
+        else showSave(`✓ Guardado en prospectos: ${j.saved.inserted} nuevos · ${j.saved.skipped} ya existían.`);
+      }
+      $('rows').innerHTML = rows.map((r) => `
+        <tr>
+          <td>${esc(r.name)} ${r.type ? `<span class="pill">${esc(r.type)}</span>` : ''}</td>
+          <td>${r.phone ? `<a href="tel:${esc(r.phone)}">${esc(r.phone)}</a>` : '—'}</td>
+          <td>${r.email ? `<a href="mailto:${esc(r.email.split(';')[0])}">${esc(r.email)}</a>` : '—'}</td>
+          <td>${r.website ? `<a href="${esc(r.website)}" target="_blank" rel="noopener">web</a>` : '—'}</td>
+          <td class="muted">${esc(r.address)}</td>
+          <td>${r.rating || '—'}</td>
+        </tr>`).join('');
+      $('resultsCard').classList.remove('hide');
+    }
+
+    function esc(s) {
+      return String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    }
+
+    function showSave(text) {
+      const el = $('saveMsg');
+      el.textContent = text;
+      el.classList.remove('hide');
+    }
+
+    $('saveDb').addEventListener('click', async () => {
+      if (!jobId) return;
+      $('saveDb').disabled = true;
+      showSave('Guardando en prospectos…');
+      try {
+        const res = await fetch(`/api/jobs/${jobId}/save`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+        const j = await res.json();
+        if (!res.ok) showSave('⚠️ ' + (j.error || 'Error al guardar.'));
+        else showSave(`✓ Guardado en prospectos: ${j.inserted} nuevos · ${j.skipped} ya existían.`);
+      } catch (e) {
+        showSave('⚠️ ' + e.message);
+      } finally {
+        $('saveDb').disabled = false;
+      }
+    });
+
+    $('download').addEventListener('click', () => { window.location = `/api/jobs/${jobId}/csv`; });
+    $('newSearch').addEventListener('click', () => {
+      clearInterval(timer); jobId = null;
+      $('saveMsg').classList.add('hide');
+      $('progressCard').classList.add('hide');
+      $('resultsCard').classList.add('hide');
+      $('formCard').classList.remove('hide');
+    });
+  </script>
+</body>
+</html>

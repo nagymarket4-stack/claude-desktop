@@ -18,6 +18,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "3458", "--directory", "landing"],
       "port": 3458
+    },
+    {
+      "name": "lead-scraper-ui",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "3459", "--directory", "lead-scraper/public"],
+      "port": 3459
     }
   ]
 }

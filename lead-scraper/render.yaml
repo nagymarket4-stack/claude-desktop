@@ -1,0 +1,23 @@
+# Despliegue en Render (https://render.com). Conecta el repo y apunta el root a "lead-scraper".
+services:
+  - type: web
+    name: guardalia-lead-scraper
+    runtime: node
+    plan: free
+    rootDir: lead-scraper
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: GOOGLE_MAPS_API_KEY
+        sync: false
+      - key: SCRAPER_USER
+        sync: false
+      - key: SCRAPER_PASS
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: EMAIL_CONCURRENCY
+        value: "5"

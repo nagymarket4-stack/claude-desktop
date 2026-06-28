@@ -245,7 +245,40 @@ function renderClienteDetalle(id) {
       ${c.estado==='activo'?`<button class="btn-danger" onclick="cambiarEstadoCliente('${c.id}','pausado')">Pausar cuenta</button>`:''}
       ${c.estado==='pausado'?`<button class="btn-primary" onclick="cambiarEstadoCliente('${c.id}','activo')">Reactivar</button>`:''}
     </div>
+
+    <div class="modal-section" style="border-top:1px solid #fee2e2;margin-top:8px;">
+      <div class="modal-section-title" style="color:#dc2626;">Zona peligrosa</div>
+      <p class="text-muted" style="font-size:13px;margin-bottom:8px;">Elimina el cliente, su guardería y todos sus datos. No se puede deshacer.</p>
+      <button class="btn-danger" onclick="borrarCliente('${c.id}')"><i class="ti ti-trash" aria-hidden="true"></i> Borrar cliente</button>
+    </div>
   `;
+}
+
+async function borrarCliente(id) {
+  const c = CLIENTES.find(x => String(x.id) === String(id));
+  if (!c) return;
+  if (!confirm(`¿Borrar DEFINITIVAMENTE "${c.nombre}"?\n\nSe eliminará su guardería y TODOS sus datos (alumnos, mensajes, facturas…). Esta acción no se puede deshacer.`)) return;
+
+  // Clave de administración (PANEL_SECRET): se pide una vez por sesión
+  let secret = sessionStorage.getItem('__panel_secret');
+  if (!secret) {
+    secret = prompt('Introduce la clave de administración para borrar clientes:');
+    if (!secret) return;
+    sessionStorage.setItem('__panel_secret', secret);
+  }
+
+  try {
+    await borrarTenantRemoto(c.id, secret);
+    CLIENTES = CLIENTES.filter(x => String(x.id) !== String(id));
+    if (typeof recomputarFacturas === 'function') recomputarFacturas();
+    cerrarClienteDetalle();
+    renderClientes();
+    if (typeof updateSidebarMRR === 'function') updateSidebarMRR();
+    toastSaas(`Cliente "${c.nombre}" eliminado`);
+  } catch (e) {
+    sessionStorage.removeItem('__panel_secret'); // por si la clave era incorrecta
+    toastSaas('Error al borrar: ' + (e.message || 'reintenta'), 'error');
+  }
 }
 
 function cambiarPlan(id, nuevoPlan) {

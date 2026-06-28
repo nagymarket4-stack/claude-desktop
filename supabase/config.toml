@@ -21,3 +21,7 @@ verify_jwt = false
 # Baja/unsubscribe: enlace público desde el email.
 [functions.baja]
 verify_jwt = false
+
+# Borrado de clientes desde el panel: protegido por PANEL_SECRET (cabecera).
+[functions.borrar-cliente]
+verify_jwt = false

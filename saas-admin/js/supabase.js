@@ -81,6 +81,19 @@ async function actualizarTenantRemoto(id, cambios) {
   catch (e) { console.warn('Error actualizando cliente:', e); }
 }
 
+// Borra un cliente por completo (tenant + datos + mensajes) vía Edge Function.
+// `secret` = clave de administración (PANEL_SECRET), la escribe el dueño.
+async function borrarTenantRemoto(id, secret) {
+  const resp = await fetch(`${SB_URL}/functions/v1/borrar-cliente`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-panel-secret': secret },
+    body: JSON.stringify({ tenant: id }),
+  });
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok || !data.ok) throw new Error(data.error || 'No se pudo borrar el cliente');
+  return true;
+}
+
 // ── Leads captados desde la web (tabla leads) → formato del pipeline ───────────
 async function cargarLeads() {
   if (!sbSaas) return [];

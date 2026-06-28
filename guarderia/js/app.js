@@ -312,7 +312,11 @@ function revisarEstadoPago() {
     showToast('¡Pago completado! Tu suscripción está activándose…');
     // recargar el estado de suscripción tras unos segundos (el webhook lo activa)
     setTimeout(async () => {
-      if (typeof cargarSuscripcion === 'function') { await cargarSuscripcion(); mostrarBannerSuscripcion(); }
+      if (typeof cargarSuscripcion === 'function') {
+        await cargarSuscripcion();
+        mostrarBannerSuscripcion();
+        if (typeof refrescarPortalPorPlan === 'function') refrescarPortalPorPlan(); // desbloquear funciones del nuevo plan
+      }
     }, 4000);
   } else if (pago === 'cancel') {
     showToast('Pago cancelado. Puedes activarlo cuando quieras.');

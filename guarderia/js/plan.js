@@ -71,6 +71,21 @@ const FEATURE_INFO = {
   'alumnos-limite':'Más alumnos', 'profesores-limite':'Más profesores',
 };
 
+// Re-pinta menús y página según el plan ya cargado (corrige el gating cuando
+// SUSCRIPCION llega después del primer render del menú).
+function refrescarPortalPorPlan() {
+  if (!sesionActual) return;
+  if (sesionActual.rol === 'padre') {
+    if (typeof renderSidebarPadres === 'function') renderSidebarPadres();
+    if (typeof renderBottomNavPadres === 'function') renderBottomNavPadres();
+  } else {
+    if (typeof renderSidebarStaff === 'function') renderSidebarStaff();
+    if (typeof renderBottomNavStaff === 'function') renderBottomNavStaff();
+  }
+  const inicio = sesionActual.rol === 'padre' ? 'padre-inicio' : 'dashboard';
+  navigate(state.currentPage || inicio);
+}
+
 function muroUpgrade(page) {
   const req = (page === 'alumnos-limite') ? 'pro' : (page === 'profesores-limite') ? 'pro' : planRequerido(page);
   const nombrePlan = PLAN_NOMBRE[req] || 'Pro';

@@ -176,7 +176,11 @@ async function initSupabase() {
     await cargarSuscripcion();
     suscribirRealtime();
     aplicarConfiguracion();
-    if (sesionActual) refrescarPaginaActual();
+    // Ya conocemos el plan: repintar menús/página para aplicar el gating correcto
+    if (sesionActual) {
+      if (typeof refrescarPortalPorPlan === 'function') refrescarPortalPorPlan();
+      else refrescarPaginaActual();
+    }
     if (typeof revisarEstadoPago === 'function') revisarEstadoPago();
     if (typeof mostrarBannerSuscripcion === 'function') mostrarBannerSuscripcion();
   } catch (e) {

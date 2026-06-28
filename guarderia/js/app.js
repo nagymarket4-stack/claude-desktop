@@ -304,6 +304,47 @@ function mostrarBannerSuscripcion() {
   app.insertBefore(banner, app.firstChild);
 }
 
+// ─── Bloqueo por fin de prueba / suscripción no activa ────────────────────────
+function suscripcionBloqueada() {
+  if (typeof TENANT !== 'undefined' && TENANT === 'demo') return false;   // el demo nunca se bloquea
+  if (typeof SUSCRIPCION === 'undefined' || !SUSCRIPCION) return false;    // sin datos → no bloquear (fail-open)
+  if (SUSCRIPCION.estado === 'activo') return false;                       // paga → acceso total
+  if (SUSCRIPCION.estado === 'cancelado') return true;                     // cancelado → bloquear
+  const dias = (typeof diasTrialRestantes === 'function') ? diasTrialRestantes() : null;
+  return dias !== null && dias <= 0;                                       // prueba caducada → bloquear
+}
+
+function aplicarBloqueoSuscripcion() {
+  const existente = document.getElementById('overlay-suscripcion');
+  if (!sesionActual || !suscripcionBloqueada()) {
+    if (existente) existente.remove();
+    document.body.style.overflow = '';
+    return;
+  }
+  if (existente) return; // ya está mostrado
+  const puedePagar = sesionActual.rol === 'superadmin' || sesionActual.rol === 'admin';
+  const cancelado  = SUSCRIPCION && SUSCRIPCION.estado === 'cancelado';
+  const titulo = cancelado ? 'Tu suscripción está cancelada' : 'Tu periodo de prueba ha finalizado';
+  const ov = document.createElement('div');
+  ov.id = 'overlay-suscripcion';
+  ov.className = 'fixed inset-0 z-[500] bg-green-800/95 flex items-center justify-center p-4';
+  ov.innerHTML = `
+    <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md text-center">
+      <div class="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5">🔒</div>
+      <h1 class="text-2xl font-bold text-gray-800 mb-2">${titulo}</h1>
+      <p class="text-gray-500 text-sm mb-6">${puedePagar
+        ? 'Activa tu suscripción para seguir usando ' + esc(CONFIGURACION.nombre) + ' y recuperar el acceso a todas las funciones.'
+        : 'El centro debe renovar su suscripción. Por favor, contacta con la dirección del centro.'}</p>
+      ${puedePagar ? `
+        <button onclick="iniciarPagoSuscripcion()" class="w-full bg-green-600 text-white py-3.5 rounded-xl font-medium text-sm hover:bg-green-700 active:bg-green-800 transition-colors">
+          Activar suscripción
+        </button>` : ''}
+      <button onclick="cerrarSesion()" class="mt-4 text-gray-400 text-sm hover:text-gray-600">Cerrar sesión</button>
+    </div>`;
+  document.body.appendChild(ov);
+  document.body.style.overflow = 'hidden';
+}
+
 // Gestiona el retorno desde Stripe (?pago=ok / ?pago=cancel)
 function revisarEstadoPago() {
   const pago = new URLSearchParams(location.search).get('pago');

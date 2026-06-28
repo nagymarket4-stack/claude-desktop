@@ -73,6 +73,7 @@ function iniciarPortalStaff() {
   if (sa) sa.textContent = sesionActual.nombre[0];
   navigate('dashboard');
   if (typeof mostrarBannerSuscripcion === 'function') mostrarBannerSuscripcion();
+  if (typeof aplicarBloqueoSuscripcion === 'function') aplicarBloqueoSuscripcion();
 }
 
 function iniciarPortalPadres() {
@@ -86,6 +87,7 @@ function iniciarPortalPadres() {
   if (sr) sr.textContent = 'Familia';
   if (sa) sa.textContent = sesionActual.nombre[0];
   navigate('padre-inicio');
+  if (typeof aplicarBloqueoSuscripcion === 'function') aplicarBloqueoSuscripcion();
 }
 
 function mostrarErrorLogin(msg) {
@@ -97,6 +99,9 @@ function mostrarErrorLogin(msg) {
 function cerrarSesion() {
   persistir();            // guardar datos compartidos antes de salir
   sesionActual = null;
+  const ov = document.getElementById('overlay-suscripcion');
+  if (ov) ov.remove();
+  document.body.style.overflow = '';
   try { localStorage.removeItem(LS_SESION); } catch (e) {} // olvidar solo la sesión
   document.getElementById('login-user').value = '';
   document.getElementById('login-pass').value = '';

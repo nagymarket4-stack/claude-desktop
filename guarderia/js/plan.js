@@ -84,6 +84,7 @@ function refrescarPortalPorPlan() {
   }
   const inicio = sesionActual.rol === 'padre' ? 'padre-inicio' : 'dashboard';
   navigate(state.currentPage || inicio);
+  if (typeof aplicarBloqueoSuscripcion === 'function') aplicarBloqueoSuscripcion();
 }
 
 function muroUpgrade(page) {

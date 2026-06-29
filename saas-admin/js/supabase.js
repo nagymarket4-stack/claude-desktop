@@ -86,7 +86,7 @@ async function actualizarTenantRemoto(id, cambios) {
 async function borrarTenantRemoto(id, secret) {
   const resp = await fetch(`${SB_URL}/functions/v1/borrar-cliente`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-panel-secret': secret },
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY, 'apikey': SB_KEY, 'x-panel-secret': secret },
     body: JSON.stringify({ tenant: id }),
   });
   const data = await resp.json().catch(() => ({}));
@@ -98,7 +98,7 @@ async function borrarTenantRemoto(id, secret) {
 async function gestionarTenantRemoto(id, accion, valor, secret) {
   const resp = await fetch(`${SB_URL}/functions/v1/borrar-cliente`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-panel-secret': secret },
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY, 'apikey': SB_KEY, 'x-panel-secret': secret },
     body: JSON.stringify({ tenant: id, accion, valor }),
   });
   const data = await resp.json().catch(() => ({}));

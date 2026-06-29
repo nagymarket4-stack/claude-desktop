@@ -94,6 +94,18 @@ async function borrarTenantRemoto(id, secret) {
   return true;
 }
 
+// Cambia estado/plan de un cliente vía Edge Function (persiste con service role).
+async function gestionarTenantRemoto(id, accion, valor, secret) {
+  const resp = await fetch(`${SB_URL}/functions/v1/borrar-cliente`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-panel-secret': secret },
+    body: JSON.stringify({ tenant: id, accion, valor }),
+  });
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok || !data.ok) throw new Error(data.error || 'No se pudo actualizar el cliente');
+  return true;
+}
+
 // ── Leads captados desde la web (tabla leads) → formato del pipeline ───────────
 async function cargarLeads() {
   if (!sbSaas) return [];

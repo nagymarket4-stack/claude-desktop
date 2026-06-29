@@ -254,18 +254,23 @@ function renderClienteDetalle(id) {
   `;
 }
 
+// Clave de administración (PANEL_SECRET): se pide una vez por sesión
+function getPanelSecret() {
+  let secret = sessionStorage.getItem('__panel_secret');
+  if (!secret) {
+    secret = prompt('Introduce la clave de administración del panel:');
+    if (secret) sessionStorage.setItem('__panel_secret', secret);
+  }
+  return secret;
+}
+
 async function borrarCliente(id) {
   const c = CLIENTES.find(x => String(x.id) === String(id));
   if (!c) return;
   if (!confirm(`¿Borrar DEFINITIVAMENTE "${c.nombre}"?\n\nSe eliminará su guardería y TODOS sus datos (alumnos, mensajes, facturas…). Esta acción no se puede deshacer.`)) return;
 
-  // Clave de administración (PANEL_SECRET): se pide una vez por sesión
-  let secret = sessionStorage.getItem('__panel_secret');
-  if (!secret) {
-    secret = prompt('Introduce la clave de administración para borrar clientes:');
-    if (!secret) return;
-    sessionStorage.setItem('__panel_secret', secret);
-  }
+  const secret = getPanelSecret();
+  if (!secret) return;
 
   try {
     await borrarTenantRemoto(c.id, secret);
@@ -281,27 +286,43 @@ async function borrarCliente(id) {
   }
 }
 
-function cambiarPlan(id, nuevoPlan) {
+async function cambiarPlan(id, nuevoPlan) {
   const c = CLIENTES.find(x=>String(x.id)===String(id));
   if(!c) return;
   const p = PLANES.find(x=>x.id===nuevoPlan);
-  c.plan = nuevoPlan;
-  c.mrr = c.estado==='activo' ? p.precio : 0;
-  if (typeof actualizarTenantRemoto === 'function') actualizarTenantRemoto(c.id, { plan: c.plan, mrr: c.mrr });
-  recomputarFacturas();
-  renderClienteDetalle(id);
-  toastSaas(`Plan de ${c.nombre} cambiado a ${p.nombre}`);
+  const secret = getPanelSecret();
+  if (!secret) return;
+  try {
+    await gestionarTenantRemoto(c.id, 'plan', nuevoPlan, secret);
+    c.plan = nuevoPlan;
+    c.mrr = c.estado==='activo' ? p.precio : 0;
+    recomputarFacturas();
+    renderClienteDetalle(id);
+    if (typeof updateSidebarMRR === 'function') updateSidebarMRR();
+    toastSaas(`Plan de ${c.nombre} cambiado a ${p.nombre}`);
+  } catch (e) {
+    sessionStorage.removeItem('__panel_secret');
+    toastSaas('Error al cambiar el plan: ' + (e.message || 'reintenta'), 'error');
+  }
 }
 
-function cambiarEstadoCliente(id, nuevoEstado) {
+async function cambiarEstadoCliente(id, nuevoEstado) {
   const c = CLIENTES.find(x=>String(x.id)===String(id));
   if(!c) return;
-  c.estado = nuevoEstado;
-  if(nuevoEstado!=='activo') c.mrr=0;
-  else { const p=PLANES.find(x=>x.id===c.plan); c.mrr=p?p.precio:0; }
-  if (typeof actualizarTenantRemoto === 'function') actualizarTenantRemoto(c.id, { estado: c.estado, mrr: c.mrr });
-  recomputarFacturas();
-  cerrarClienteDetalle();
-  renderClientes();
-  toastSaas(`Cuenta de ${c.nombre} actualizada a: ${nuevoEstado}`);
+  const secret = getPanelSecret();
+  if (!secret) return;
+  try {
+    await gestionarTenantRemoto(c.id, 'estado', nuevoEstado, secret);
+    c.estado = nuevoEstado;
+    if(nuevoEstado!=='activo') c.mrr=0;
+    else { const p=PLANES.find(x=>x.id===c.plan); c.mrr=p?p.precio:0; }
+    recomputarFacturas();
+    cerrarClienteDetalle();
+    renderClientes();
+    if (typeof updateSidebarMRR === 'function') updateSidebarMRR();
+    toastSaas(`Cuenta de ${c.nombre} actualizada a: ${nuevoEstado}`);
+  } catch (e) {
+    sessionStorage.removeItem('__panel_secret');
+    toastSaas('Error al actualizar: ' + (e.message || 'reintenta'), 'error');
+  }
 }
